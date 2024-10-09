@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        yantramanav: ["Yantramanav", "sans-serif"],
+        muktaVaani: ["Mukta Vaani", "sans-serif"],
+        imprima: ["Imprima", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 }
