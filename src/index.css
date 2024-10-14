@@ -8,6 +8,14 @@ a.active hr {
   display: block;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
+.scroller {
+  scrollbar-width: none;
+}
+
 p {
   /* font-family: "Mukta Vaani"; */
 }
