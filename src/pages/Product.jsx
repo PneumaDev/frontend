@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
+import RelatedProducts from "../components/RelatedProducts";
 
 export default function Product() {
   const { productId } = useParams();
@@ -10,21 +11,31 @@ export default function Product() {
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
 
+  const ref = useRef(null);
+
   const fetchProductData = async () => {
-    products.map((product) => {
-      if (product._id === productId) {
-        setImage(product.image[0]);
-        setProductData(product);
-      }
-    });
+    const product = products.find((product) => product._id === productId);
+    if (product) {
+      setImage(product.image[0]);
+      setProductData(product);
+    } else {
+      console.error("Product not found!");
+    }
   };
+
+  useEffect(() => {
+    if (ref.current) ref.current.scrollIntoView({ behavior: "smooth" });
+  }, [window.location.pathname]);
 
   useEffect(() => {
     fetchProductData();
   }, [productId]);
 
   return productData ? (
-    <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
+    <div
+      className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100"
+      ref={ref}
+    >
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         {/* Products images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
@@ -95,6 +106,39 @@ export default function Product() {
           </div>
         </div>
       </div>
+
+      {/* Description and review section */}
+      <div className="mt-20">
+        <div className="flex">
+          <b className="border px-5 py-3 text-sm font-muktaVaani">
+            Description
+          </b>
+          <p className="border px-5 py-3 text-sm font-muktaVaani">
+            Reviews (122)
+          </p>
+        </div>
+        <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
+          <p className="font-imprima">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod
+            lorem arcu, condimentum interdum ante tristique rhoncus. Nam nec
+            aliquam velit.
+          </p>
+          <p className="font-imprima">
+            Nulla eu accumsan sem. Donec vitae ornare enim. Curabitur porttitor
+            diam quis dui consequat consequat. Fusce convallis sed leo posuere
+            facilisis. Integer non laoreet ex, eget consectetur quam. Aenean
+            tempus maximus magna non molestie. Pellentesque semper vitae erat ac
+            dignissim. Vivamus vitae dui vitae dui lobortis ultrices dignissim
+            et sem.
+          </p>
+        </div>
+      </div>
+
+      {/* ----- display related products. */}
+      <RelatedProducts
+        category={productData.category}
+        subCategory={productData.subCategory}
+      />
     </div>
   ) : (
     <div className="opacity-0"></div>
