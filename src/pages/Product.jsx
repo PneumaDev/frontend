@@ -3,10 +3,11 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
+import toast from "react-hot-toast";
 
 export default function Product() {
   const { productId } = useParams();
-  const { products, currency } = useContext(ShopContext);
+  const { products, currency, addToCart } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -91,7 +92,18 @@ export default function Product() {
               ))}
             </div>
           </div>
-          <button className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700">
+          <button
+            className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
+            onClick={(e) => {
+              if (!size)
+                return toast.error("No size selected", {
+                  id: "No size selected",
+                });
+              toast.dismiss("No size selected");
+              addToCart(productData._id, size);
+              toast.success("Added to cart", { id: "Added to cart" });
+            }}
+          >
             ADD TO CART
           </button>
           <hr className="mt-8 sm:w-4/5" />
