@@ -10,7 +10,6 @@ export default function Navbar() {
 
   useEffect(() => {
     setCartProducts(Object.keys(cartItems).length);
-    console.log(cartItems);
   }, [cartItems]);
 
   return (
