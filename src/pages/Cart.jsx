@@ -34,18 +34,31 @@ export default function Cart() {
           const productData = products.find(
             (product) => product._id === item._id
           );
-          console.log(products);
           return (
-            <div className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4">
+            <div
+              key={index}
+              className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
+            >
               <div className="flex items-start gap-6">
                 <img
                   className="w-16 sm:w-20"
                   src={productData.image[0]}
                   alt=""
                 />
-                <p className="text-sm sm:text-lg font-medium">
-                  {productData.name}
-                </p>
+                <div className="">
+                  <p className="text-sm sm:text-lg font-medium font-yantramanav">
+                    {productData.name}
+                  </p>
+                  <div className="flex items-center gap-5 mt-2 font-imprima">
+                    <p className="">
+                      {currency}
+                      {productData.price}
+                    </p>
+                    <p className="px-2 sm:px-3 sm:py-1 border bg-slate-50 font-imprima">
+                      {item.size}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           );
