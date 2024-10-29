@@ -1,19 +1,33 @@
-import React from "react";
+import React, { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Collection from "./pages/Collection";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Product from "./pages/Product";
-import Login from "./pages/Login";
-import Cart from "./pages/Cart";
-import PlaceOrder from "./pages/PlaceOrder";
-import Orders from "./pages/Orders";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import SearchBar from "./components/SearchBar";
+// import Home from "./pages/Home";
+// import Collection from "./pages/Collection";
+// import About from "./pages/About";
+// import Contact from "./pages/Contact";
+// import Product from "./pages/Product";
+// import Login from "./pages/Login";
+// import Cart from "./pages/Cart";
+// import PlaceOrder from "./pages/PlaceOrder";
+// import Orders from "./pages/Orders";
+// import Navbar from "./components/Navbar";
+// import Footer from "./components/Footer";
+// import SearchBar from "./components/SearchBar";
 import { Toaster } from "react-hot-toast";
-import NotFound from "./pages/NotFound";
+// import NotFound from "./pages/NotFound";
+
+const Home = lazy(() => import("./pages/Home"));
+const Collection = lazy(() => import("./pages/Collection"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Product = lazy(() => import("./pages/Product"));
+const Login = lazy(() => import("./pages/Login"));
+const Cart = lazy(() => import("./pages/Cart"));
+const PlaceOrder = lazy(() => import("./pages/PlaceOrder"));
+const Orders = lazy(() => import("./pages/Orders"));
+const Navbar = lazy(() => import("./components/Navbar"));
+const Footer = lazy(() => import("./components/Footer"));
+const SearchBar = lazy(() => import("./components/SearchBar"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 export default function App() {
   return (
