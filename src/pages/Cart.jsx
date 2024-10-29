@@ -22,7 +22,6 @@ export default function Cart() {
     }
 
     setCartData(tempData);
-    console.log(tempData);
   }, [cartItems]);
   return (
     <div className="border-t pt-14">
