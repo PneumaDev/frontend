@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
-import toast from "react-hot-toast";
 
 export default function Product() {
   const { productId } = useParams();
@@ -95,13 +94,7 @@ export default function Product() {
           <button
             className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
             onClick={(e) => {
-              if (!size)
-                return toast.error("No size selected", {
-                  id: "No size selected",
-                });
-              toast.dismiss("No size selected");
               addToCart(productData._id, size);
-              toast.success("Added to cart", { id: "Added to cart" });
             }}
           >
             ADD TO CART
