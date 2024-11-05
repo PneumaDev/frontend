@@ -5,7 +5,7 @@ import { assets } from "../assets/assets";
 import CartTotal from "../components/CartTotal";
 
 export default function Cart() {
-  const { products, currency, cartItems, updateQuantity } =
+  const { products, currency, cartItems, updateQuantity, navigate } =
     useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
@@ -93,7 +93,10 @@ export default function Cart() {
         <div className="w-full sm:w-[450px]">
           <CartTotal />
           <div className="w-full text-end">
-            <button className="bg-black text-white text-sm my-8 px-8 py-3 font-yantramanav">
+            <button
+              onClick={() => navigate("/placeorder")}
+              className="bg-black text-white text-sm my-8 px-8 py-3 font-yantramanav"
+            >
               PROCEED TO CHECKOUT
             </button>
           </div>
