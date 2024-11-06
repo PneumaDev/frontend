@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Product() {
   const { productId } = useParams();
@@ -52,7 +54,9 @@ export default function Product() {
             ))}
           </div>
           <div className="w-full sm:w-[80%]">
-            <img src={image} alt="" className="w-full h-auto" />
+            {<img src={image} alt="" className="w-full h-auto" /> || (
+              <Skeleton />
+            )}
           </div>
         </div>
 
