@@ -44,17 +44,20 @@ function Login() {
         {currentState === "Login" ? (
           <p
             onClick={() => setCurrentState("Sign Up")}
-            className="font-imprima"
+            className="font-imprima cursor-pointer"
           >
             Create Account
           </p>
         ) : (
-          <p className="font-imprima" onClick={() => setCurrentState("Login")}>
+          <p
+            className="font-imprima cursor-pointer"
+            onClick={() => setCurrentState("Login")}
+          >
             Login Here
           </p>
         )}
       </div>
-      <button className="bg-black text-white font-light px-8 py-2 mt-4">
+      <button className="bg-black hover:shadow-lg text-white font-light px-8 py-2 mt-4">
         {currentState === "Login" ? "Sign In" : "Sign Up"}
       </button>
     </form>
