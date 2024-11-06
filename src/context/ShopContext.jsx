@@ -19,8 +19,11 @@ const ShopContextProvider = (props) => {
   const delivery_fee = 129;
 
   const addToCart = async (itemId, size) => {
+    toast.dismiss();
     if (!size) {
-      toast.error("Select Product Size");
+      toast.error("Select Product Size", {
+        id: "error",
+      });
       return;
     }
 
@@ -38,6 +41,9 @@ const ShopContextProvider = (props) => {
     }
 
     setCartItems(cartData);
+    toast.success("Added to cart", {
+      id: "success",
+    });
   };
 
   const getCartCount = () => {
