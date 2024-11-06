@@ -1,8 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Prata&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  /* background-color: whitesmoke; */
+}
 
 a.active hr {
   display: block;
