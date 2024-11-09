@@ -23,7 +23,47 @@ export default function App() {
       <Navbar />
       <Toaster
         toastOptions={{
-          className: "font-imprima",
+          className:
+            "font-imprima bg-gray-100 shadow-md rounded-md border border-gray-300", // General toast styling
+          loading: {
+            style: {
+              background: "#3B82F6", // A soft blue for loading toasts
+              color: "#ffffff",
+              borderRadius: "8px",
+              padding: "12px",
+              border: "1px solid #3B82F6",
+            },
+            iconTheme: {
+              primary: "#ffffff",
+              secondary: "#3B82F6",
+            },
+          },
+          success: {
+            style: {
+              background: "#10B981", // A green for success toasts
+              color: "#ffffff",
+              borderRadius: "8px",
+              padding: "12px",
+              border: "1px solid #10B981",
+            },
+            iconTheme: {
+              primary: "#ffffff",
+              secondary: "#10B981",
+            },
+          },
+          error: {
+            style: {
+              background: "#EF4444", // A red for error toasts
+              color: "#ffffff",
+              borderRadius: "8px",
+              padding: "12px",
+              border: "1px solid #EF4444",
+            },
+            iconTheme: {
+              primary: "#ffffff",
+              secondary: "#EF4444",
+            },
+          },
         }}
       />
       <SearchBar />
