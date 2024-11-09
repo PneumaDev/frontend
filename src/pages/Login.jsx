@@ -1,15 +1,84 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 function Login() {
   const [currentState, setCurrentState] = React.useState("Sign Up");
+  const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const onSubmitHandler = async (e) => {
+  const onSubmitHandler = async () => {
+    try {
+      if (currentState === "Sign Up") {
+        const response = await axios.post(backendUrl + "/api/user/register", {
+          name,
+          email,
+          password,
+        });
+        if (response.data.success === true) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+          return response.data.message;
+        } else {
+          throw new Error(response.data.message);
+        }
+      } else {
+        const response = await axios.post(backendUrl + "/api/user/login", {
+          email,
+          password,
+        });
+
+        if (response.data.success === true) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+          return response.data.message;
+        } else {
+          throw new Error(response.data.message);
+        }
+      }
+    } catch (error) {
+      throw new Error(
+        error.response?.data?.message ||
+          error ||
+          "An error occurred. Please try again!"
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (!token && localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
+
+  const handleOnsubmitHandler = async (e) => {
     e.preventDefault();
+    toast.promise(
+      onSubmitHandler(),
+      {
+        loading:
+          currentState === "Sign Up" ? "Signing Up..." : "Just A Moment!😊",
+        success: (message) => message || "Successful!",
+        error: (err) => err.message || "An error occurred",
+      },
+      {
+        id: "login page",
+      }
+    );
   };
 
   return (
     <form
-      onSubmit={onSubmitHandler}
+      onSubmit={handleOnsubmitHandler}
       action=""
       className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"
     >
@@ -21,6 +90,8 @@ function Login() {
         ""
       ) : (
         <input
+          onChange={(e) => setName(e.target.value)}
+          value={name}
           required
           type="text"
           placeholder="Name"
@@ -28,12 +99,16 @@ function Login() {
         />
       )}
       <input
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
         required
         type="email"
         placeholder="Email"
         className="w-full px-3 py-2 border border-gray-800 font-yantramanav rounded-md"
       />
       <input
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
         required
         type="password"
         placeholder="Password"
@@ -57,7 +132,10 @@ function Login() {
           </p>
         )}
       </div>
-      <button className="bg-black hover:shadow-lg text-white font-light px-8 py-2 mt-4">
+      <button
+        className="bg-black hover:shadow-lg text-white font-light px-8 py-2 mt-4"
+        type="submit"
+      >
         {currentState === "Login" ? "Sign In" : "Sign Up"}
       </button>
     </form>
