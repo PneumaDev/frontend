@@ -16,9 +16,11 @@ export default function Navbar() {
 
   const logout = () => {
     navigate("/login");
-    localStorage.removeItem("token");
-    setToken("");
-    setCartItems({});
+    setTimeout(() => {
+      localStorage.removeItem("token");
+      setToken("");
+      setCartItems({});
+    }, 0);
   };
 
   return (
