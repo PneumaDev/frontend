@@ -6,13 +6,16 @@ import { ShopContext } from "../context/ShopContext";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("cod");
-
   const { navigate } = useContext(ShopContext);
 
   return (
     <div className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh]">
       {/* ---------Left Side---------- */}
-      <div className="flex flex-col gap-4 w-full ${method === '' ? 'bg-green-400' : ''} sm:max-w-[480px]">
+      <div
+        className={`flex flex-col gap-4 w-full ${
+          method === "" ? "bg-green-400" : ""
+        } sm:max-w-[480px]`}
+      >
         <div className="text-xl sm:text-2xl my-3">
           <Title text1={"DELIVERY"} tex2={"INFORMATION"} />
         </div>
@@ -21,46 +24,60 @@ export default function PlaceOrder() {
             required
             type="text"
             placeholder="First name"
-            className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
+            className={`border border-gray-300 py-1.5 px-3.5 w-full ${
+              method === "" ? "bg-green-400" : ""
+            } font-imprima rounded-md`}
           />
           <input
             required
             type="text"
             placeholder="Last name"
-            className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
+            className={`border border-gray-300 py-1.5 px-3.5 w-full ${
+              method === "" ? "bg-green-400" : ""
+            } font-imprima rounded-md`}
           />
         </div>
         <input
           required
           type="email"
           placeholder="Email Address"
-          className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
+          className={`border border-gray-300 py-1.5 px-3.5 w-full ${
+            method === "" ? "bg-green-400" : ""
+          } font-imprima rounded-md`}
         />
         <input
           required
           type="text"
           placeholder="Street"
-          className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
+          className={`border border-gray-300 py-1.5 px-3.5 w-full ${
+            method === "" ? "bg-green-400" : ""
+          } font-imprima rounded-md`}
         />
         <div className="flex gap-3">
           <input
             required
             type="text"
             placeholder="City"
-            className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
+            className={`border border-gray-300 py-1.5 px-3.5 w-full ${
+              method === "" ? "bg-green-400" : ""
+            } font-imprima rounded-md`}
           />
           <input
             required
             type="text"
             placeholder="County"
-            className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
+            className={`border border-gray-300 py-1.5 px-3.5 w-full ${
+              method === "" ? "bg-green-400" : ""
+            } font-imprima rounded-md`}
           />
         </div>
         <input
           required
           type="number"
           placeholder="Phone Number"
-          className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
+          className={`border border-gray-300 py-1.5 px-3.5 w-full ${
+            method === "" ? "bg-green-400" : ""
+          } font-imprima rounded-md`}
         />
       </div>
 
@@ -73,36 +90,46 @@ export default function PlaceOrder() {
           <Title text1={"PAYMENT"} tex2={"METHOD"} />
 
           {/* --------Payment Methods---------- */}
-          <div className="flex gap-3  flex-col lg:flex-row">
+          <div className="flex gap-3 flex-col lg:flex-row">
             <div
               onClick={() => setMethod("stripe")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer bg-red-100"
+              className={`flex items-center gap-3 border p-2 px-3 cursor-pointer ${
+                method === "stripe" ? "bg-red-100" : ""
+              }`}
             >
               <p
                 className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "stripe" ? "bg-green-400" : ""
+                  method === "stripe" ? "bg-green-400" : "bg-white"
                 }`}
               ></p>
               <img
                 src={assets.stripe_logo}
-                alt=""
+                alt="Stripe"
                 className="w-20 mr-4 object-cover"
               />
             </div>
-            {/* <div
+            <div
               onClick={() => setMethod("razorpay")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
+              className={`flex items-center gap-3 border p-2 px-3 cursor-pointer  ${
+                method === "razorpay" ? "bg-red-100" : ""
+              }`}
             >
               <p
                 className={`min-w-3.5 h-3.5 border rounded-full ${
                   method === "razorpay" ? "bg-green-400" : ""
                 }`}
               ></p>
-              <img src={assets.razorpay_logo} alt="" className="h5 mx-4" />
-            </div> */}
+              <img
+                src={assets.razorpay_logo}
+                alt="Razorpay"
+                className="h-5 w-16 mx-4"
+              />
+            </div>
             <div
               onClick={() => setMethod("cod")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
+              className={`flex items-center gap-3 border p-2 px-3 cursor-pointer  ${
+                method === "cod" ? "bg-red-100" : ""
+              }`}
             >
               <p
                 className={`min-w-3.5 h-3.5 border rounded-full ${
