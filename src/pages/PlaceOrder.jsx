@@ -9,8 +9,6 @@ export default function PlaceOrder() {
 
   const { navigate } = useContext(ShopContext);
 
-  console.log(method);
-
   return (
     <div className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh]">
       {/* ---------Left Side---------- */}
@@ -20,39 +18,46 @@ export default function PlaceOrder() {
         </div>
         <div className="flex gap-3">
           <input
+            required
             type="text"
             placeholder="First name"
             className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
           />
           <input
+            required
             type="text"
             placeholder="Last name"
             className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
           />
         </div>
         <input
+          required
           type="email"
           placeholder="Email Address"
           className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
         />
         <input
+          required
           type="text"
           placeholder="Street"
           className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
         />
         <div className="flex gap-3">
           <input
+            required
             type="text"
             placeholder="City"
             className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
           />
           <input
+            required
             type="text"
             placeholder="County"
             className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
           />
         </div>
         <input
+          required
           type="number"
           placeholder="Phone Number"
           className="border border-gray-300 py-1.5 px-3.5 w-full ${method === '' ? 'bg-green-400' : ''} font-imprima rounded-md"
@@ -71,16 +76,20 @@ export default function PlaceOrder() {
           <div className="flex gap-3  flex-col lg:flex-row">
             <div
               onClick={() => setMethod("stripe")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
+              className="flex items-center gap-3 border p-2 px-3 cursor-pointer bg-red-100"
             >
               <p
                 className={`min-w-3.5 h-3.5 border rounded-full ${
                   method === "stripe" ? "bg-green-400" : ""
                 }`}
               ></p>
-              <img src={assets.stripe_logo} alt="" className="h5 mx-4" />
+              <img
+                src={assets.stripe_logo}
+                alt=""
+                className="w-20 mr-4 object-cover"
+              />
             </div>
-            <div
+            {/* <div
               onClick={() => setMethod("razorpay")}
               className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
             >
@@ -90,7 +99,7 @@ export default function PlaceOrder() {
                 }`}
               ></p>
               <img src={assets.razorpay_logo} alt="" className="h5 mx-4" />
-            </div>
+            </div> */}
             <div
               onClick={() => setMethod("cod")}
               className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
@@ -108,6 +117,7 @@ export default function PlaceOrder() {
 
           <div className="w-full text-end mt-8">
             <button
+              type="submit"
               onClick={() => navigate("/orders")}
               className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
             >
