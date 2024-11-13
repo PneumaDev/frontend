@@ -1,17 +1,66 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
+import axios, { all } from "axios";
+import toast from "react-hot-toast";
+import Spinner from "./../components/Spinner";
 
 export default function Orders() {
-  const { products, currency } = useContext(ShopContext);
+  const { backendUrl, token, currency } = useContext(ShopContext);
 
-  return (
+  const [orderData, setOrderData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const loadOrderData = async () => {
+    setLoading(true);
+    try {
+      if (!token) {
+        return null;
+      }
+      const response = await axios.post(
+        backendUrl + "/api/order/userorders",
+        {},
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        let allOrdersItem = [];
+        response.data.orders.map((order) => {
+          order.items.map((item) => {
+            item["status"] = order.status;
+            item["payment"] = order.payment;
+            item["paymentMethod"] = order.paymentMethod;
+            item["date"] = order.date;
+
+            allOrdersItem.push(item);
+          });
+        });
+
+        setOrderData(allOrdersItem.reverse());
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.data.message);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadOrderData();
+  }, [token]);
+
+  return loading ? (
+    <Spinner />
+  ) : (
     <div className="border-t pt-16">
       <div className="text-2xl">
         <Title text1={"MY"} tex2={"ORDERS"} />
       </div>
       <div className="">
-        {products.slice(1, 4).map((item, index) => (
+        {orderData.map((item, index) => (
           <div
             key={index}
             className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
@@ -27,11 +76,20 @@ export default function Orders() {
                     {currency}
                     {item.price}
                   </p>
-                  <p className="font-yantramanav">Quantity: 1</p>
-                  <p className="font-yantramanav">Size: M</p>
+                  <p className="font-yantramanav">Quantity: {item.quantity}</p>
+                  <p className="font-yantramanav">Size: {item.size}</p>
                 </div>
-                <p className="mt-2">
-                  Date: <span className="text-gray-400">25, July, 2024</span>
+                <p className="mt-2 font-yantramanav">
+                  Date:{" "}
+                  <span className="text-gray-400 font-imprima">
+                    {new Date(item.date).toDateString()}
+                  </span>
+                </p>
+                <p className="mt-2 font-yantramanav">
+                  Payment:{" "}
+                  <span className="text-gray-400 font-imprima">
+                    {item.paymentMethod}
+                  </span>
                 </p>
               </div>
             </div>
@@ -39,7 +97,7 @@ export default function Orders() {
               <div className="flex items-center gap-2">
                 <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
                 <p className="text-sm md:text-base font-imprima">
-                  Ready To Ship
+                  {item.status}
                 </p>
               </div>
               <button className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300">

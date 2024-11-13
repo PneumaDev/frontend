@@ -3,6 +3,8 @@ import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("cod");
@@ -40,24 +42,63 @@ export default function PlaceOrder() {
 
     try {
       let orderItems = [];
+
+      // Loop through each item in cartItems
       for (const items in cartItems) {
-        for (const item of cartItems[items]) {
-          if (cartItems[items][item] > 0) {
+        const itemSizes = cartItems[items];
+
+        // Loop through each size in the specific item's sizes
+        for (const item in itemSizes) {
+          if (itemSizes[item] > 0) {
+            // Find product info based on product ID
             const itemInfo = structuredClone(
               products.find((product) => product._id === items)
             );
+
             if (itemInfo) {
+              console.log("clicked");
+              itemInfo.size = item; // Assign size to itemInfo
+              itemInfo.quantity = itemSizes[item]; // Assign quantity
+              orderItems.push(itemInfo); // Add itemInfo to orderItems
             }
           }
         }
       }
-    } catch (error) {}
+
+      let orderData = {
+        address: formData,
+        items: orderItems,
+        amount: getCartAmount() + delivery_fee,
+      };
+      switch (method) {
+        // <----Api Calls For COD orders----->
+        case "cod":
+          const response = await axios.post(
+            backendUrl + "/api/order/place",
+            orderData,
+            { headers: { token } }
+          );
+          if (response.data.success) {
+            setCartItems({});
+            navigate("/orders");
+          } else {
+            toast.error(response.data.message);
+          }
+
+          break;
+
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Error creating order items:", error);
+    }
   };
 
   return (
     <form
       className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh]"
-      onSubmit={onChangeHandler}
+      onSubmit={onSubmitHandler}
     >
       {/* ---------Left Side---------- */}
       <div
