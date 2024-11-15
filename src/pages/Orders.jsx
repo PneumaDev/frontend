@@ -44,7 +44,7 @@ export default function Orders() {
       toast.error(error.data.message);
       setLoading(false);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -52,9 +52,7 @@ export default function Orders() {
     loadOrderData();
   }, [token]);
 
-  return loading ? (
-    <Spinner />
-  ) : (
+  return (
     <div className="border-t pt-16">
       <div className="text-2xl">
         <Title text1={"MY"} tex2={"ORDERS"} />
@@ -100,7 +98,10 @@ export default function Orders() {
                   {item.status}
                 </p>
               </div>
-              <button className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300">
+              <button
+                onClick={loadOrderData}
+                className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300"
+              >
                 Track Order
               </button>
             </div>
