@@ -12,7 +12,6 @@ export default function Orders() {
   const [loading, setLoading] = useState(false);
 
   const loadOrderData = async () => {
-    setLoading(true);
     try {
       if (!token) {
         return null;
@@ -37,7 +36,6 @@ export default function Orders() {
         });
 
         setOrderData(allOrdersItem.reverse());
-        setLoading(false);
       }
     } catch (error) {
       console.log(error);
