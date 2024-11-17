@@ -5,9 +5,12 @@ import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Button, Modal } from "flowbite-react";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
+  const [openModal, setOpenModal] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -30,6 +33,10 @@ export default function PlaceOrder() {
     products,
   } = useContext(ShopContext);
 
+  const toggleModalOpen = (e) => {
+    e.preventDefault();
+    setOpenModal(true);
+  };
   const onChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -109,7 +116,7 @@ export default function PlaceOrder() {
   return (
     <form
       className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh]"
-      onSubmit={onSubmitHandler}
+      onSubmit={toggleModalOpen}
     >
       {/* ---------Left Side---------- */}
       <div
@@ -259,12 +266,53 @@ export default function PlaceOrder() {
           </div>
 
           <div className="w-full text-end mt-8">
-            <button
+            {/* <button
               type="submit"
               className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
             >
               PLACE ORDER
-            </button>
+            </button> */}
+            <>
+              <button
+                type="submit"
+                // onClick={() => setOpenModal(true)}
+                className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
+              >
+                Toggle modal
+              </button>
+              <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                <Modal.Header className="font-muktaVaani">
+                  Order Payment Confirmation
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="space-y-6">
+                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 font-yantramanav">
+                      Hello, {formData.firstName + " " + formData.lastName}.
+                    </p>
+                    <p className="text-base leading-relaxed font-imprima text-gray-500 dark:text-gray-400">
+                      Please confirm Payment of{" "}
+                      <span className="font-semibold">
+                        Ksh.
+                        {getCartAmount() + delivery_fee}
+                      </span>{" "}
+                      to Eridanus Mall. You'll recieve a prompt on your phone to
+                      the number{" "}
+                      <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium shadow-md">
+                        {formData.phone}
+                      </span>
+                      . Kindly enter your PIN and wait for confirmation after
+                      payment
+                    </p>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={() => setOpenModal(false)}>Pay Now</Button>
+                  <Button color="gray" onClick={() => setOpenModal(false)}>
+                    Decline
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </>
           </div>
         </div>
       </div>
