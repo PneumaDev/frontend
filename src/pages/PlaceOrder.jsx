@@ -240,7 +240,7 @@ export default function PlaceOrder() {
             required
             type="number"
             placeholder="Phone Number"
-            className={`border border-gray-300 py-1.5 px-3.5 ${
+            className={`border border-gray-300 py-1.5 px-3.5 w-full ${
               method === "" ? "bg-green-400" : ""
             } font-imprima rounded-md`}
           />

@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Select } from "flowbite-react";
 import { Truck } from "lucide-react";
 import { shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
@@ -38,7 +37,8 @@ export default function ShippingMethodSelector() {
             Shipping Method
           </label>
         </div>
-        <Select
+        <select
+          className="w-full rounded-md"
           id="shipping"
           required
           value={selectedMethod.method}
@@ -54,7 +54,7 @@ export default function ShippingMethodSelector() {
               {method.price}
             </option>
           ))}
-        </Select>
+        </select>
       </div>
     </div>
   );
