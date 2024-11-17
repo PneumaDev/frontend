@@ -278,7 +278,7 @@ export default function PlaceOrder() {
                 // onClick={() => setOpenModal(true)}
                 className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
               >
-                Toggle modal
+                PLACE ORDER
               </button>
               <Modal show={openModal} onClose={() => setOpenModal(false)}>
                 <Modal.Header className="font-muktaVaani">
