@@ -96,7 +96,7 @@ export default function PlaceOrder() {
             { headers: { token } }
           );
 
-          console.log(response.data.success);
+          console.log(response.data);
 
         default:
           break;
@@ -212,10 +212,10 @@ export default function PlaceOrder() {
           <Title text1={"PAYMENT"} tex2={"METHOD"} />
 
           {/* --------Payment Methods---------- */}
-          <div className="flex flex-col lg:flex-row gap-5 lg:gap- w-2/3 sm:w-full">
+          <div className="flex flex-col lg:flex-row gap-5 lg:gap- w-2/3 sm:w-full justify-end">
             {[
               {
-                id: "stripe",
+                id: "cod",
                 label: "Card",
                 logo: assets.stripe_logo,
                 logoWidth: "w-8",
@@ -226,17 +226,11 @@ export default function PlaceOrder() {
                 logo: assets.mpesa_logo,
                 logoWidth: "w-24",
               },
-              // {
-              //   id: "cod",
-              //   label: "COD",
-              //   logo: assets.cash_on_delivery,
-              //   logoWidth: "w-[40px]",
-              // },
             ].map(({ id, label, logo, logoWidth = "" }) => (
               <div
                 key={id}
                 onClick={() => setMethod(id)}
-                className={`flex items-center gap-4 border p-2 px-3 rounded-lg cursor-pointer shadow-sm transition-all
+                className={`flex items-center  gap-4 border p-2 px-3 rounded-lg cursor-pointer shadow-sm transition-all
         ${
           method === id
             ? "bg-blue-50 border-blue-400 shadow-lg"

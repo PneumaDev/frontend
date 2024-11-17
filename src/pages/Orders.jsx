@@ -22,6 +22,7 @@ export default function Orders() {
         { headers: { token } }
       );
 
+      console.log(response.data);
       if (response.data.success) {
         let allOrdersItem = [];
         response.data.orders.map((order) => {
@@ -96,12 +97,20 @@ export default function Orders() {
                   {item.status}
                 </p>
               </div>
-              <button
-                onClick={loadOrderData}
-                className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300"
-              >
-                Track Order
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={loadOrderData}
+                  className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300"
+                >
+                  Cancel Order
+                </button>
+                <button
+                  onClick={loadOrderData}
+                  className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300"
+                >
+                  {item.status == "Pending" ? "Pay Now" : "Track Order"}
+                </button>
+              </div>
             </div>
           </div>
         ))}

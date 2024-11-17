@@ -120,6 +120,7 @@ const ShopContextProvider = (props) => {
       );
 
       if (response.data.success) {
+        console.log(response.data.cartData);
         setCartItems(response.data.cartData);
       }
     } catch (error) {
