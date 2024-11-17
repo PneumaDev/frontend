@@ -97,6 +97,55 @@ export const assets = {
     cash_on_delivery,
 }
 
+
+export const shippingMethods = [
+    { method: "Shop Pickup - Ronald Ngala Street", price: "FREE" },
+    { method: "Shop Pickup - Tom Mboya Street", price: "FREE" },
+    { method: "Door Step Delivery - Kahawa West, Kahawa Wendani", price: 400 },
+    { method: "Door Step Delivery - Ruaka", price: 450 },
+    { method: "Door Step Delivery - Rongai, Nyayo Estate, Syokimau, Karen, Ruiru, Kikuyu, Bomas, Muthiga, Utawala, Njiru, Uthiru, Banana", price: 590 },
+    { method: "Door Step Delivery - Nairobi and environs", price: 300 },
+    { method: "2NK Sacco", price: 200 },
+    { method: "4NTE Sacco", price: 200 },
+    { method: "Chania Genesis - Coast, excluding Nyali", price: 250 },
+    { method: "Classic Shuttle", price: "FREE" },
+    { method: "County Link", price: 150 },
+    { method: "Dreamline - Coast", price: 400 },
+    { method: "Easy Coach - Siaya, Bondo, Kisumu, Kakamega, Migori, Kericho", price: 300 },
+    { method: "Ena Coach", price: 300 },
+    { method: "G-Coach", price: 600 },
+    { method: "Guardian", price: 250 },
+    { method: "JPEE Travellers", price: 300 },
+    { method: "Kaka Travellers", price: 100 },
+    { method: "KamT Sacco", price: 200 },
+    { method: "Kijabe Line", price: 200 },
+    { method: "Kinatwa", price: 200 },
+    { method: "Kukena", price: 200 }, // May vary based on weight
+    { method: "Liban", price: 600 },
+    { method: "Libera", price: 100 },
+    { method: "Likana", price: 200 },
+    { method: "Lopha", price: 150 },
+    { method: "Meiso", price: 300 },
+    { method: "Metro Trans", price: 100 },
+    { method: "Mololine", price: 250 },
+    { method: "MTN", price: 200 },
+    { method: "Naekana", price: 300 },
+    { method: "Nairobi CBD", price: 100 },
+    { method: "Narokline", price: 200 },
+    { method: "Neno", price: 200 },
+    { method: "NNUS", price: 200 },
+    { method: "Northrift", price: 250 },
+    { method: "Nuclear", price: 300 },
+    { method: "Orokise", price: 150 },
+    { method: "Pickup Mtaani (Nairobi & Nairobi Metropolitan)", price: 120 }, // Confirm with website
+    { method: "Raha", price: 200 },
+    { method: "Rembo Shuttle", price: 100 },
+    { method: "Runa Sacco", price: 100 },
+    { method: "Satima", price: 200 },
+    { method: "South Rift", price: 250 },
+    { method: "Super Metro", price: 150 }
+];
+
 export const products = [
     {
         _id: "aaaaa",

@@ -1,11 +1,11 @@
 import React, { useContext, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
-import { assets } from "../assets/assets";
+import { assets, shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Button, Modal } from "flowbite-react";
+import { Button, Label, Modal, Radio, Select } from "flowbite-react";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
@@ -197,17 +197,40 @@ export default function PlaceOrder() {
             } font-imprima rounded-md`}
           />
         </div>
-        <input
-          onChange={onChangeHandler}
-          name="phone"
-          value={formData.phone}
-          required
-          type="number"
-          placeholder="Phone Number"
-          className={`border border-gray-300 py-1.5 px-3.5 w-full ${
-            method === "" ? "bg-green-400" : ""
-          } font-imprima rounded-md`}
-        />
+        <div className="flex gap-3">
+          <input
+            onChange={onChangeHandler}
+            name="phone"
+            value={formData.phone}
+            required
+            type="number"
+            placeholder="Phone Number"
+            className={`border border-gray-300 py-1.5 px-3.5 ${
+              method === "" ? "bg-green-400" : ""
+            } font-imprima rounded-md`}
+          />
+        </div>
+        <div className="max-w-md bg-gray-100 shadow-lg p-4 rounded-md mx-auto">
+          <div className="mb-2">
+            <Label
+              htmlFor="countries"
+              className="font-muktaVaani text-lg font-medium text-gray-700"
+              value="Shipping Method:"
+            />
+          </div>
+          <div className="relative">
+            <Select
+              id="countries"
+              className="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              {shippingMethods.map((method, index) => (
+                <option key={index} className="truncate">
+                  {method.method}
+                </option>
+              ))}
+            </Select>
+          </div>
+        </div>
       </div>
 
       {/* -----------Right Side------------- */}
@@ -266,12 +289,6 @@ export default function PlaceOrder() {
           </div>
 
           <div className="w-full text-end mt-8">
-            {/* <button
-              type="submit"
-              className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
-            >
-              PLACE ORDER
-            </button> */}
             <>
               <button
                 type="submit"
@@ -280,7 +297,11 @@ export default function PlaceOrder() {
               >
                 PLACE ORDER
               </button>
-              <Modal show={openModal} onClose={() => setOpenModal(false)}>
+              <Modal
+                dismissible
+                show={openModal}
+                onClose={() => setOpenModal(false)}
+              >
                 <Modal.Header className="font-muktaVaani">
                   Order Payment Confirmation
                 </Modal.Header>
