@@ -5,9 +5,12 @@ import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Button, Modal } from "flowbite-react";
 
 export default function PlaceOrder() {
-  const [method, setMethod] = useState("cod");
+  const [method, setMethod] = useState("mpesa");
+  const [openModal, setOpenModal] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -30,6 +33,10 @@ export default function PlaceOrder() {
     products,
   } = useContext(ShopContext);
 
+  const toggleModalOpen = (e) => {
+    e.preventDefault();
+    setOpenModal(true);
+  };
   const onChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -38,6 +45,7 @@ export default function PlaceOrder() {
   };
 
   const onSubmitHandler = async (e) => {
+    console.log(method);
     e.preventDefault();
 
     try {
@@ -56,7 +64,6 @@ export default function PlaceOrder() {
             );
 
             if (itemInfo) {
-              console.log("clicked");
               itemInfo.size = item; // Assign size to itemInfo
               itemInfo.quantity = itemSizes[item]; // Assign quantity
               orderItems.push(itemInfo); // Add itemInfo to orderItems
@@ -72,7 +79,7 @@ export default function PlaceOrder() {
       };
       switch (method) {
         // <----Api Calls For COD orders----->
-        case "cod":
+        case "cod": {
           const response = await axios.post(
             backendUrl + "/api/order/place",
             orderData,
@@ -86,6 +93,17 @@ export default function PlaceOrder() {
           }
 
           break;
+        }
+
+        case "mpesa":
+          console.log("clicked");
+          const response = await axios.post(
+            backendUrl + "/api/order/mpesa",
+            orderData,
+            { headers: { token } }
+          );
+
+          console.log(response.data);
 
         default:
           break;
@@ -98,7 +116,7 @@ export default function PlaceOrder() {
   return (
     <form
       className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh]"
-      onSubmit={onSubmitHandler}
+      onSubmit={toggleModalOpen}
     >
       {/* ---------Left Side---------- */}
       <div
@@ -201,65 +219,100 @@ export default function PlaceOrder() {
           <Title text1={"PAYMENT"} tex2={"METHOD"} />
 
           {/* --------Payment Methods---------- */}
-          <div className="flex gap-3 flex-col lg:flex-row">
-            <div
-              onClick={() => setMethod("stripe")}
-              className={`flex items-center gap-3 border p-2 px-3 cursor-pointer ${
-                method === "stripe" ? "bg-red-100" : ""
-              }`}
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "stripe" ? "bg-green-400" : "bg-white"
-                }`}
-              ></p>
-              <img
-                src={assets.stripe_logo}
-                alt="Stripe"
-                className="w-20 mr-4 object-cover"
-              />
-            </div>
-            <div
-              onClick={() => setMethod("razorpay")}
-              className={`flex items-center gap-3 border p-2 px-3 cursor-pointer  ${
-                method === "razorpay" ? "bg-red-100" : ""
-              }`}
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "razorpay" ? "bg-green-400" : ""
-                }`}
-              ></p>
-              <img
-                src={assets.razorpay_logo}
-                alt="Razorpay"
-                className="h-5 w-16 mx-4"
-              />
-            </div>
-            <div
-              onClick={() => setMethod("cod")}
-              className={`flex items-center gap-3 border p-2 px-3 cursor-pointer  ${
-                method === "cod" ? "bg-red-100" : ""
-              }`}
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "cod" ? "bg-green-400" : ""
-                }`}
-              ></p>
-              <p className="text-gray-500 text-sm font-medium mx-4 font-muktaVaani">
-                CASH ON DELIVERY
-              </p>
-            </div>
+          <div className="flex flex-col lg:flex-row gap-5 lg:gap- w-2/3 sm:w-full justify-end">
+            {[
+              {
+                id: "cod",
+                label: "Card",
+                logo: assets.stripe_logo,
+                logoWidth: "w-8",
+              },
+              {
+                id: "mpesa",
+                label: "",
+                logo: assets.mpesa_logo,
+                logoWidth: "w-24",
+              },
+            ].map(({ id, label, logo, logoWidth = "" }) => (
+              <div
+                key={id}
+                onClick={() => setMethod(id)}
+                className={`flex items-center  gap-4 border p-2 px-3 rounded-lg cursor-pointer shadow-sm transition-all
+        ${
+          method === id
+            ? "bg-blue-50 border-blue-400 shadow-lg"
+            : "bg-white border-gray-300"
+        }`}
+                aria-pressed={method === id}
+              >
+                {/* Radio Indicator */}
+                <span
+                  className={`w-4 h-4 flex-shrink-0 border rounded-full ${
+                    method === id ? "bg-blue-500" : "bg-gray-200"
+                  }`}
+                ></span>
+
+                {/* Payment Logo */}
+                <img
+                  src={logo}
+                  alt={label}
+                  className={`${logoWidth} object-cover`}
+                />
+
+                {/* Label */}
+                <p className="text-lg font-medium text-gray-700">{label}</p>
+              </div>
+            ))}
           </div>
 
           <div className="w-full text-end mt-8">
-            <button
+            {/* <button
               type="submit"
               className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
             >
               PLACE ORDER
-            </button>
+            </button> */}
+            <>
+              <button
+                type="submit"
+                // onClick={() => setOpenModal(true)}
+                className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
+              >
+                Toggle modal
+              </button>
+              <Modal show={openModal} onClose={() => setOpenModal(false)}>
+                <Modal.Header className="font-muktaVaani">
+                  Order Payment Confirmation
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="space-y-6">
+                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 font-yantramanav">
+                      Hello, {formData.firstName + " " + formData.lastName}.
+                    </p>
+                    <p className="text-base leading-relaxed font-imprima text-gray-500 dark:text-gray-400">
+                      Please confirm Payment of{" "}
+                      <span className="font-semibold">
+                        Ksh.
+                        {getCartAmount() + delivery_fee}
+                      </span>{" "}
+                      to Eridanus Mall. You'll recieve a prompt on your phone to
+                      the number{" "}
+                      <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium shadow-md">
+                        {formData.phone}
+                      </span>
+                      . Kindly enter your PIN and wait for confirmation after
+                      payment
+                    </p>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={() => setOpenModal(false)}>Pay Now</Button>
+                  <Button color="gray" onClick={() => setOpenModal(false)}>
+                    Decline
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </>
           </div>
         </div>
       </div>
