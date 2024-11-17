@@ -5,7 +5,8 @@ import { assets, shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Button, Label, Modal, Radio, Select } from "flowbite-react";
+import { Button, Label, Modal, Select } from "flowbite-react";
+import ShippingMethodSelector from "../components/ShippingMethodSelector";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
@@ -29,7 +30,7 @@ export default function PlaceOrder() {
     cartItems,
     setCartItems,
     getCartAmount,
-    delivery_fee,
+    deliveryFee,
     products,
   } = useContext(ShopContext);
 
@@ -75,7 +76,7 @@ export default function PlaceOrder() {
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee,
+        amount: getCartAmount() + deliveryFee,
       };
       switch (method) {
         // <----Api Calls For COD orders----->
@@ -210,27 +211,7 @@ export default function PlaceOrder() {
             } font-imprima rounded-md`}
           />
         </div>
-        <div className="max-w-md bg-gray-100 shadow-lg p-4 rounded-md mx-auto">
-          <div className="mb-2">
-            <Label
-              htmlFor="countries"
-              className="font-muktaVaani text-lg font-medium text-gray-700"
-              value="Shipping Method:"
-            />
-          </div>
-          <div className="relative">
-            <Select
-              id="countries"
-              className="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            >
-              {shippingMethods.map((method, index) => (
-                <option key={index} className="truncate">
-                  {method.method}
-                </option>
-              ))}
-            </Select>
-          </div>
-        </div>
+        <ShippingMethodSelector />
       </div>
 
       {/* -----------Right Side------------- */}
@@ -314,7 +295,7 @@ export default function PlaceOrder() {
                       Please confirm Payment of{" "}
                       <span className="font-semibold">
                         Ksh.
-                        {getCartAmount() + delivery_fee}
+                        {getCartAmount() + deliveryFee}
                       </span>{" "}
                       to Eridanus Mall. You'll recieve a prompt on your phone to
                       the number{" "}

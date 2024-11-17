@@ -103,7 +103,7 @@ export const shippingMethods = [
     { method: "Shop Pickup - Tom Mboya Street", price: "FREE" },
     { method: "Door Step Delivery - Kahawa West, Kahawa Wendani", price: 400 },
     { method: "Door Step Delivery - Ruaka", price: 450 },
-    { method: "Door Step Delivery - Rongai, Nyayo Estate, Syokimau, Karen, Ruiru, Kikuyu, Bomas, Muthiga, Utawala, Njiru, Uthiru, Banana", price: 590 },
+    { method: "Door Step Delivery - Outside Nairobi", price: 590 },
     { method: "Door Step Delivery - Nairobi and environs", price: 300 },
     { method: "2NK Sacco", price: 200 },
     { method: "4NTE Sacco", price: 200 },

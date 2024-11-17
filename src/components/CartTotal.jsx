@@ -3,7 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "./Title";
 
 export default function CartTotal() {
-  const { currency, getCartAmount, delivery_fee } = useContext(ShopContext);
+  const { currency, getCartAmount, deliveryFee } = useContext(ShopContext);
 
   return (
     <div className="w-full">
@@ -22,7 +22,7 @@ export default function CartTotal() {
         <div className="flex justify-between">
           <p className="font-muktaVaani">Shipping Fee</p>
           <p className="font-imprima">
-            {currency} {delivery_fee}.00
+            {currency} {deliveryFee}.00
           </p>
         </div>
         <hr />
@@ -30,7 +30,7 @@ export default function CartTotal() {
           <b className="font-muktaVaani">Total</b>
           <b className="font-imprima">
             {currency}{" "}
-            {getCartAmount() === 0 ? 0 : getCartAmount() + delivery_fee}.00
+            {getCartAmount() === 0 ? 0 : getCartAmount() + deliveryFee}.00
           </b>
         </div>
       </div>

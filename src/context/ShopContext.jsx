@@ -11,12 +11,12 @@ const ShopContextProvider = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
+  const [deliveryFee, setDeliveryFee] = useState(0);
   const navigate = useNavigate();
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const currency = "Ksh.";
-  const delivery_fee = 129;
 
   const addToCart = async (itemId, size) => {
     toast.dismiss();
@@ -177,7 +177,7 @@ const ShopContextProvider = (props) => {
   const value = {
     products,
     currency,
-    delivery_fee,
+    deliveryFee,
     search,
     setSearch,
     showSearch,
@@ -192,6 +192,7 @@ const ShopContextProvider = (props) => {
     token,
     setToken,
     setCartItems,
+    setDeliveryFee,
   };
 
   return (
