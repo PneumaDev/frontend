@@ -5,8 +5,42 @@ import { assets, shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Button, Label, Modal, Select } from "flowbite-react";
 import ShippingMethodSelector from "../components/ShippingMethodSelector";
+
+function Modal({ isOpen, onClose, children }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 px-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-8 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+        >
+          &times;
+        </button>
+        <h2 className="font-bold text-xl text-center mb-4 font-muktaVaani border-b-[1px] pb-2">
+          Order Payment Confirmation
+        </h2>
+        <div className="mb-6">{children}</div>
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
+          >
+            Pay Now
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
+          >
+            Decline
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
@@ -269,52 +303,33 @@ export default function PlaceOrder() {
             ))}
           </div>
 
-          <div className="w-full text-end mt-8">
-            <>
-              <button
-                type="submit"
-                // onClick={() => setOpenModal(true)}
-                className="bg-black text-white px-16 py-3 text-sm font-muktaVaani"
-              >
-                PLACE ORDER
-              </button>
-              <Modal
-                dismissible
-                show={openModal}
-                onClose={() => setOpenModal(false)}
-              >
-                <Modal.Header className="font-muktaVaani">
-                  Order Payment Confirmation
-                </Modal.Header>
-                <Modal.Body>
-                  <div className="space-y-6">
-                    <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 font-yantramanav">
-                      Hello, {formData.firstName + " " + formData.lastName}.
-                    </p>
-                    <p className="text-base leading-relaxed font-imprima text-gray-500 dark:text-gray-400">
-                      Please confirm Payment of{" "}
-                      <span className="font-semibold">
-                        Ksh.
-                        {getCartAmount() + deliveryFee}
-                      </span>{" "}
-                      to Eridanus Mall. You'll recieve a prompt on your phone to
-                      the number{" "}
-                      <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium shadow-md">
-                        {formData.phone}
-                      </span>
-                      . Kindly enter your PIN and wait for confirmation after
-                      payment
-                    </p>
-                  </div>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button onClick={() => setOpenModal(false)}>Pay Now</Button>
-                  <Button color="gray" onClick={() => setOpenModal(false)}>
-                    Decline
-                  </Button>
-                </Modal.Footer>
-              </Modal>
-            </>
+          <div className="w-full text-center justify-end mt-8 flex">
+            <button
+              type="submit"
+              className="bg-black text-white px-16 py-3 text-sm font-semibold"
+            >
+              PLACE ORDER
+            </button>
+            <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+              <div className="space-y-6">
+                <p className="text-base text-gray-500 font-muktaVaani">
+                  Hello, {formData.firstName + " " + formData.lastName}.
+                </p>
+                <p className="text-base text-gray-500 font-imprima">
+                  Please confirm Payment of{" "}
+                  <span className="font-semibold">
+                    Ksh. {getCartAmount() + deliveryFee}
+                  </span>{" "}
+                  to Eridanus Mall. You'll receive a prompt on your phone to the
+                  number{" "}
+                  <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium">
+                    {formData.phone}
+                  </span>
+                  . Kindly enter your PIN and wait for confirmation after
+                  payment.
+                </p>
+              </div>
+            </Modal>
           </div>
         </div>
       </div>

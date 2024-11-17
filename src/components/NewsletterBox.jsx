@@ -19,7 +19,7 @@ export default function NewsletterBox() {
         className="w-full sm:w-1/2 flex items-center gap-3 my-6 mx-auto border pl-3"
       >
         <input
-          className="w-full sm:flex-1 outline-none font-muktaVaani"
+          className="w-full sm:flex-1 outline-none border-none font-muktaVaani focus:border-none"
           type="email"
           name="email"
           id=""
