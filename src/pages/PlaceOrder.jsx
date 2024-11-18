@@ -7,7 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ShippingMethodSelector from "../components/ShippingMethodSelector";
 
-function Modal({ isOpen, onClose, children }) {
+function Modal({ isOpen, onClose, children, onSubmitHandler }) {
   if (!isOpen) return null;
 
   return (
@@ -25,7 +25,7 @@ function Modal({ isOpen, onClose, children }) {
         <div className="mb-6">{children}</div>
         <div className="flex justify-end space-x-3">
           <button
-            onClick={onClose}
+            onClick={onSubmitHandler}
             className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
           >
             Pay Now
@@ -310,7 +310,11 @@ export default function PlaceOrder() {
             >
               PLACE ORDER
             </button>
-            <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+            <Modal
+              isOpen={openModal}
+              onClose={() => setOpenModal(false)}
+              onSubmitHandler={onSubmitHandler}
+            >
               <div className="space-y-6">
                 <p className="text-base text-gray-500 font-muktaVaani">
                   Hello, {formData.firstName + " " + formData.lastName}.
