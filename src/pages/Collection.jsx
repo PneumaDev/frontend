@@ -28,8 +28,6 @@ export default function Collection() {
     }
   }, [products, getProductsData]);
 
-  console.log(products);
-
   // Apply filters whenever relevant dependencies change
   useEffect(() => {
     if (!loading) {
