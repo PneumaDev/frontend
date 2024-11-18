@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Truck } from "lucide-react";
+import { Truck, ChevronDown } from "lucide-react";
 import { shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
@@ -20,6 +20,7 @@ export default function ShippingMethodSelector() {
       price: selectedOption.price,
     });
   };
+
   useEffect(() => {
     setDeliveryFee(selectedMethod.price === "FREE" ? 0 : selectedMethod.price);
   }, [selectedMethod]);
@@ -37,24 +38,32 @@ export default function ShippingMethodSelector() {
             Shipping Method
           </label>
         </div>
-        <select
-          className="w-full rounded-md"
-          id="shipping"
-          required
-          value={selectedMethod.method}
-          onChange={handleSelectChange}
-        >
-          {shippingMethods.map((method, index) => (
-            <option
-              value={method.method}
-              className="font-muktaVaani"
-              key={index}
-            >
-              {method.method} - {method.price === "FREE" ? "" : "Ksh."}
-              {method.price}
-            </option>
-          ))}
-        </select>
+
+        <div className="relative">
+          <select
+            className="w-full font-muktaVaani rounded-md border py-2 pl-3 pr-8 border-gray-600 appearance-none"
+            id="shipping"
+            required
+            value={selectedMethod.method}
+            onChange={handleSelectChange}
+          >
+            {shippingMethods.map((method, index) => (
+              <option
+                value={method.method}
+                className="font-muktaVaani"
+                key={index}
+              >
+                {method.method} - {method.price === "FREE" ? "" : "Ksh."}
+                {method.price}
+              </option>
+            ))}
+          </select>
+
+          {/* Custom Arrow Icon inside the select */}
+          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <ChevronDown className="w-5 h-5 text-gray-600" />
+          </div>
+        </div>
       </div>
     </div>
   );
