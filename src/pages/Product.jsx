@@ -1,62 +1,69 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import Spinner from "../components/Spinner";
 
 export default function Product() {
+  const [loading, setLoading] = useState(false);
   const { productId } = useParams();
   const { products, currency, addToCart } = useContext(ShopContext);
-  const [productData, setProductData] = useState(false);
+  const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
+  const location = useLocation();
 
   const ref = useRef(null);
 
   const fetchProductData = async () => {
     const product = products.find((product) => product._id === productId);
     if (product) {
-      setImage(product.image[0]);
+      setImage(product.image?.[0] || "");
       setProductData(product);
     } else {
-      console.error("Product not found!");
+      // console.error("Product not found!");
     }
   };
 
   useEffect(() => {
     if (ref.current) ref.current.scrollIntoView({ behavior: "smooth" });
-    setSize("");
-  }, [window.location.pathname]);
+    setSize(""); // Reset size selection on navigation
+  }, [location]);
 
   useEffect(() => {
-    fetchProductData();
-  }, [productId]);
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchProductData();
+      setLoading(false);
+    };
 
-  return productData ? (
+    fetchData();
+  }, [productId, products]);
+
+  return loading || !productData ? (
+    <Spinner />
+  ) : (
     <div
       className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100"
       ref={ref}
     >
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
-        {/* Products images */}
+        {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
-            {productData.image.map((image, index) => (
+            {productData.image?.map((img, index) => (
               <img
-                onClick={() => setImage(image)}
+                onClick={() => setImage(img)}
                 key={index}
-                src={image}
-                alt=""
+                src={img}
+                alt={`Product ${index}`}
                 className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
               />
             ))}
           </div>
           <div className="w-full sm:w-[80%]">
-            {<img src={image} alt="" className="w-full h-auto" /> || (
-              <Skeleton />
-            )}
+            <img src={image} alt="Product" className="w-full h-auto" />
           </div>
         </div>
 
@@ -66,11 +73,11 @@ export default function Product() {
             {productData.name}
           </h1>
           <div className="flex items-center gap-1 mt-2">
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_icon} alt="" className="w-3 5" />
-            <img src={assets.star_dull_icon} alt="" className="w-3 5" />
+            <img src={assets.star_icon} alt="Star" className="w-3.5" />
+            <img src={assets.star_icon} alt="Star" className="w-3.5" />
+            <img src={assets.star_icon} alt="Star" className="w-3.5" />
+            <img src={assets.star_icon} alt="Star" className="w-3.5" />
+            <img src={assets.star_dull_icon} alt="Star" className="w-3.5" />
             <p className="pl-2 font-imprima">(122)</p>
           </div>
           <p className="mt-5 text-3xl font-medium font-yantramanav">
@@ -83,7 +90,7 @@ export default function Product() {
           <div className="flex flex-col gap-4 my-8">
             <p className="font-yantramanav">Select Size</p>
             <div className="flex gap-2">
-              {productData.sizes.map((item, index) => (
+              {productData.sizes?.map((item, index) => (
                 <button
                   onClick={() => setSize(item)}
                   className={`border font-imprima py-2 px-4 bg-gray-100 ${
@@ -98,9 +105,7 @@ export default function Product() {
           </div>
           <button
             className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
-            onClick={(e) => {
-              addToCart(productData._id, size);
-            }}
+            onClick={() => addToCart(productData._id, size)}
           >
             ADD TO CART
           </button>
@@ -144,13 +149,11 @@ export default function Product() {
         </div>
       </div>
 
-      {/* ----- display related products. */}
+      {/* Related products */}
       <RelatedProducts
         category={productData.category}
         subCategory={productData.subCategory}
       />
     </div>
-  ) : (
-    <div className="opacity-0"></div>
   );
 }

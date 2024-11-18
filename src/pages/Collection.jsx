@@ -3,23 +3,48 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
+import Spinner from "../components/Spinner";
 
 export default function Collection() {
-  const { products, search, showSearch } = useContext(ShopContext);
+  const { products, search, showSearch, getProductsData } =
+    useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState("relevant");
+  const [loading, setLoading] = useState(false);
 
+  // Fetch products on initial load if the products list is empty
   useEffect(() => {
-    applyFilter();
-  }, [category, subCategory, search, showSearch]);
+    const fetchProducts = async () => {
+      setLoading(true);
+      await getProductsData();
+      setLoading(false);
+    };
 
+    if (products.length === 0) {
+      fetchProducts();
+    }
+  }, [products, getProductsData]);
+
+  console.log(products);
+
+  // Apply filters whenever relevant dependencies change
   useEffect(() => {
-    sortProduct();
-  }, [sortType]);
+    if (!loading) {
+      applyFilter();
+    }
+  }, [category, subCategory, search, showSearch, products, loading]);
 
+  // Sort products whenever sortType changes
+  useEffect(() => {
+    if (!loading) {
+      sortProduct();
+    }
+  }, [sortType, loading]);
+
+  // Function to apply filters
   const applyFilter = () => {
     let productsCopy = products.slice();
 
@@ -44,6 +69,7 @@ export default function Collection() {
     setFilterProducts(productsCopy);
   };
 
+  // Function to toggle categories in filters
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
       setCategory((prev) => prev.filter((item) => item !== e.target.value));
@@ -52,6 +78,7 @@ export default function Collection() {
     }
   };
 
+  // Function to toggle subcategories in filters
   const toggleSubCategory = (e) => {
     if (subCategory.includes(e.target.value)) {
       setSubCategory((prev) => prev.filter((item) => item !== e.target.value));
@@ -60,6 +87,7 @@ export default function Collection() {
     }
   };
 
+  // Function to sort products
   const sortProduct = () => {
     let fpCopy = filterProducts.slice();
 
@@ -191,17 +219,23 @@ export default function Collection() {
         </div>
 
         {/* Map products */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
-          {filterProducts.map((item, index) => (
-            <ProductItem
-              key={index}
-              name={item.name}
-              id={item._id}
-              price={item.price}
-              image={item.image}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
+              {filterProducts.map((item, index) => (
+                <ProductItem
+                  key={index}
+                  name={item.name}
+                  id={item._id}
+                  price={item.price}
+                  image={item.image}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

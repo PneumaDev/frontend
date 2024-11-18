@@ -100,13 +100,13 @@ export default function Orders() {
               <div className="flex gap-3">
                 <button
                   onClick={loadOrderData}
-                  className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300"
+                  className="border px-4 py-2 text-sm w-[110px] font-medium rounded-md font-yantramanav hover:bg-gray-300"
                 >
                   Cancel Order
                 </button>
                 <button
                   onClick={loadOrderData}
-                  className="border px-4 py-2 text-sm font-medium rounded-md font-yantramanav hover:bg-gray-300"
+                  className="border px-4 py-2 text-sm w-[110px] font-medium rounded-md font-yantramanav hover:bg-gray-300"
                 >
                   {item.status == "Pending" ? "Pay Now" : "Track Order"}
                 </button>
