@@ -28,7 +28,7 @@ export default function Product() {
 
   useEffect(() => {
     if (ref.current) ref.current.scrollIntoView({ behavior: "smooth" });
-    setSize(""); // Reset size selection on navigation
+    setSize("");
   }, [location]);
 
   useEffect(() => {
