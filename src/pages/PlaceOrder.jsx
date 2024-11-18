@@ -6,45 +6,13 @@ import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ShippingMethodSelector from "../components/ShippingMethodSelector";
-
-function Modal({ isOpen, onClose, children, onSubmitHandler }) {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 px-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-8 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
-        >
-          &times;
-        </button>
-        <h2 className="font-bold text-xl text-center mb-4 font-muktaVaani border-b-[1px] pb-2">
-          Order Payment Confirmation
-        </h2>
-        <div className="mb-6">{children}</div>
-        <div className="flex justify-end space-x-3">
-          <button
-            onClick={onSubmitHandler}
-            className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
-          >
-            Pay Now
-          </button>
-          <button
-            onClick={onClose}
-            className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
-          >
-            Decline
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+import Spinner from "./../components/Spinner";
+import Modal from "../components/Modal";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
   const [openModal, setOpenModal] = useState(false);
+  const [sendingData, setSendingData] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -80,9 +48,8 @@ export default function PlaceOrder() {
   };
 
   const onSubmitHandler = async (e) => {
-    console.log(method);
+    setSendingData(true);
     e.preventDefault();
-
     try {
       let orderItems = [];
 
@@ -138,7 +105,11 @@ export default function PlaceOrder() {
             { headers: { token } }
           );
 
-          console.log(response.data);
+          if (response.data.success) {
+            setCartItems({});
+            navigate("/orders");
+            setSendingData(false);
+          }
 
         default:
           break;
@@ -315,24 +286,32 @@ export default function PlaceOrder() {
               onClose={() => setOpenModal(false)}
               onSubmitHandler={onSubmitHandler}
             >
-              <div className="space-y-6">
-                <p className="text-base text-gray-500 font-muktaVaani">
-                  Hello, {formData.firstName + " " + formData.lastName}.
-                </p>
-                <p className="text-base text-gray-500 font-imprima">
-                  Please confirm Payment of{" "}
-                  <span className="font-semibold">
-                    Ksh. {getCartAmount() + deliveryFee}
-                  </span>{" "}
-                  to Eridanus Mall. You'll receive a prompt on your phone to the
-                  number{" "}
-                  <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium">
-                    {formData.phone}
-                  </span>
-                  . Kindly enter your PIN and wait for confirmation after
-                  payment.
-                </p>
-              </div>
+              {sendingData ? (
+                <>
+                  <Spinner />
+                </>
+              ) : (
+                <>
+                  <div className="space-y-6">
+                    <p className="text-base text-gray-500 font-muktaVaani">
+                      Hello, {formData.firstName + " " + formData.lastName}.
+                    </p>
+                    <p className="text-base text-gray-500 font-imprima">
+                      Please confirm Payment of{" "}
+                      <span className="font-semibold">
+                        Ksh. {getCartAmount() + deliveryFee}
+                      </span>{" "}
+                      to Eridanus Mall. You'll receive a prompt on your phone to
+                      the number{" "}
+                      <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium">
+                        {formData.phone}
+                      </span>
+                      . Kindly enter your PIN and wait for confirmation after
+                      payment.
+                    </p>
+                  </div>
+                </>
+              )}
             </Modal>
           </div>
         </div>
