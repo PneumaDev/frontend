@@ -172,7 +172,6 @@ const ShopContextProvider = (props) => {
       getUserCart(!token && localStorage.getItem("token"));
     }
   }, []);
-
   const value = {
     products,
     currency,
