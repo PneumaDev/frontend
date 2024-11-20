@@ -174,6 +174,7 @@ function Login() {
           onSuccess={async (credentialResponse) => {
             localStorage.setItem("googleAuth", credentialResponse.credential);
             await handleJwtDecode(credentialResponse.credential);
+            console.log("Google Authenticated");
           }}
           onError={() => {
             console.log("Login Failed");

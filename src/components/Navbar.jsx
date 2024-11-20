@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import { googleLogout } from "@react-oauth/google";
 
 export default function Navbar() {
   const [visible, setIsVisible] = useState(false);
@@ -16,6 +17,7 @@ export default function Navbar() {
 
   const logout = () => {
     navigate("/login");
+    googleLogout();
     setTimeout(() => {
       localStorage.removeItem("token");
       setToken("");
