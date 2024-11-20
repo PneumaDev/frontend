@@ -20,6 +20,7 @@ export default function Navbar() {
     googleLogout();
     setTimeout(() => {
       localStorage.removeItem("token");
+      localStorage.removeItem("googleAuth");
       setToken("");
       setCartItems({});
     }, 0);
