@@ -141,8 +141,8 @@ function Login() {
           {currentState === "Login" ? "Sign In" : "Sign Up"}
         </button>
       </form>
-      <div className="flex flex-col">
-        <p className="">or</p>
+      <div className="flex flex-col justify-center items-center mt-3 space-y-2">
+        <p className="for">or</p>
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             console.log(credentialResponse);
