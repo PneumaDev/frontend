@@ -49,6 +49,7 @@ function Login() {
         if (response.data.success === true) {
           setToken(response.data.token);
           localStorage.setItem("token", response.data.token);
+          navigate("/");
           return response.data.message;
         } else {
           throw new Error(response.data.message);
@@ -62,12 +63,6 @@ function Login() {
       );
     }
   };
-
-  useEffect(() => {
-    if (token) {
-      navigate("/");
-    }
-  }, [token]);
 
   useEffect(() => {
     if (!token && localStorage.getItem("token")) {
@@ -88,6 +83,7 @@ function Login() {
       if (response.data.success === true) {
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
+        navigate("/");
         return response.data.message;
       } else {
         throw new Error(response.data.message);
@@ -187,7 +183,6 @@ function Login() {
             console.log(credentialResponse);
           }}
           onError={() => {}}
-          login_uri="/"
           useOneTap
         />
       </div>
