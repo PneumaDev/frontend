@@ -12,6 +12,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isGoogleAuthenticated, setIsGoogleAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
 
   const handleJwtDecode = async (jwt) => {
     const token = jwtDecode(jwt);
@@ -20,24 +21,6 @@ function Login() {
       setName(token.name);
       setEmail(token.email);
       setIsGoogleAuthenticated(true);
-
-      console.log("Email", email);
-
-      const response = await axios.post(backendUrl + "/api/user/login", {
-        email,
-        password,
-        isGoogleAuthenticated,
-      });
-
-      console.log("Res:" + response.data);
-
-      if (response.data.success === true) {
-        setToken(response.data.token);
-        localStorage.setItem("token", response.data.token);
-        return response.data.message;
-      } else {
-        throw new Error(response.data.message);
-      }
     }
   };
 
@@ -91,6 +74,27 @@ function Login() {
       setToken(localStorage.getItem("token"));
     }
   }, []);
+
+  useEffect(() => {
+    const googleSignIn = async () => {
+      const response = await axios.post(backendUrl + "/api/user/login", {
+        email,
+        password,
+        isGoogleAuthenticated,
+      });
+
+      console.log("Res:" + response);
+
+      if (response.data.success === true) {
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+        return response.data.message;
+      } else {
+        throw new Error(response.data.message);
+      }
+    };
+    googleSignIn();
+  }, [authToken, isGoogleAuthenticated]);
 
   const handleOnsubmitHandler = async (e) => {
     e.preventDefault();
@@ -178,12 +182,13 @@ function Login() {
           theme="filled_blue"
           onSuccess={async (credentialResponse) => {
             await handleJwtDecode(credentialResponse.credential);
+            localStorage.setItem("authToken", credentialResponse.credential);
+            setAuthToken(credentialResponse.credential);
             console.log(credentialResponse);
           }}
-          onError={() => {
-            console.log("Login Failed");
-          }}
+          onError={() => {}}
           login_uri="/"
+          useOneTap
         />
       </div>
     </div>
