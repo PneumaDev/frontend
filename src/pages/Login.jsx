@@ -15,6 +15,7 @@ function Login() {
 
   const handleJwtDecode = async (jwt) => {
     const token = jwtDecode(jwt);
+    console.log("Decoded Token: ", token);
     if (token.email_verified) {
       setName(token.name);
       setEmail(token.email);
@@ -25,6 +26,8 @@ function Login() {
         password,
         isGoogleAuthenticated,
       });
+
+      console.log("Res:" + response);
 
       if (response.data.success === true) {
         setToken(response.data.token);
