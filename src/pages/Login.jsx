@@ -21,6 +21,8 @@ function Login() {
       setEmail(token.email);
       setIsGoogleAuthenticated(true);
 
+      console.log("Email", email);
+
       const response = await axios.post(backendUrl + "/api/user/login", {
         email,
         password,
