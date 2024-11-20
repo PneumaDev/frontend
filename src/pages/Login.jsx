@@ -16,7 +16,6 @@ function Login() {
 
   const handleJwtDecode = async (jwt) => {
     const token = jwtDecode(jwt);
-    console.log("Decoded Token: ", token);
     if (token.email_verified) {
       setName(token.name);
       setEmail(token.email);
@@ -71,25 +70,38 @@ function Login() {
   }, []);
 
   useEffect(() => {
-    const googleSignIn = async () => {
-      const response = await axios.post(backendUrl + "/api/user/login", {
-        email,
-        password,
-        isGoogleAuthenticated,
-      });
+    if (authToken && isGoogleAuthenticated) {
+      const googleSignIn = async () => {
+        const response = await axios.post(backendUrl + "/api/user/login", {
+          email,
+          password,
+          name,
+          isGoogleAuthenticated,
+        });
 
-      console.log("Res:" + response);
+        console.log("Res:" + response);
 
-      if (response.data.success === true) {
-        setToken(response.data.token);
-        localStorage.setItem("token", response.data.token);
-        navigate("/");
-        return response.data.message;
-      } else {
-        throw new Error(response.data.message);
-      }
-    };
-    googleSignIn();
+        if (response.data.success === true) {
+          setToken(response.data.token);
+          localStorage.setItem("token", response.data.token);
+          navigate("/");
+          return response.data.message;
+        } else {
+          throw new Error(response.data.message);
+        }
+      };
+      toast.promise(
+        googleSignIn(),
+        {
+          loading: "Just A Moment!😊",
+          success: (message) => message || "Successful!",
+          error: (err) => err.message || "An error occurred",
+        },
+        {
+          id: "login page",
+        }
+      );
+    }
   }, [authToken, isGoogleAuthenticated]);
 
   const handleOnsubmitHandler = async (e) => {
@@ -180,9 +192,9 @@ function Login() {
             await handleJwtDecode(credentialResponse.credential);
             localStorage.setItem("authToken", credentialResponse.credential);
             setAuthToken(credentialResponse.credential);
-            console.log(credentialResponse);
           }}
           onError={() => {}}
+          f
           useOneTap
         />
       </div>
