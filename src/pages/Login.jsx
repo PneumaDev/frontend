@@ -173,14 +173,13 @@ function Login() {
           theme="filled_blue"
           onSuccess={async (credentialResponse) => {
             await handleJwtDecode(credentialResponse.credential);
-            console.log("Google Authenticated");
+            console.log(credentialResponse);
           }}
           onError={() => {
             console.log("Login Failed");
           }}
           login_uri="/"
           useOneTap
-          auto_select={true}
         />
       </div>
     </div>
