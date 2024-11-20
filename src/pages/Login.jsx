@@ -27,7 +27,7 @@ function Login() {
         isGoogleAuthenticated,
       });
 
-      console.log("Res:" + response);
+      console.log("Res:" + response.data);
 
       if (response.data.success === true) {
         setToken(response.data.token);
