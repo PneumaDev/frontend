@@ -17,7 +17,6 @@ export default function Navbar() {
   } = useContext(ShopContext);
 
   const logout = () => {
-    navigate("/login");
     googleLogout();
     setTimeout(() => {
       localStorage.removeItem("token");
@@ -30,6 +29,8 @@ export default function Navbar() {
   useEffect(() => {
     if (token) {
       getUserCart(token);
+    } else if (!token) {
+      navigate("/login");
     }
   }, [token]);
 

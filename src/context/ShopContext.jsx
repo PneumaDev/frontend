@@ -12,6 +12,7 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
   const [deliveryFee, setDeliveryFee] = useState(0);
+  const [authToken, setAuthToken] = useState(null);
   const navigate = useNavigate();
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -195,6 +196,8 @@ const ShopContextProvider = (props) => {
     setDeliveryFee,
     getProductsData,
     getUserCart,
+    setAuthToken,
+    authToken,
   };
 
   return (

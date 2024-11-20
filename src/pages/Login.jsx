@@ -7,12 +7,12 @@ import toast from "react-hot-toast";
 
 function Login() {
   const [currentState, setCurrentState] = React.useState("Login");
-  const { token, setToken, navigate, backendUrl } = useContext(ShopContext);
+  const { token, setToken, navigate, backendUrl, setAuthToken, authToken } =
+    useContext(ShopContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isGoogleAuthenticated, setIsGoogleAuthenticated] = useState(false);
-  const [authToken, setAuthToken] = useState(null);
 
   const handleJwtDecode = async (jwt) => {
     const token = jwtDecode(jwt);
