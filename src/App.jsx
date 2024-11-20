@@ -1,5 +1,5 @@
-import React, { lazy, Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { lazy, Suspense, useEffect } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner";
 
@@ -18,6 +18,12 @@ const SearchBar = lazy(() => import("./components/SearchBar"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 export default function App() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+
   return (
     <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       <Navbar />

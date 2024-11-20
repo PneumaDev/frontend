@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -10,6 +11,30 @@ function Login() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isGoogleAuthenticated, setIsGoogleAuthenticated] = useState(false);
+
+  const handleJwtDecode = async (jwt) => {
+    const token = jwtDecode(jwt);
+    if (token.email_verified) {
+      setName(token.name);
+      setEmail(token.email);
+      setIsGoogleAuthenticated(true);
+
+      const response = await axios.post(backendUrl + "/api/user/login", {
+        email,
+        password,
+        isGoogleAuthenticated,
+      });
+
+      if (response.data.success === true) {
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+        return response.data.message;
+      } else {
+        throw new Error(response.data.message);
+      }
+    }
+  };
 
   const onSubmitHandler = async () => {
     try {
@@ -30,6 +55,7 @@ function Login() {
         const response = await axios.post(backendUrl + "/api/user/login", {
           email,
           password,
+          isGoogleAuthenticated,
         });
 
         if (response.data.success === true) {
@@ -144,8 +170,10 @@ function Login() {
       <div className="flex flex-col justify-center items-center mt-3 space-y-2">
         <p className="for">or</p>
         <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            console.log(credentialResponse);
+          theme="filled_blue"
+          onSuccess={async (credentialResponse) => {
+            localStorage.setItem("googleAuth", credentialResponse.credential);
+            await handleJwtDecode(credentialResponse.credential);
           }}
           onError={() => {
             console.log("Login Failed");
