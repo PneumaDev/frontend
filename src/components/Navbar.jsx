@@ -13,6 +13,7 @@ export default function Navbar() {
     token,
     setCartItems,
     navigate,
+    getUserCart,
   } = useContext(ShopContext);
 
   const logout = () => {
@@ -25,6 +26,12 @@ export default function Navbar() {
       setCartItems({});
     }, 0);
   };
+
+  useEffect(() => {
+    if (token) {
+      getUserCart(token);
+    }
+  }, [token]);
 
   return (
     <div className="flex items-center justify-between py-5 font-medium">

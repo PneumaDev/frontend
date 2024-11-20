@@ -172,13 +172,13 @@ function Login() {
         <GoogleLogin
           theme="filled_blue"
           onSuccess={async (credentialResponse) => {
-            localStorage.setItem("googleAuth", credentialResponse.credential);
             await handleJwtDecode(credentialResponse.credential);
             console.log("Google Authenticated");
           }}
           onError={() => {
             console.log("Login Failed");
           }}
+          login_uri="/"
           useOneTap
           auto_select={true}
         />
