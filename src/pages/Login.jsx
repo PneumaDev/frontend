@@ -183,6 +183,7 @@ function Login() {
           onError={() => {
             console.log("Login Failed");
           }}
+          login_uri="/"
         />
       </div>
     </div>
