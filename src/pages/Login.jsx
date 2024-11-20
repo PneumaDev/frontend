@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
+import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -77,68 +78,83 @@ function Login() {
   };
 
   return (
-    <form
-      onSubmit={handleOnsubmitHandler}
-      action=""
-      className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"
-    >
-      <div className="inline-flex items-center gap-2 mb-2 mt-10">
-        <p className="font-imprima text-3xl">{currentState}</p>
-        <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
-      </div>
-      {currentState === "Login" ? (
-        ""
-      ) : (
+    <div className="flex flex-col items-center">
+      <form
+        onSubmit={handleOnsubmitHandler}
+        action=""
+        className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"
+      >
+        <div className="inline-flex items-center gap-2 mb-2 mt-10">
+          <p className="font-imprima text-3xl">{currentState}</p>
+          <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
+        </div>
+        {currentState === "Login" ? (
+          ""
+        ) : (
+          <input
+            onChange={(e) => setName(e.target.value)}
+            value={name}
+            required
+            type="text"
+            placeholder="Name"
+            className="w-full px-3 py-2 border border-gray-800 font-yantramanav rounded-md"
+          />
+        )}
         <input
-          onChange={(e) => setName(e.target.value)}
-          value={name}
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
           required
-          type="text"
-          placeholder="Name"
+          type="email"
+          placeholder="Email"
           className="w-full px-3 py-2 border border-gray-800 font-yantramanav rounded-md"
         />
-      )}
-      <input
-        onChange={(e) => setEmail(e.target.value)}
-        value={email}
-        required
-        type="email"
-        placeholder="Email"
-        className="w-full px-3 py-2 border border-gray-800 font-yantramanav rounded-md"
-      />
-      <input
-        onChange={(e) => setPassword(e.target.value)}
-        value={password}
-        required
-        type="password"
-        placeholder="Password"
-        className="w-full px-3 py-2 border border-gray-800 font-yantramanav rounded-md"
-      />
-      <div className="w-full flex justify-between text-sm mt-[-8px]">
-        <p className="font-imprima cursor-pointer">Forgot your password?</p>
-        {currentState === "Login" ? (
-          <p
-            onClick={() => setCurrentState("Sign Up")}
-            className="font-imprima cursor-pointer"
-          >
-            Create Account
-          </p>
-        ) : (
-          <p
-            className="font-imprima cursor-pointer"
-            onClick={() => setCurrentState("Login")}
-          >
-            Login Here
-          </p>
-        )}
+        <input
+          onChange={(e) => setPassword(e.target.value)}
+          value={password}
+          required
+          type="password"
+          placeholder="Password"
+          className="w-full px-3 py-2 border border-gray-800 font-yantramanav rounded-md"
+        />
+        <div className="w-full flex justify-between text-sm mt-[-8px]">
+          <p className="font-imprima cursor-pointer">Forgot your password?</p>
+          {currentState === "Login" ? (
+            <p
+              onClick={() => setCurrentState("Sign Up")}
+              className="font-imprima cursor-pointer"
+            >
+              Create Account
+            </p>
+          ) : (
+            <p
+              className="font-imprima cursor-pointer"
+              onClick={() => setCurrentState("Login")}
+            >
+              Login Here
+            </p>
+          )}
+        </div>
+        <button
+          className="bg-black hover:shadow-lg text-white font-light px-8 py-2 mt-4"
+          type="submit"
+        >
+          {currentState === "Login" ? "Sign In" : "Sign Up"}
+        </button>
+      </form>
+      <div className="flex flex-col">
+        <p className="">or</p>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            console.log(credentialResponse);
+          }}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+          useOneTap
+          auto_select={true}
+        />
       </div>
-      <button
-        className="bg-black hover:shadow-lg text-white font-light px-8 py-2 mt-4"
-        type="submit"
-      >
-        {currentState === "Login" ? "Sign In" : "Sign Up"}
-      </button>
-    </form>
+    </div>
   );
 }
 
