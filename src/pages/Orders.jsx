@@ -1,15 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
-import axios, { all } from "axios";
+import axios from "axios";
 import toast from "react-hot-toast";
 import Spinner from "./../components/Spinner";
+import Modal from "../components/Modal";
+import { Copy } from "lucide-react";
 
 export default function Orders() {
   const { backendUrl, token, currency } = useContext(ShopContext);
 
   const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const [sendingData, setSendingData] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
+
+  const handleTrackOrder = async (e, item) => {
+    e.preventDefault();
+    setSelectedItem(item);
+    setOpenModal(true);
+  };
 
   const loadOrderData = async () => {
     try {
@@ -59,7 +70,7 @@ export default function Orders() {
   }, [token]);
 
   return (
-    <div className="border-t pt-16">
+    <div className="border-t pt-16 bg-white">
       <div className="text-2xl">
         <Title text1={"MY"} tex2={"ORDERS"} />
       </div>
@@ -124,7 +135,9 @@ export default function Orders() {
                       Cancel Order
                     </button>
                     <button
-                      onClick={loadOrderData}
+                      onClick={(e) => {
+                        handleTrackOrder(e, item);
+                      }}
                       className="border px-4 py-2 text-sm w-[110px] font-medium rounded-md font-yantramanav hover:bg-gray-300"
                     >
                       {item.status == "Pending" ? "Pay Now" : "Track Order"}
@@ -135,6 +148,46 @@ export default function Orders() {
             ))}
           </>
         )}
+      </div>
+
+      <div className="">
+        <Modal
+          title={"Order Tracking"}
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          onSubmitHandler={handleTrackOrder}
+        >
+          {sendingData ? (
+            <>
+              <Spinner />
+            </>
+          ) : (
+            <>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <p className="text-base text-gray-500 font-muktaVaani">
+                      Order Number : {selectedItem._id}
+                    </p>
+                    <Copy
+                      className="w-5 ml-2 cursor-pointer"
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedItem._id);
+                        toast.success("ID copied!", { id: selectedItem._id });
+                      }}
+                    />
+                  </div>
+                  <p className="text-base text-gray-500 font-muktaVaani">
+                    Item : {selectedItem.name}
+                  </p>
+                  <p className="text-base text-gray-500 font-muktaVaani">
+                    Delivery Info : {selectedItem.status}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
+        </Modal>
       </div>
     </div>
   );

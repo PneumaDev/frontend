@@ -282,6 +282,7 @@ export default function PlaceOrder() {
               PLACE ORDER
             </button>
             <Modal
+              title={"Order Payment Confirmation"}
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
               onSubmitHandler={onSubmitHandler}

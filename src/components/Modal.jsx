@@ -1,4 +1,10 @@
-export default function Modal({ isOpen, onClose, children, onSubmitHandler }) {
+export default function Modal({
+  isOpen,
+  onClose,
+  children,
+  onSubmitHandler,
+  title,
+}) {
   if (!isOpen) return null;
 
   return (
@@ -11,7 +17,7 @@ export default function Modal({ isOpen, onClose, children, onSubmitHandler }) {
           &times;
         </button>
         <h2 className="font-bold text-xl text-center mb-4 font-muktaVaani border-b-[1px] pb-2">
-          Order Payment Confirmation
+          {title}
         </h2>
         <div className="mb-6">{children}</div>
         <div className="flex justify-end space-x-3">
