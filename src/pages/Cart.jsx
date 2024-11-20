@@ -7,6 +7,7 @@ import InfoMessage from "../components/InfoComponent";
 
 export default function Cart() {
   const {
+    getUserCart,
     products,
     currency,
     cartItems,
@@ -17,7 +18,12 @@ export default function Cart() {
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
-    setDeliveryFee(0);
+    const fetchUserCartData = async () => {
+      setDeliveryFee(0);
+      await getUserCart();
+    };
+
+    fetchUserCartData();
   }, []);
 
   useEffect(() => {
