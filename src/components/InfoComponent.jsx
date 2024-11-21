@@ -44,7 +44,7 @@ export default function InfoMessage({
       <div className="flex-shrink-0">
         <IconComponent className={`w-5 h-5 ${style.iconClass}`} />
       </div>
-      <div className="ml-3">
+      <div className="ml-3 ">
         {title && (
           <h3
             className={`text-sm font-muktaVaani font-medium ${style.textClass}`}
@@ -53,7 +53,7 @@ export default function InfoMessage({
           </h3>
         )}
         {message && (
-          <div className={`text-sm font-imprima mt-1 ${style.textClass}`}>
+          <div className={`text-sm font-imprima mt-1 ${style.textClass} `}>
             {message}
           </div>
         )}

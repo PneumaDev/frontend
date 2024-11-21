@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import axios from "axios";
@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import Spinner from "./../components/Spinner";
 import Modal from "../components/Modal";
 import { Copy } from "lucide-react";
+import InfoMessage from "../components/InfoComponent";
 
 export default function Orders() {
   const { backendUrl, token, currency } = useContext(ShopContext);
@@ -15,11 +16,20 @@ export default function Orders() {
   const [openModal, setOpenModal] = useState(false);
   const [sendingData, setSendingData] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
+  const [currentItem, setCurrentItem] = useState(selectedItem);
+  const [action, setAction] = useState(null);
+
+  const ref = useRef(null);
 
   const handleTrackOrder = async (e, item) => {
+    setAction("track_order");
+    setCurrentItem(item);
+    setSendingData(true);
     e.preventDefault();
-    setSelectedItem(item);
     setOpenModal(true);
+    await loadOrderData();
+    setSelectedItem(item);
+    setSendingData(false);
   };
 
   const loadOrderData = async () => {
@@ -33,7 +43,6 @@ export default function Orders() {
         { headers: { token } }
       );
 
-      console.log(response.data);
       if (response.data.success) {
         let allOrdersItem = [];
         response.data.orders.map((order) => {
@@ -59,6 +68,11 @@ export default function Orders() {
     }
   };
 
+  const completePayment = async (e, item) => {
+    setAction("complete_payment");
+    setOpenModal(true);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -68,6 +82,12 @@ export default function Orders() {
 
     fetchData();
   }, [token]);
+
+  useEffect(() => {
+    if (currentItem._id) {
+      setSelectedItem(orderData.find((item) => item._id === currentItem._id));
+    }
+  }, [orderData]);
 
   return (
     <div className="border-t pt-16 bg-white">
@@ -123,7 +143,7 @@ export default function Orders() {
                 <div className="md:w-1/2 flex justify-between">
                   <div className="flex items-center gap-2">
                     <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
-                    <p className="text-sm md:text-base font-imprima">
+                    <p className="text-sm md:text-base font-imprima" ref={ref}>
                       {item.status}
                     </p>
                   </div>
@@ -136,7 +156,9 @@ export default function Orders() {
                     </button>
                     <button
                       onClick={(e) => {
-                        handleTrackOrder(e, item);
+                        item.status == "Pending"
+                          ? completePayment(e, item)
+                          : handleTrackOrder(e, item);
                       }}
                       className="border px-4 py-2 text-sm w-[110px] font-medium rounded-md font-yantramanav hover:bg-gray-300"
                     >
@@ -151,43 +173,76 @@ export default function Orders() {
       </div>
 
       <div className="">
-        <Modal
-          title={"Order Tracking"}
-          isOpen={openModal}
-          onClose={() => setOpenModal(false)}
-          onSubmitHandler={handleTrackOrder}
-        >
-          {sendingData ? (
-            <>
-              <Spinner />
-            </>
-          ) : (
-            <>
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <p className="text-base text-gray-500 font-muktaVaani">
-                      Order Number : {selectedItem._id}
-                    </p>
-                    <Copy
-                      className="w-5 ml-2 cursor-pointer"
-                      onClick={() => {
-                        navigator.clipboard.writeText(selectedItem._id);
-                        toast.success("ID copied!", { id: selectedItem._id });
-                      }}
-                    />
+        {action === "track_order" ? (
+          <>
+            <Modal
+              button2={"Close"}
+              title={"Order Tracking"}
+              isOpen={openModal}
+              onClose={() => setOpenModal(false)}
+              onSubmitHandler={handleTrackOrder}
+            >
+              {sendingData ? (
+                <>
+                  <Spinner />
+                </>
+              ) : (
+                <>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <p className="text-base text-gray-500 font-muktaVaani">
+                          Order ID: {selectedItem._id}
+                        </p>
+                        <Copy
+                          className="w-5 ml-2 cursor-pointer"
+                          onClick={() => {
+                            navigator.clipboard.writeText(selectedItem._id);
+                            toast.success("ID copied!", {
+                              id: selectedItem._id,
+                            });
+                          }}
+                        />
+                      </div>
+                      <p className="text-base text-gray-500 font-muktaVaani">
+                        Item : {selectedItem.name}
+                      </p>
+                      <p className="text-base text-gray-500 font-muktaVaani">
+                        Delivery Info : {selectedItem.status}
+                      </p>
+
+                      <div className="flex justify-center items-center pt-3">
+                        <InfoMessage
+                          message={
+                            selectedItem.status === "Delivered"
+                              ? "Succesfully Delivered"
+                              : "We will notify you on text and email immediately after dispatch."
+                          }
+                          type={
+                            selectedItem.status === "Delivered"
+                              ? "success"
+                              : "info"
+                          }
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-base text-gray-500 font-muktaVaani">
-                    Item : {selectedItem.name}
-                  </p>
-                  <p className="text-base text-gray-500 font-muktaVaani">
-                    Delivery Info : {selectedItem.status}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
-        </Modal>
+                </>
+              )}
+            </Modal>
+          </>
+        ) : (
+          <>
+            <Modal
+              button1={"Pay Now"}
+              button2={"Close"}
+              title={"Complete Payment!"}
+              isOpen={openModal}
+              onClose={() => setOpenModal(false)}
+              onSubmitHandler={handleTrackOrder}
+            ></Modal>
+          </>
+        )}
       </div>
     </div>
   );
