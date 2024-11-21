@@ -25,6 +25,7 @@ export default function PlaceOrder() {
     country: "",
     phone: "",
   });
+
   const {
     navigate,
     backendUrl,
@@ -286,6 +287,8 @@ export default function PlaceOrder() {
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
               onSubmitHandler={onSubmitHandler}
+              button1={"Pay Now"}
+              button2={"Cancel"}
             >
               {sendingData ? (
                 <>
