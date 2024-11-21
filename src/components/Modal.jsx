@@ -4,6 +4,8 @@ export default function Modal({
   children,
   onSubmitHandler,
   title,
+  button1,
+  button2,
 }) {
   if (!isOpen) return null;
 
@@ -21,18 +23,22 @@ export default function Modal({
         </h2>
         <div className="mb-6">{children}</div>
         <div className="flex justify-end space-x-3">
-          <button
-            onClick={onSubmitHandler}
-            className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
-          >
-            Pay Now
-          </button>
-          <button
-            onClick={onClose}
-            className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
-          >
-            Decline
-          </button>
+          {button1 && (
+            <button
+              onClick={onSubmitHandler}
+              className="bg-green-600 text-white px-5 py-2 rounded-md font-muktaVaani hover:bg-green-700 transition duration-200"
+            >
+              {button1}
+            </button>
+          )}
+          {button2 && (
+            <button
+              onClick={onClose}
+              className="bg-red-500 text-white px-5 py-2 font-muktaVaani rounded-md hover:bg-red-600 transition duration-200"
+            >
+              {button2}
+            </button>
+          )}
         </div>
       </div>
     </div>
