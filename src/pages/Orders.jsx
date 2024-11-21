@@ -183,9 +183,9 @@ export default function Orders() {
               onSubmitHandler={handleTrackOrder}
             >
               {sendingData ? (
-                <>
+                <div className="h-48 flex justify-center items-center">
                   <Spinner />
-                </>
+                </div>
               ) : (
                 <>
                   <div className="space-y-6">
