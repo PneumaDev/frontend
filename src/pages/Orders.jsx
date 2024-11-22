@@ -42,7 +42,7 @@ export default function Orders() {
       );
 
       if (response.data.success) {
-        setOrderData(response.data.orders);
+        setOrderData(response.data.orders.reverse());
       }
       setLoading(false);
     } catch (error) {
@@ -60,12 +60,11 @@ export default function Orders() {
   };
 
   // <--------------Cancel/Delete Item-------------->
-  const cancelItem = async (itemId) => {
-    setLoading(true);
+  const cancelOrder = async (orderId) => {
     try {
       const response = await axios.post(
         backendUrl + "/api/order/cancelorder",
-        { itemId },
+        { orderId },
         { headers: { token } }
       );
 
@@ -80,7 +79,7 @@ export default function Orders() {
       console.error("Error deleting item:", error.me);
       toast.error(error.message);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -99,7 +98,6 @@ export default function Orders() {
       setSelectedItem(orderData.find((item) => item._id === currentItem._id));
     }
   }, [orderData]);
-  console.log(selectedItem);
 
   return (
     <div className="border-t pt-16 bg-white">
@@ -212,13 +210,13 @@ export default function Orders() {
 
                   <div className="flex gap-3 pt-4 justify-end">
                     <button
-                      disabled={
-                        loading ||
-                        !order.payment ||
-                        order.status === "Delivered" ||
-                        order.status === "Cancelled"
-                      }
-                      onClick={() => cancelOrder(order._id.$oid)}
+                      // disabled={
+                      //   loading ||
+                      //   !order.payment ||
+                      //   order.status === "Delivered" ||
+                      //   order.status === "Cancelled"
+                      // }
+                      onClick={() => cancelOrder(order._id)}
                       className={`border px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                         loading ||
                         order.status === "Delivered" ||
