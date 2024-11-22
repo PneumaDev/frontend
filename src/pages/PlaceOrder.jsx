@@ -291,9 +291,9 @@ export default function PlaceOrder() {
               button2={"Cancel"}
             >
               {sendingData ? (
-                <>
+                <div className="h-48 flex justify-center items-center">
                   <Spinner />
-                </>
+                </div>
               ) : (
                 <>
                   <div className="space-y-6">

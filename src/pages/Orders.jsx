@@ -19,8 +19,6 @@ export default function Orders() {
   const [currentItem, setCurrentItem] = useState(selectedItem);
   const [action, setAction] = useState(null);
 
-  const ref = useRef(null);
-
   const handleTrackOrder = async (e, item) => {
     setAction("track_order");
     setCurrentItem(item);
@@ -44,26 +42,12 @@ export default function Orders() {
       );
 
       if (response.data.success) {
-        let allOrdersItem = [];
-        response.data.orders.map((order) => {
-          order.items.map((item) => {
-            item["status"] = order.status;
-            item["payment"] = order.payment;
-            item["paymentMethod"] = order.paymentMethod;
-            item["date"] = order.date;
-
-            allOrdersItem.push(item);
-          });
-        });
-
-        console.log(response.data.orders);
-
-        setOrderData(allOrdersItem.reverse());
+        setOrderData(response.data.orders);
       }
       setLoading(false);
     } catch (error) {
       console.log(error);
-      toast.error(error.data.message);
+      toast.error(error.message);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -95,6 +79,8 @@ export default function Orders() {
     } catch (error) {
       console.error("Error deleting item:", error.me);
       toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,6 +99,7 @@ export default function Orders() {
       setSelectedItem(orderData.find((item) => item._id === currentItem._id));
     }
   }, [orderData]);
+  console.log(selectedItem);
 
   return (
     <div className="border-t pt-16 bg-white">
@@ -126,76 +113,154 @@ export default function Orders() {
           </>
         ) : (
           <>
-            {orderData.map((item, index) => (
-              <div
-                key={index}
-                className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
-              >
-                <div className="flex items-start gap-6 text-sm">
-                  <img
-                    src={item.image[0]}
-                    alt="product"
-                    className="w-16 sm:w-20"
-                  />
-                  <div className="">
-                    <p className="sm:text-base font-medium font-muktaVaani">
-                      {item.name}
-                    </p>
-                    <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
-                      <p className="font-yantramanav">
-                        {currency}
-                        {item.price}
+            <div className="space-y-6">
+              {orderData.map((order, index) => (
+                <div
+                  key={index}
+                  className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow space-y-4"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <p className="text-sm text-gray-500 font-yantramanav font-semibold ">
+                        ID: <span className="font-muktaVaani">{order._id}</span>
                       </p>
-                      <p className="font-yantramanav">
-                        Quantity: {item.quantity}
+                      <p className="text-sm text-gray-500 font-yantramanav">
+                        Placed on {new Date(order.date).toLocaleDateString()}
                       </p>
-                      <p className="font-yantramanav">Size: {item.size}</p>
+                      <p className="text-sm text-gray-500 font-yantramanav">
+                        Payment Method: {order.paymentMethod.toUpperCase()}
+                      </p>
                     </div>
-                    <p className="mt-2 font-yantramanav">
-                      Date:{" "}
-                      <span className="text-gray-400 font-imprima">
-                        {new Date(item.date).toDateString()}
-                      </span>
-                    </p>
-                    <p className="mt-2 font-yantramanav">
-                      Payment:{" "}
-                      <span className="text-gray-400 font-imprima">
-                        {item.paymentMethod}
-                      </span>
-                    </p>
+                    <div
+                      className={`px-3 py-1 rounded-full text-sm font-medium font-yantramanav ${
+                        order.status === "Delivered"
+                          ? "bg-green-100 text-green-800"
+                          : order.status === "Shipped"
+                          ? "bg-blue-100 text-blue-800"
+                          : order.status === "Packing"
+                          ? "bg-orange-100 text-orange-600"
+                          : order.status === "Pending"
+                          ? "bg-orange-100 text-orange-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {order.status}
+                    </div>
                   </div>
-                </div>
-                <div className="md:w-1/2 flex justify-between">
-                  <div className="flex items-center gap-2">
-                    <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
-                    <p className="text-sm md:text-base font-imprima" ref={ref}>
-                      {item.status}
-                    </p>
+
+                  {order.items.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center space-x-4 py-4 border-b last:border-b-0"
+                    >
+                      <img
+                        src={item.image[0]}
+                        alt={item.name}
+                        className="w-20 h-28 object-cover aspect-auto rounded-md"
+                      />
+                      <div className="flex-1 space-y-2">
+                        <p className="font-medium text-gray-700 line-clamp-1 font-muktaVaani">
+                          {item.name}
+                        </p>
+                        <div className="flex items-center text-sm text-gray-500 font-yantramanav">
+                          <p>Qty: {item.quantity}</p>
+                          <span className="mx-2">•</span>
+                          <p>Size: {item.size}</p>
+                          <span className="mx-2">•</span>
+                          <p>KSH {item.price.toLocaleString()}</p>
+                        </div>
+                        <p className="text-sm text-gray-500 font-imprima line-clamp-2">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex justify-between items-start pt-4">
+                    <div className="space-y-1 ">
+                      <p className="font-medium text-gray-800 font-muktaVaani">
+                        Delivery Details:
+                      </p>
+                      <p className="text-sm text-gray-500 font-yantramanav">
+                        {order.address.firstName} {order.address.lastName}
+                      </p>
+                      <p className="text-sm text-gray-500 font-yantramanav">
+                        {order.address.phone}
+                      </p>
+                      <p className="text-sm text-gray-500 font-yantramanav">
+                        {order.address.email}
+                      </p>
+                      <p className="text-sm text-gray-500 font-yantramanav">
+                        {order.address.street}
+                      </p>
+                      <p className="text-sm text-gray-500 font-yantramanav">
+                        {order.address.city}, {order.address.county}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-500 font-muktaVaani">
+                        Total Amount:
+                      </p>
+                      <p className="text-lg font-medium text-gray-800">
+                        KSH {order.amount.toLocaleString()}
+                      </p>
+                      <p className="text-sm text-gray-500 font-yantramanav mt-1">
+                        Payment Status: {order.payment ? "Paid" : "Pending"}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex gap-3">
+
+                  <div className="flex gap-3 pt-4 justify-end">
                     <button
-                      disabled={loading}
-                      onClick={() => {
-                        cancelItem(item._id, item.size);
-                      }}
-                      className="border px-4 py-2 text-sm w-[110px] font-medium rounded-md font-yantramanav hover:bg-gray-300"
+                      disabled={
+                        loading ||
+                        !order.payment ||
+                        order.status === "Delivered" ||
+                        order.status === "Cancelled"
+                      }
+                      onClick={() => cancelOrder(order._id.$oid)}
+                      className={`border px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                        loading ||
+                        order.status === "Delivered" ||
+                        order.status === "Cancelled" ||
+                        order.status === "Shipped"
+                          ? "opacity-50 cursor-not-allowed bg-gray-100"
+                          : "hover:bg-gray-200 bg-white text-gray-700 cursor-pointer"
+                      }`}
                     >
                       Cancel Order
                     </button>
-                    <button
-                      onClick={(e) => {
-                        item.status == "Pending"
-                          ? completePayment(e, item)
-                          : handleTrackOrder(e, item);
-                      }}
-                      className="border px-4 py-2 text-sm w-[110px] font-medium rounded-md font-yantramanav hover:bg-gray-300"
-                    >
-                      {item.status == "Pending" ? "Pay Now" : "Track Order"}
-                    </button>
+                    {!order.payment ? (
+                      <button
+                        onClick={(e) => handlePayment(e, order)}
+                        className="bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+                      >
+                        Pay Now (KSH {order.amount.toLocaleString()})
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => handleTrackOrder(e, order)}
+                        className="border px-4 py-2 text-sm font-medium rounded-md hover:bg-gray-200 bg-white text-gray-700 transition-colors"
+                      >
+                        Track Order
+                      </button>
+                    )}
                   </div>
+
+                  {order.status === "Delivered" && order.payment && (
+                    <div className="flex justify-end">
+                      {" "}
+                      <button
+                        onClick={() => handleWriteReview(order)}
+                        className="mt-4 bg-gray-900 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-gray-800 transition-colors"
+                      >
+                        Write a Review
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </>
         )}
       </div>
@@ -218,9 +283,20 @@ export default function Orders() {
                 <>
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <div className="flex items-center">
-                        <p className="text-base text-gray-500 font-muktaVaani">
-                          Order ID: {selectedItem._id}
+                      <div className="flex flex-col">
+                        <div className="">
+                          <p className="text-base text-gray-500 font-yantramanav font">
+                            {selectedItem.status === "Delivered"
+                              ? "Delivered to"
+                              : "Deliverying to"}
+                            : {selectedItem.address.firstName}{" "}
+                            {selectedItem.address.lastName}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex">
+                        <p className="text-base text-gray-500 font-yantramanav">
+                          Order ID : {selectedItem._id}
                         </p>
                         <Copy
                           className="w-5 ml-2 cursor-pointer"
@@ -232,10 +308,7 @@ export default function Orders() {
                           }}
                         />
                       </div>
-                      <p className="text-base text-gray-500 font-muktaVaani">
-                        Item : {selectedItem.name}
-                      </p>
-                      <p className="text-base text-gray-500 font-muktaVaani">
+                      <p className="text-base text-gray-500 font-yantramanav font">
                         Delivery Info : {selectedItem.status}
                       </p>
 
