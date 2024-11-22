@@ -56,6 +56,8 @@ export default function Orders() {
           });
         });
 
+        console.log(response.data.orders);
+
         setOrderData(allOrdersItem.reverse());
       }
       setLoading(false);
@@ -73,13 +75,36 @@ export default function Orders() {
     setOpenModal(true);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await loadOrderData();
-      setLoading(false);
-    };
+  // <--------------Cancel/Delete Item-------------->
+  const cancelItem = async (itemId) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/order/cancelorder",
+        { itemId },
+        { headers: { token } }
+      );
 
+      console.log(response.data);
+      if (response.data.message) {
+        console.log(response.data);
+        fetchData();
+      } else {
+        console.log(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error.me);
+      toast.error(error.message);
+    }
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    await loadOrderData();
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchData();
   }, [token]);
 
@@ -149,7 +174,10 @@ export default function Orders() {
                   </div>
                   <div className="flex gap-3">
                     <button
-                      onClick={loadOrderData}
+                      disabled={loading}
+                      onClick={() => {
+                        cancelItem(item._id, item.size);
+                      }}
                       className="border px-4 py-2 text-sm w-[110px] font-medium rounded-md font-yantramanav hover:bg-gray-300"
                     >
                       Cancel Order
