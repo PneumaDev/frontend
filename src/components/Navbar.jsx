@@ -3,12 +3,7 @@ import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { googleLogout } from "@react-oauth/google";
-import {
-  UserIcon,
-  ShoppingBagIcon,
-  LogOutIcon,
-  ClipboardListIcon,
-} from "lucide-react";
+import { UserIcon, LogOutIcon, ClipboardListIcon } from "lucide-react";
 
 export default function Navbar() {
   const [visible, setIsVisible] = useState(false);

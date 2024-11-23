@@ -1,27 +1,37 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
+import { BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 export default function ProductItem({ id, image, price, name }) {
   const { currency } = useContext(ShopContext);
+  const [likeItem, setLikeItem] = useState(false);
+
+  const handleLikeItem = (e) => {
+    e.preventDefault(); // Prevent navigation when clicking the heart
+    setLikeItem((prev) => !prev); // Toggle the state
+  };
 
   return (
-    <Link className="text-gray-700 cursor-pointer" to={`/product/${id}`}>
-      <div className="overflow-hidden">
-        {(
+    <div className="relative text-gray-700 shadow-sm hover:shadow-lg p-4 rounded-md">
+      <Link to={`/product/${id}`} className="cursor-pointer">
+        <div className="overflow-hidden relative">
           <img
             src={image[0]}
-            alt=""
-            className="hover:scale-110 transition ease-in-out"
+            alt={name}
+            className="hover:scale-110 transition ease-in-out rounded-md hover:rounded-md"
           />
-        ) || <Skeleton />}
-      </div>
-      <p className="pt-3 pb-1 text-sm font-muktaVaani">{name}</p>
-      <p className="text-sm font-medium font-imprima">
-        {currency} {price}
-      </p>
-    </Link>
+          <BadgeCheck
+            className="absolute z-10 top-2 right-2 cursor-pointer"
+            fill="#00FF00"
+            stroke="#FFFFFF"
+          />
+        </div>
+        <p className="pt-3 pb-1 text-sm font-muktaVaani">{name}</p>
+        <p className="text-md font-yantramanav">
+          {currency} <span className="font-bold">{price}</span>
+        </p>
+      </Link>
+    </div>
   );
 }
