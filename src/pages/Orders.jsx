@@ -9,7 +9,7 @@ import { Copy } from "lucide-react";
 import InfoMessage from "../components/InfoComponent";
 
 export default function Orders() {
-  const { backendUrl, token, currency } = useContext(ShopContext);
+  const { backendUrl, token } = useContext(ShopContext);
 
   const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ export default function Orders() {
 
   // <--------------Cancel/Delete Item-------------->
   const cancelOrder = async (orderId) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const response = await axios.post(
         backendUrl + "/api/order/cancelorder",
@@ -70,7 +70,12 @@ export default function Orders() {
       );
 
       if (response.data.success) {
-        console.log(response.data.message);
+        if (response.data.status) {
+          toast.error(response.data.message);
+          return setTimeout(async () => {
+            await fetchData();
+          }, 1500);
+        }
         await fetchData();
       } else {
         console.warn("Unexpected response:", response.data.message);
@@ -100,9 +105,6 @@ export default function Orders() {
       setSelectedItem(orderData.find((item) => item._id === currentItem._id));
     }
   }, [orderData]);
-
-  {
-  }
 
   return (
     <div className="border-t pt-16 bg-white">

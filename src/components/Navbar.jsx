@@ -1,11 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { googleLogout } from "@react-oauth/google";
+import {
+  UserIcon,
+  ShoppingBagIcon,
+  LogOutIcon,
+  ClipboardListIcon,
+} from "lucide-react";
 
 export default function Navbar() {
   const [visible, setIsVisible] = useState(false);
+  const [isProfileDropdownVisible, setIsProfileDropdownVisible] =
+    useState(false);
+  const profileRef = useRef(null);
+
   const {
     setShowSearch,
     getCartCount,
@@ -33,137 +43,162 @@ export default function Navbar() {
     }
   }, [token]);
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   return (
-    <div className="flex items-center justify-between py-5 font-medium">
+    <div className="flex items-center justify-between px-2 py-5 font-medium bg-white shadow-sm sticky top-0 z-50">
+      {/* Logo */}
       <Link to={"/"}>
-        <img src={assets.logo} className="w-36" />
+        <img src={assets.logo} className="w-36" alt="logo" />
       </Link>
-      <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
-        <NavLink
-          to="/"
-          className="flex flex-col items-center gap-1  font-yantramanav"
-        >
-          <p>HOME</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-        <NavLink
-          to="/collection"
-          className="flex flex-col items-center gap-1 font-yantramanav"
-        >
-          <p>COLLECTION</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-        <NavLink
-          to="/about"
-          className="flex flex-col items-center gap-1 font-yantramanav"
-        >
-          <p>ABOUT</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-        <NavLink
-          to="/contact"
-          className="flex flex-col items-center gap-1 font-yantramanav"
-        >
-          <p>CONTACT</p>
-          <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
+
+      {/* Main Navigation */}
+      <ul className="hidden sm:flex gap-8 text-sm text-gray-700">
+        {["HOME", "COLLECTION", "ABOUT", "CONTACT"].map((item) => (
+          <NavLink
+            key={item}
+            to={item === "HOME" ? "/" : item.toLowerCase()}
+            className="flex flex-col items-center gap-1 font-yantramanav hover:text-black"
+          >
+            <p>{item}</p>
+            <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden" />
+          </NavLink>
+        ))}
       </ul>
+
+      {/* Action Icons */}
       <div className="flex items-center gap-6">
         <img
           onClick={() => setShowSearch(true)}
           src={assets.search_icon}
-          alt=""
-          className="w-5 cursor-pointer"
+          alt="Search"
+          className="w-5 cursor-pointer hover:opacity-70 transition-opacity"
         />
-        <div className="group relative">
-          <img
-            onClick={() => (token ? null : navigate("/login"))}
-            src={assets.profile_icon}
-            className="w-5 cursor-pointer"
-            alt=""
-          />
 
-          {/* -------------------- Drop Down --------------------*/}
-          {token && (
-            <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
-              <div className="flex flex-col gap-2 w-36  py-3 px-5 bg-slate-100 text-gray-500 rounded">
-                <p className="cursor-pointer hover:text-black font-muktaVaani">
-                  Profile
-                </p>
-                <p
-                  className="cursor-pointer hover:text-black font-muktaVaani"
-                  onClick={() => navigate("/orders")}
+        {/* Profile Dropdown */}
+        <div className="relative" ref={profileRef}>
+          <img
+            onClick={() =>
+              token
+                ? setIsProfileDropdownVisible((prev) => !prev)
+                : navigate("/login")
+            }
+            src={assets.profile_icon}
+            className="w-5 cursor-pointer hover:opacity-70 transition-opacity"
+            alt="Profile"
+          />
+          {token && isProfileDropdownVisible && (
+            <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden transform origin-top-right transition-all duration-200 ease-out">
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    navigate("/profile");
+                    setIsProfileDropdownVisible(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Orders
-                </p>
-                <p
-                  onClick={logout}
-                  className="cursor-pointer hover:text-black font-muktaVaani"
+                  <UserIcon className="w-4 h-4 mr-3" />
+                  <span>Profile</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    navigate("/orders");
+                    setIsProfileDropdownVisible(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Logout
-                </p>
+                  <ClipboardListIcon className="w-4 h-4 mr-3" />
+                  <span>Orders</span>
+                </button>
+
+                <div className="border-t border-gray-100"></div>
+
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsProfileDropdownVisible(false);
+                  }}
+                  className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <LogOutIcon className="w-4 h-4 mr-3" />
+                  <span>Logout</span>
+                </button>
               </div>
             </div>
           )}
         </div>
-        <Link to="/cart" className="relative">
-          <img src={assets.cart_icon} className="w-5 min-w-5" alt="" />
-          <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]">
+
+        {/* Cart Icon */}
+        <Link to="/cart" className="relative group">
+          <img
+            src={assets.cart_icon}
+            className="w-5 min-w-5 group-hover:opacity-70 transition-opacity"
+            alt="Cart"
+          />
+          <span className="absolute right-[-8px] bottom-[-8px] w-5 h-5 flex items-center justify-center bg-black text-white rounded-full text-xs transform transition-transform">
             {getCartCount()}
-          </p>
+          </span>
         </Link>
+
+        {/* Mobile Menu Icon */}
         <img
           onClick={() => setIsVisible(true)}
           src={assets.menu_icon}
-          alt="menu_icon"
-          className="w-5 cursor-pointer sm:hidden"
+          alt="Menu"
+          className="w-5 cursor-pointer sm:hidden hover:opacity-70 transition-opacity"
         />
       </div>
 
-      {/* Side_bar Menu for smaller screens */}
-      <div
-        className={`absolute top-0 right-0 bottom-0 overflow-hidden bg-white transition-all ${
-          visible ? "w-full" : "w-0"
-        }`}
-      >
-        <div className="flex flex-col text-gray-600 ">
+      {/* Drawer Menu */}
+      {visible && (
+        <>
           <div
-            className="flex items-center gap-4 p-3 cursor-pointer"
+            className="fixed inset-0 bg-black bg-opacity-40 z-40 backdrop-blur-sm transition-opacity duration-300"
             onClick={() => setIsVisible(false)}
+          ></div>
+          <div
+            className={`fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white z-50 shadow-lg transform ${
+              visible ? "translate-x-0" : "translate-x-full"
+            } transition-transform duration-300`}
           >
-            <img src={assets.dropdown_icon} className="h-4 rotate-180" alt="" />
-            <p className="font-yantramanav">Back</p>
+            <div className="flex flex-col text-gray-600 p-5">
+              <div
+                className="flex items-center gap-4 mb-5 cursor-pointer hover:text-black transition-colors"
+                onClick={() => setIsVisible(false)}
+              >
+                <img
+                  src={assets.dropdown_icon}
+                  className="h-4 rotate-180"
+                  alt="Back"
+                />
+                <p className="font-yantramanav">Back</p>
+              </div>
+              {["HOME", "COLLECTION", "ABOUT", "CONTACT"].map((item) => (
+                <NavLink
+                  key={item}
+                  onClick={() => setIsVisible(false)}
+                  className="py-3 pl-6 border-b font-muktaVaani hover:bg-gray-50 transition-colors"
+                  to={`/${item.toLowerCase()}`}
+                >
+                  {item}
+                </NavLink>
+              ))}
+            </div>
           </div>
-          <NavLink
-            onClick={() => setIsVisible(false)}
-            className="py-2 pl-6 border font-muktaVaani"
-            to="/"
-          >
-            HOME
-          </NavLink>
-          <NavLink
-            onClick={() => setIsVisible(false)}
-            className="py-2 pl-6 border font-muktaVaani"
-            to="collection"
-          >
-            COLLECTION
-          </NavLink>
-          <NavLink
-            onClick={() => setIsVisible(false)}
-            className="py-2 pl-6 border font-muktaVaani"
-            to="about"
-          >
-            ABOUT
-          </NavLink>
-          <NavLink
-            onClick={() => setIsVisible(false)}
-            className="py-2 pl-6 border font-muktaVaani"
-            to="/contact"
-          >
-            CONTACT
-          </NavLink>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
