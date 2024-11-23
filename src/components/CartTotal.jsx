@@ -14,21 +14,21 @@ export default function CartTotal() {
       <div className="flex flex-col gap-2 mt-2 text-sm">
         <div className="flex justify-between">
           <p className="font-muktaVaani">Subtotal</p>
-          <p className="font-imprima">
+          <p className="font-yantramanav">
             {currency} {getCartAmount()}.00
           </p>
         </div>
         <hr />
         <div className="flex justify-between">
           <p className="font-muktaVaani">Shipping Fee</p>
-          <p className="font-imprima">
+          <p className="font-yantramanav">
             {currency} {deliveryFee}.00
           </p>
         </div>
         <hr />
         <div className="flex justify-between">
           <b className="font-muktaVaani">Total</b>
-          <b className="font-imprima">
+          <b className="font-yantramanav">
             {currency}{" "}
             {getCartAmount() === 0 ? 0 : getCartAmount() + deliveryFee}.00
           </b>
