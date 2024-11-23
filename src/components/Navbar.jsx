@@ -190,7 +190,7 @@ export default function Navbar() {
                   key={item}
                   onClick={() => setIsVisible(false)}
                   className="py-3 pl-6 border-b font-muktaVaani hover:bg-gray-50 transition-colors"
-                  to={`/${item.toLowerCase()}`}
+                  to={item === "HOME" ? "/" : item.toLowerCase()}
                 >
                   {item}
                 </NavLink>
