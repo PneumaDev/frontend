@@ -89,7 +89,9 @@ function Login() {
         if (response.data.success === true) {
           setToken(response.data.token);
           localStorage.setItem("token", response.data.token);
-          navigate("/");
+          if (!location.pathname.includes("product")) {
+            navigate("/");
+          }
           return response.data.message;
         } else {
           throw new Error(response.data.message);
@@ -199,7 +201,6 @@ function Login() {
             setAuthToken(credentialResponse.credential);
           }}
           onError={() => {}}
-          f
           useOneTap
         />
       </div>
