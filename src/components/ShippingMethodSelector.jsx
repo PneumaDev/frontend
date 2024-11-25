@@ -4,7 +4,7 @@ import { shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
 export default function ShippingMethodSelector() {
-  const { setDeliveryFee } = useContext(ShopContext);
+  const { setDeliveryFee, shippingMethod } = useContext(ShopContext);
 
   const [selectedMethod, setSelectedMethod] = useState({
     method: "Shop Pickup - Ronald Ngala Street",

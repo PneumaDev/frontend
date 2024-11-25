@@ -8,7 +8,7 @@ import { assets } from "../assets/assets";
 
 export default function Hero() {
   return (
-    <div className="relative bg-gray-100 border border-gray-300 rounded-lg overflow-hidden">
+    <div className="relative bg-gray-100 border border-gray-300 rounded-lg mt-4 overflow-hidden">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation={false}

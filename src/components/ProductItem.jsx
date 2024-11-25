@@ -5,12 +5,6 @@ import { Link } from "react-router-dom";
 
 export default function ProductItem({ id, image, price, name }) {
   const { currency } = useContext(ShopContext);
-  const [likeItem, setLikeItem] = useState(false);
-
-  const handleLikeItem = (e) => {
-    e.preventDefault(); // Prevent navigation when clicking the heart
-    setLikeItem((prev) => !prev); // Toggle the state
-  };
 
   return (
     <div className="relative text-gray-700 shadow-sm hover:shadow-lg p-4 rounded-md">
@@ -23,7 +17,7 @@ export default function ProductItem({ id, image, price, name }) {
           />
           <BadgeCheck
             className="absolute z-10 top-2 right-2 cursor-pointer"
-            fill="#00FF00"
+            fill="#4dff88"
             stroke="#FFFFFF"
           />
         </div>
