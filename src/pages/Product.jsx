@@ -4,14 +4,18 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
 import Spinner from "../components/Spinner";
+import Modal from "../components/Modal";
+import Login from "./Login";
 
 export default function Product() {
   const [loading, setLoading] = useState(false);
   const { productId } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext);
+  const { products, currency, addToCart, token } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+
   const location = useLocation();
 
   const ref = useRef(null);
@@ -27,6 +31,12 @@ export default function Product() {
   };
 
   useEffect(() => {
+    if (token) {
+      setOpenModal(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
     if (ref.current) ref.current.scrollIntoView({ behavior: "smooth" });
     setSize("");
   }, [location]);
@@ -40,6 +50,13 @@ export default function Product() {
 
     fetchData();
   }, [productId, products]);
+
+  const handleAddToCart = (id, size) => {
+    if (!token) {
+      return setOpenModal(true);
+    }
+    addToCart(id, size);
+  };
 
   return loading || !productData ? (
     <Spinner />
@@ -105,7 +122,7 @@ export default function Product() {
           </div>
           <button
             className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
-            onClick={() => addToCart(productData._id, size)}
+            onClick={() => handleAddToCart(productData._id, size)}
           >
             ADD TO CART
           </button>
@@ -154,6 +171,17 @@ export default function Product() {
         category={productData.category}
         subCategory={productData.subCategory}
       />
+
+      {openModal && (
+        <Modal
+          title={"Please Login"}
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          // onSubmitHandler={onSubmitHandler}
+        >
+          <Login />
+        </Modal>
+      )}
     </div>
   );
 }

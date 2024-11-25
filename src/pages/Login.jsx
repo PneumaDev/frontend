@@ -4,6 +4,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 function Login() {
   const [currentState, setCurrentState] = React.useState("Login");
@@ -13,6 +14,8 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isGoogleAuthenticated, setIsGoogleAuthenticated] = useState(false);
+
+  const location = useLocation();
 
   const handleJwtDecode = async (jwt) => {
     const token = jwtDecode(jwt);
@@ -48,7 +51,9 @@ function Login() {
         if (response.data.success === true) {
           setToken(response.data.token);
           localStorage.setItem("token", response.data.token);
-          navigate("/");
+          if (!location.pathname.includes("product")) {
+            navigate("/");
+          }
           return response.data.message;
         } else {
           throw new Error(response.data.message);
@@ -125,7 +130,7 @@ function Login() {
       <form
         onSubmit={handleOnsubmitHandler}
         action=""
-        className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800"
+        className="flex flex-col items-center w-[90%] sm:max-w-96 m-auto  gap-4 text-gray-800"
       >
         <div className="inline-flex items-center gap-2 mb-2 mt-10">
           <p className="font-imprima text-3xl">{currentState}</p>
@@ -185,7 +190,7 @@ function Login() {
         </button>
       </form>
       <div className="flex flex-col justify-center items-center mt-3 space-y-2">
-        <p className="for">or</p>
+        {/* <p className="for">or</p> */}
         <GoogleLogin
           theme="filled_blue"
           onSuccess={async (credentialResponse) => {
