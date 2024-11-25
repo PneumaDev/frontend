@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner";
+import PrivateRoute from "./components/PrivateRoute";
 
 const Home = lazy(() => import("./pages/Home"));
 const Collection = lazy(() => import("./pages/Collection"));
@@ -81,10 +82,12 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/product/:productId" element={<Product />} />
-            <Route path="/cart" element={<Cart />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/placeorder" element={<PlaceOrder />} />
+              <Route path="/orders" element={<Orders />} />
+            </Route>
             <Route path="/login" element={<Login />} />
-            <Route path="/placeorder" element={<PlaceOrder />} />
-            <Route path="/orders" element={<Orders />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
