@@ -191,8 +191,13 @@ function Login() {
           {currentState === "Login" ? "Sign In" : "Sign Up"}
         </button>
       </form>
+
+      <div className="inline-flex items-center gap-2 mt-4">
+        <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
+        <p className="font-muktaVaani">OR</p>
+        <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
+      </div>
       <div className="flex flex-col justify-center items-center mt-3 space-y-2">
-        {/* <p className="for">or</p> */}
         <GoogleLogin
           theme="filled_blue"
           onSuccess={async (credentialResponse) => {
