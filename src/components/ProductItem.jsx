@@ -2,16 +2,30 @@ import React, { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AdvancedImage } from "@cloudinary/react";
+import { scale } from "@cloudinary/url-gen/actions/resize";
+import { lazyload } from "@cloudinary/react";
 
 export default function ProductItem({ id, image, price, name }) {
-  const { currency } = useContext(ShopContext);
+  const { currency, cloudinary } = useContext(ShopContext);
+
+  const publicId = image[0].split("/").slice(-2).join("/").split(".")[0];
+
+  // Generate optimized Cloudinary URL
+  const cldImg = cloudinary
+    .image(publicId)
+    .format("auto")
+    .quality("auto")
+    .resize(scale().width(400));
 
   return (
     <div className="relative text-gray-700 shadow-sm hover:shadow-lg p-4 rounded-md">
       <Link to={`/product/${id}`} className="cursor-pointer">
         <div className="overflow-hidden relative">
-          <img
-            src={image[0]}
+          {/* Use AdvancedImage to display the optimized image */}
+          <AdvancedImage
+            plugins={[lazyload()]}
+            cldImg={cldImg}
             alt={name}
             className="hover:scale-110 transition ease-in-out rounded-md hover:rounded-md"
           />
