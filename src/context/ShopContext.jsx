@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Cloudinary } from "@cloudinary/url-gen";
 
 export const ShopContext = createContext();
 
@@ -18,6 +19,10 @@ const ShopContextProvider = (props) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const currency = "Ksh.";
+
+  const cloudinary = new Cloudinary({
+    cloud: { cloudName: "ds5lreojp" },
+  });
 
   const addToCart = async (itemId, size) => {
     toast.dismiss();
@@ -199,6 +204,7 @@ const ShopContextProvider = (props) => {
     getUserCart,
     setAuthToken,
     authToken,
+    cloudinary,
   };
 
   return (
