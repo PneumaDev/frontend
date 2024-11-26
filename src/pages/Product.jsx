@@ -6,11 +6,20 @@ import RelatedProducts from "../components/RelatedProducts";
 import Spinner from "../components/Spinner";
 import Modal from "../components/Modal";
 import Login from "./Login";
+import { AdvancedImage } from "@cloudinary/react";
+import {
+  lazyload,
+  responsive,
+  accessibility,
+  placeholder,
+} from "@cloudinary/react";
+import { scale } from "@cloudinary/url-gen/actions/resize";
 
 export default function Product() {
   const [loading, setLoading] = useState(false);
   const { productId } = useParams();
-  const { products, currency, addToCart, token } = useContext(ShopContext);
+  const { products, currency, addToCart, token, cloudinary } =
+    useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -29,6 +38,8 @@ export default function Product() {
       // console.error("Product not found!");
     }
   };
+
+  console.log(products[0]);
 
   useEffect(() => {
     if (token) {
@@ -69,18 +80,51 @@ export default function Product() {
         {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
-            {productData.image?.map((img, index) => (
-              <img
-                onClick={() => setImage(img)}
-                key={index}
-                src={img}
-                alt={`Product ${index}`}
-                className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
-              />
-            ))}
+            {productData.image?.map((imgUrl, index) => {
+              // Extract the public ID from the full URL
+              const publicId = imgUrl
+                .split("/")
+                .slice(-2)
+                .join("/")
+                .split(".")[0];
+
+              // Create a Cloudinary image instance for thumbnails
+              const cldThumb = cloudinary
+                .image(publicId)
+                .format("auto")
+                .quality("auto")
+                .resize(scale().width(150)); // Thumbnail optimized size
+
+              // Create a Cloudinary image instance for the main display
+              const cldFullImg = cloudinary
+                .image(publicId)
+                .format("auto")
+                .quality("auto")
+                .resize(scale().width(1000)); // Full-size optimized image
+
+              return (
+                <AdvancedImage
+                  key={index}
+                  cldImg={cldThumb} // Render optimized thumbnail
+                  onClick={() => setImage(cldFullImg.toURL())} // Set full-size optimized URL on click
+                  className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+                  alt={`Product ${index}`}
+                />
+              );
+            })}
           </div>
           <div className="w-full sm:w-[80%]">
-            <img src={image} alt="Product" className="w-full h-auto" />
+            <AdvancedImage
+              src={image}
+              alt="Product"
+              className="w-full h-auto"
+              plugins={[
+                lazyload(),
+                responsive(),
+                accessibility(),
+                placeholder(),
+              ]}
+            />
           </div>
         </div>
 
