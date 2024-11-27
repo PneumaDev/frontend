@@ -39,8 +39,6 @@ export default function Product() {
     }
   };
 
-  console.log(products[0]);
-
   useEffect(() => {
     if (token) {
       setOpenModal(false);
