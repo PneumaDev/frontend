@@ -9,8 +9,10 @@ import { Copy } from "lucide-react";
 import InfoMessage from "../components/InfoComponent";
 
 export default function Orders() {
+  // <------Import Context Variables----->
   const { backendUrl, token } = useContext(ShopContext);
 
+  // <------------State Variables------------>
   const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
@@ -19,7 +21,20 @@ export default function Orders() {
   const [currentItem, setCurrentItem] = useState(selectedItem);
   const [action, setAction] = useState(null);
 
+  // <------------Handle Side Effects------------>
+  useEffect(() => {
+    fetchData();
+  }, [token]);
+
+  useEffect(() => {
+    if (currentItem._id) {
+      setSelectedItem(orderData.find((item) => item._id === currentItem._id));
+    }
+  }, [orderData]);
+
+  // <------------Custom Functions------------>
   const handleTrackOrder = async (e, item) => {
+    //Function to track orders
     setAction("track_order");
     setCurrentItem(item);
     setSendingData(true);
@@ -30,6 +45,7 @@ export default function Orders() {
     setSendingData(false);
   };
 
+  // Load Order Data
   const loadOrderData = async () => {
     try {
       if (!token) {
@@ -54,6 +70,34 @@ export default function Orders() {
     }
   };
 
+  // Proceed to Complete Stalled Purchases
+  const completePurchases = async () => {
+    if (selectedItem) {
+      try {
+        const orderId = selectedItem._id;
+        const checkoutRequestId = selectedItem.checkoutRequestId;
+
+        const response = await axios.post(
+          backendUrl + "/api/order/confirmpayment",
+          { orderId, checkoutRequestId },
+          { headers: { token } }
+        );
+
+        console.log(response.data);
+      } catch (error) {
+        console.error("Completing Payment:", error);
+      }
+    }
+  };
+
+  const completePurchasesConfirmation = async (e, order) => {
+    setSelectedItem(order);
+    setAction("complete_payment");
+    e.preventDefault();
+    console.log(order);
+    setOpenModal(true);
+  };
+
   const completePayment = async (e, item) => {
     setAction("complete_payment");
     setOpenModal(true);
@@ -61,7 +105,7 @@ export default function Orders() {
 
   // <--------------Cancel/Delete Item-------------->
   const cancelOrder = async (orderId) => {
-    // setLoading(true);
+    setLoading(true);
     try {
       const response = await axios.post(
         backendUrl + "/api/order/cancelorder",
@@ -95,16 +139,6 @@ export default function Orders() {
     await loadOrderData();
     setLoading(false);
   };
-
-  useEffect(() => {
-    fetchData();
-  }, [token]);
-
-  useEffect(() => {
-    if (currentItem._id) {
-      setSelectedItem(orderData.find((item) => item._id === currentItem._id));
-    }
-  }, [orderData]);
 
   return (
     <div className="border-t pt-16 bg-white">
@@ -260,7 +294,9 @@ export default function Orders() {
 
                       {!order.payment ? (
                         <button
-                          onClick={(e) => handlePayment(e, order)}
+                          onClick={(e) =>
+                            completePurchasesConfirmation(e, order)
+                          }
                           className="bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
                         >
                           Pay Now (KSH {order.amount.toLocaleString()})
@@ -303,6 +339,7 @@ export default function Orders() {
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
               onSubmitHandler={handleTrackOrder}
+              buttonsVisible={false}
             >
               {sendingData ? (
                 <div className="h-48 flex justify-center items-center">
@@ -361,7 +398,7 @@ export default function Orders() {
               )}
             </Modal>
           </>
-        ) : (
+        ) : action === "complete_payment" ? (
           <>
             <Modal
               button1={"Pay Now"}
@@ -369,9 +406,36 @@ export default function Orders() {
               title={"Complete Payment!"}
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
-              onSubmitHandler={handleTrackOrder}
-            ></Modal>
+              onSubmitHandler={completePurchases}
+            >
+              <>
+                <div className="space-y-6">
+                  <p className="text-base text-gray-500 font-muktaVaani">
+                    Hello,{" "}
+                    {selectedItem.address.firstName +
+                      " " +
+                      selectedItem.address.lastName}
+                    .
+                  </p>
+                  <p className="text-base text-gray-500 font-imprima">
+                    Please confirm Payment of{" "}
+                    <span className="font-semibold">
+                      Ksh. {selectedItem.amount}
+                    </span>{" "}
+                    to Eridanus Mall. You'll receive a prompt on your phone to
+                    the number{" "}
+                    <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium">
+                      {selectedItem.address.phone}
+                    </span>
+                    . Kindly enter your PIN and wait for confirmation after
+                    payment.
+                  </p>
+                </div>
+              </>
+            </Modal>
           </>
+        ) : (
+          <></>
         )}
       </div>
     </div>
