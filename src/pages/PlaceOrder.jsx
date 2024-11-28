@@ -8,11 +8,14 @@ import toast from "react-hot-toast";
 import ShippingMethodSelector from "../components/ShippingMethodSelector";
 import Spinner from "./../components/Spinner";
 import Modal from "../components/Modal";
+import InfoMessage from "../components/InfoComponent";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
   const [openModal, setOpenModal] = useState(false);
   const [sendingData, setSendingData] = useState(false);
+  const [paymentProcessed, setPaymentProcessed] = useState(false);
+  const [delay, setDelay] = useState(10);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -48,6 +51,9 @@ export default function PlaceOrder() {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
+  {
+    /* <------Handle Order Purchase-----> */
+  }
   const onSubmitHandler = async (e) => {
     setSendingData(true);
     e.preventDefault();
@@ -107,9 +113,13 @@ export default function PlaceOrder() {
           );
 
           if (response.data.success) {
-            setCartItems({});
-            navigate("/orders");
             setSendingData(false);
+            setPaymentProcessed(true);
+            setCartItems({});
+            countdownToFunction(() => {
+              navigate("/orders");
+            }, 10);
+            // navigate("/orders");
           }
 
         default:
@@ -119,6 +129,20 @@ export default function PlaceOrder() {
       console.error("Error creating order items:", error);
     }
   };
+
+  // Function for countdown
+  function countdownToFunction(callback, delay) {
+    const countdown = setInterval(() => {
+      delay--;
+      console.log(`Countdown: ${delay} seconds`);
+      setDelay(delay);
+
+      if (delay <= 0) {
+        clearInterval(countdown);
+        callback();
+      }
+    }, 1000);
+  }
 
   return (
     <form
@@ -287,12 +311,23 @@ export default function PlaceOrder() {
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
               onSubmitHandler={onSubmitHandler}
-              button1={"Pay Now"}
-              button2={"Cancel"}
+              button1={!sendingData && paymentProcessed ? null : "Pay Now"}
+              button2={!sendingData && paymentProcessed ? null : "Cancel"}
             >
               {sendingData ? (
                 <div className="h-48 flex justify-center items-center">
                   <Spinner />
+                </div>
+              ) : paymentProcessed ? (
+                <div className="space-y-4">
+                  <InfoMessage
+                    title={"Payment Processed Successfully"}
+                    type="success"
+                    message={
+                      "Please check your phone for Mpesa Prompt and enter your pin."
+                    }
+                  />
+                  <p className="font-muktaVaani">Redirecting in: {delay}</p>
                 </div>
               ) : (
                 <>
