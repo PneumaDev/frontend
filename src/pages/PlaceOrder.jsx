@@ -16,6 +16,7 @@ export default function PlaceOrder() {
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
   const [delay, setDelay] = useState(10);
+  const [pollOrderPayment, setPollOrderPayment] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -87,23 +88,6 @@ export default function PlaceOrder() {
         amount: getCartAmount() + deliveryFee,
       };
       switch (method) {
-        // <----Api Calls For COD orders----->
-        case "cod": {
-          const response = await axios.post(
-            backendUrl + "/api/order/place",
-            orderData,
-            { headers: { token } }
-          );
-          if (response.data.success) {
-            setCartItems({});
-            navigate("/orders");
-          } else {
-            toast.error(response.data.message);
-          }
-
-          break;
-        }
-
         case "mpesa":
           console.log("clicked");
           const response = await axios.post(
@@ -114,6 +98,7 @@ export default function PlaceOrder() {
 
           if (response.data.success) {
             setSendingData(false);
+            setPollOrderPayment(true);
             setPaymentProcessed(true);
             setCartItems({});
             countdownToFunction(() => {
