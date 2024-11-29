@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets, shippingMethods } from "../assets/assets";
@@ -29,6 +29,25 @@ export default function PlaceOrder() {
     country: "",
     phone: "",
   });
+
+  // <------------Functions For Side Effects------------>
+  useEffect(() => {
+    if (pollOrderPayment) {
+      pollPayment();
+    }
+  }, [pollOrderPayment]);
+
+  const pollPayment = async (order_id, checkout_id) => {
+    console.log(order_id);
+    setInterval(async () => {
+      const response = await axios.post(
+        backendUrl + "/api/order/confirmpayment",
+        { order_id, checkout_id },
+        { headers: { token } }
+      );
+      console.log(response);
+    }, 40000);
+  };
 
   const {
     navigate,
@@ -97,12 +116,16 @@ export default function PlaceOrder() {
           );
 
           if (response.data.success) {
-            setSendingData(false);
-            setPollOrderPayment(true);
             setPaymentProcessed(true);
+            console.log(response.data);
+            setSendingData(false);
+            await pollPayment(
+              response.datadata.orderId,
+              response.data.checkoutId
+            );
             setCartItems({});
             countdownToFunction(() => {
-              navigate("/orders");
+              // navigate("/orders");
             }, 10);
             // navigate("/orders");
           }
