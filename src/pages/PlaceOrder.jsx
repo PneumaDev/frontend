@@ -311,8 +311,8 @@ export default function PlaceOrder() {
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
               onSubmitHandler={onSubmitHandler}
-              button1={!sendingData && paymentProcessed ? null : "Pay Now"}
-              button2={!sendingData && paymentProcessed ? null : "Cancel"}
+              button1={sendingData || paymentProcessed ? null : "Pay Now"}
+              button2={sendingData | paymentProcessed ? null : "Cancel"}
             >
               {sendingData ? (
                 <div className="h-48 flex justify-center items-center">
