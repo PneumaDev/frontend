@@ -15,7 +15,7 @@ export default function PlaceOrder() {
   const [openModal, setOpenModal] = useState(false);
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
-  const [delay, setDelay] = useState(10);
+  const [delay, setDelay] = useState(13);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -29,18 +29,6 @@ export default function PlaceOrder() {
     phone: "",
   });
 
-  const pollPayment = async (order_id, checkout_id) => {
-    console.log(order_id);
-    setTimeout(async () => {
-      const response = await axios.post(
-        backendUrl + "/api/order/confirmpayment",
-        { order_id, checkout_id },
-        { headers: { token } }
-      );
-      console.log(response);
-    }, 10000);
-  };
-
   const {
     navigate,
     backendUrl,
@@ -51,6 +39,18 @@ export default function PlaceOrder() {
     deliveryFee,
     products,
   } = useContext(ShopContext);
+
+  const pollPayment = async (order_id, checkout_id) => {
+    console.log(order_id);
+    setTimeout(async () => {
+      const response = await axios.post(
+        backendUrl + "/api/order/confirmpayment",
+        { order_id, checkout_id },
+        { headers: { token } }
+      );
+      console.log(response);
+    }, 3000);
+  };
 
   const toggleModalOpen = (e) => {
     e.preventDefault();
@@ -63,9 +63,7 @@ export default function PlaceOrder() {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
-  {
-    /* <------Handle Order Purchase-----> */
-  }
+  // <------------HAndle Order Purchases------------>
   const onSubmitHandler = async (e) => {
     setSendingData(true);
     e.preventDefault();
@@ -110,14 +108,11 @@ export default function PlaceOrder() {
           if (response.data.success) {
             setSendingData(false);
             setPaymentProcessed(true);
-            await pollPayment(
-              response.datadata.orderId,
-              response.data.checkoutId
-            );
-            setCartItems({});
             countdownToFunction(() => {
-              // navigate("/orders");
+              navigate("/orders");
             }, 13);
+            setCartItems({});
+            await pollPayment(response.data.orderId, response.data.checkoutId);
             // navigate("/orders");
           }
 
@@ -133,9 +128,8 @@ export default function PlaceOrder() {
   function countdownToFunction(callback, delay) {
     const countdown = setInterval(() => {
       delay--;
-      console.log(`Countdown: ${delay} seconds`);
       setDelay(delay);
-
+      console.log(`Countdown: ${delay} seconds`);
       if (delay <= 0) {
         clearInterval(countdown);
         callback();
