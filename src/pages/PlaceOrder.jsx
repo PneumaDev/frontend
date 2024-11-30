@@ -16,7 +16,6 @@ export default function PlaceOrder() {
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
   const [delay, setDelay] = useState(10);
-  const [pollOrderPayment, setPollOrderPayment] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -30,23 +29,16 @@ export default function PlaceOrder() {
     phone: "",
   });
 
-  // <------------Functions For Side Effects------------>
-  useEffect(() => {
-    if (pollOrderPayment) {
-      pollPayment();
-    }
-  }, [pollOrderPayment]);
-
   const pollPayment = async (order_id, checkout_id) => {
     console.log(order_id);
-    setInterval(async () => {
+    setTimeout(async () => {
       const response = await axios.post(
         backendUrl + "/api/order/confirmpayment",
         { order_id, checkout_id },
         { headers: { token } }
       );
       console.log(response);
-    }, 40000);
+    }, 10000);
   };
 
   const {
@@ -116,9 +108,8 @@ export default function PlaceOrder() {
           );
 
           if (response.data.success) {
-            setPaymentProcessed(true);
-            console.log(response.data);
             setSendingData(false);
+            setPaymentProcessed(true);
             await pollPayment(
               response.datadata.orderId,
               response.data.checkoutId
@@ -126,7 +117,7 @@ export default function PlaceOrder() {
             setCartItems({});
             countdownToFunction(() => {
               // navigate("/orders");
-            }, 10);
+            }, 13);
             // navigate("/orders");
           }
 
@@ -320,7 +311,7 @@ export default function PlaceOrder() {
               onClose={() => setOpenModal(false)}
               onSubmitHandler={onSubmitHandler}
               button1={sendingData || paymentProcessed ? null : "Pay Now"}
-              button2={sendingData | paymentProcessed ? null : "Cancel"}
+              button2={sendingData || paymentProcessed ? null : "Cancel"}
             >
               {sendingData ? (
                 <div className="h-48 flex justify-center items-center">
