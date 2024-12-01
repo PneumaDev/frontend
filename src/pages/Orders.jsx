@@ -98,11 +98,6 @@ export default function Orders() {
     setOpenModal(true);
   };
 
-  const completePayment = async (e, item) => {
-    setAction("complete_payment");
-    setOpenModal(true);
-  };
-
   // <--------------Cancel/Delete Item-------------->
   const cancelOrder = async (orderId) => {
     setLoading(true);
