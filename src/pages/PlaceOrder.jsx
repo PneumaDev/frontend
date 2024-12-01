@@ -4,7 +4,6 @@ import CartTotal from "../components/CartTotal";
 import { assets, shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
-import toast from "react-hot-toast";
 import ShippingMethodSelector from "../components/ShippingMethodSelector";
 import Spinner from "./../components/Spinner";
 import Modal from "../components/Modal";
