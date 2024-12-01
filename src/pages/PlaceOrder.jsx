@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
-import { assets, shippingMethods } from "../assets/assets";
+import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import ShippingMethodSelector from "../components/ShippingMethodSelector";
@@ -47,7 +47,7 @@ export default function PlaceOrder() {
         { order_id, checkout_id },
         { headers: { token } }
       );
-      console.log(response);
+      console.log(response.data);
     }, 7500);
   };
 
@@ -62,7 +62,7 @@ export default function PlaceOrder() {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
-  // <------------HAndle Order Purchases------------>
+  // <------------Handle Order Purchases------------>
   const onSubmitHandler = async (e) => {
     setSendingData(true);
     e.preventDefault();
@@ -105,13 +105,13 @@ export default function PlaceOrder() {
           );
 
           if (response.data.success) {
+            pollPayment(response.data.orderId, response.data.checkoutId);
             setSendingData(false);
             setPaymentProcessed(true);
             countdownToFunction(() => {
               navigate("/orders");
             }, 15);
             setCartItems({});
-            await pollPayment(response.data.orderId, response.data.checkoutId);
             // navigate("/orders");
           }
 
@@ -128,7 +128,6 @@ export default function PlaceOrder() {
     const countdown = setInterval(() => {
       delay--;
       setDelay(delay);
-      console.log(`Countdown: ${delay} seconds`);
       if (delay <= 0) {
         clearInterval(countdown);
         callback();
