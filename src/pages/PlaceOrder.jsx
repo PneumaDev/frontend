@@ -14,7 +14,7 @@ export default function PlaceOrder() {
   const [openModal, setOpenModal] = useState(false);
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
-  const [delay, setDelay] = useState(13);
+  const [delay, setDelay] = useState(15);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -48,7 +48,7 @@ export default function PlaceOrder() {
         { headers: { token } }
       );
       console.log(response);
-    }, 3000);
+    }, 7500);
   };
 
   const toggleModalOpen = (e) => {
@@ -109,7 +109,7 @@ export default function PlaceOrder() {
             setPaymentProcessed(true);
             countdownToFunction(() => {
               navigate("/orders");
-            }, 13);
+            }, 15);
             setCartItems({});
             await pollPayment(response.data.orderId, response.data.checkoutId);
             // navigate("/orders");
