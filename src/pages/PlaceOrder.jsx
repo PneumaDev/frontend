@@ -8,6 +8,7 @@ import ShippingMethodSelector from "../components/ShippingMethodSelector";
 import Spinner from "./../components/Spinner";
 import Modal from "../components/Modal";
 import InfoMessage from "../components/InfoComponent";
+import toast from "react-hot-toast";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
@@ -120,6 +121,8 @@ export default function PlaceOrder() {
       }
     } catch (error) {
       console.error("Error creating order items:", error);
+      toast.error(error.message, { id: error.message });
+      setSendingData(false);
     }
   };
 
@@ -304,6 +307,9 @@ export default function PlaceOrder() {
               onSubmitHandler={onSubmitHandler}
               button1={sendingData || paymentProcessed ? null : "Pay Now"}
               button2={sendingData || paymentProcessed ? null : "Cancel"}
+              cancelButton={
+                sendingData ? false : paymentProcessed ? false : true
+              }
             >
               {sendingData ? (
                 <div className="h-48 flex justify-center items-center">
