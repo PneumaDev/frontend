@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
-import { assets, shippingMethods } from "../assets/assets";
+import { assets } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 import ShippingMethodSelector from "../components/ShippingMethodSelector";
 import Spinner from "./../components/Spinner";
 import Modal from "../components/Modal";
 import InfoMessage from "../components/InfoComponent";
+import toast from "react-hot-toast";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
@@ -47,7 +48,7 @@ export default function PlaceOrder() {
         { order_id, checkout_id },
         { headers: { token } }
       );
-      console.log(response);
+      console.log(response.data);
     }, 7500);
   };
 
@@ -62,7 +63,7 @@ export default function PlaceOrder() {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
-  // <------------HAndle Order Purchases------------>
+  // <------------Handle Order Purchases------------>
   const onSubmitHandler = async (e) => {
     setSendingData(true);
     e.preventDefault();
@@ -105,13 +106,13 @@ export default function PlaceOrder() {
           );
 
           if (response.data.success) {
+            pollPayment(response.data.orderId, response.data.checkoutId);
             setSendingData(false);
             setPaymentProcessed(true);
             countdownToFunction(() => {
               navigate("/orders");
             }, 15);
             setCartItems({});
-            await pollPayment(response.data.orderId, response.data.checkoutId);
             // navigate("/orders");
           }
 
@@ -120,6 +121,8 @@ export default function PlaceOrder() {
       }
     } catch (error) {
       console.error("Error creating order items:", error);
+      toast.error(error.message, { id: error.message });
+      setSendingData(false);
     }
   };
 
@@ -128,7 +131,6 @@ export default function PlaceOrder() {
     const countdown = setInterval(() => {
       delay--;
       setDelay(delay);
-      console.log(`Countdown: ${delay} seconds`);
       if (delay <= 0) {
         clearInterval(countdown);
         callback();
@@ -305,6 +307,9 @@ export default function PlaceOrder() {
               onSubmitHandler={onSubmitHandler}
               button1={sendingData || paymentProcessed ? null : "Pay Now"}
               button2={sendingData || paymentProcessed ? null : "Cancel"}
+              cancelButton={
+                sendingData ? false : paymentProcessed ? false : true
+              }
             >
               {sendingData ? (
                 <div className="h-48 flex justify-center items-center">

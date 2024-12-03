@@ -1,4 +1,5 @@
 export default function Modal({
+  cancelButton = true,
   isOpen,
   onClose,
   children,
@@ -13,12 +14,14 @@ export default function Modal({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70 px-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-8 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
-        >
-          &times;
-        </button>
+        {cancelButton && (
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+          >
+            &times;
+          </button>
+        )}
         <h2 className="font-bold text-xl text-center mb-4 font-muktaVaani border-b-[1px] pb-2">
           {title}
         </h2>
