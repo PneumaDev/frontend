@@ -25,10 +25,10 @@ export default function Hero() {
                 <p className="text-sm md:text-base font-yantramanav tracking-widest mb-2">
                   BESTSELLER COLLECTION
                 </p>
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl leading-tight prata-regular">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-muktaVaani leading-tight prata-regular">
                   Latest Trends of the Season
                 </h1>
-                <p className="text-gray-600 text-sm md:text-base mt-4">
+                <p className="text-gray-600 text-sm md:text-base mt-4 font-imprima">
                   Explore our curated collection designed to elevate your
                   wardrobe and add sophistication to every look.
                 </p>
@@ -61,7 +61,7 @@ export default function Hero() {
                 <p className="text-sm md:text-base font-yantramanav tracking-widest mb-2">
                   NEW ARRIVALS
                 </p>
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl leading-tight prata-regular font-ya">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl leading-tight prata-regular font-muktaVaani">
                   Exclusive Styles for You
                 </h1>
                 <p className="text-gray-600 text-sm md:text-base mt-4 font-imprima">
@@ -99,11 +99,11 @@ export default function Hero() {
                 <h1 className="text-3xl sm:text-5xl lg:text-6xl leading-tight prata-regular">
                   Up to 50% Off!
                 </h1>
-                <p className="text-gray-600 text-sm md:text-base mt-4">
+                <p className="text-gray-600 text-sm md:text-base mt-4 font-imprima">
                   Don't miss out on our exclusive discounts. Shop now and save
                   big on your favorite items.
                 </p>
-                <button className="mt-6 bg-red-600 text-white py-2 px-6 rounded-lg text-sm md:text-base font-semibold shadow-lg hover:bg-red-500 transition">
+                <button className="mt-6 bg-red-600 text-white py-2 px-6 rounded-lg text-sm md:text-base font-semibold shadow-lg hover:bg-red-500 transition font-muktaVaani">
                   Shop the Sale
                 </button>
               </div>
