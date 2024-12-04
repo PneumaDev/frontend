@@ -76,11 +76,14 @@ export default function Orders() {
     if (selectedItem) {
       try {
         const orderId = selectedItem._id;
-        const checkoutRequestId = selectedItem.checkoutRequestId;
+        const checkout_id = selectedItem.checkoutRequestId;
+        const retryPurchase = true;
+        const amount = selectedItem.amount;
+        const phoneNumber = selectedItem.address.phone;
 
         const response = await axios.post(
           backendUrl + "/api/order/confirmpayment",
-          { orderId, checkoutRequestId },
+          { orderId, checkout_id, retryPurchase, amount, phoneNumber },
           { headers: { token } }
         );
 
