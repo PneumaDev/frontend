@@ -106,6 +106,7 @@ export default function Orders() {
     // Cancel/Delete Item
     setLoading(true);
     try {
+      window.scrollTo({ top: 0, behavior: "smooth" });
       const response = await axios.post(
         backendUrl + "/api/order/cancelorder",
         { orderId },
