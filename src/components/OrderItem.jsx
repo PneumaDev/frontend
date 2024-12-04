@@ -12,14 +12,14 @@ export default function OrderItem({
   handleWriteReview,
 }) {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
-  console.log(secondsElapsed);
-
+  // Track seconds elapsed since order was created
   useEffect(() => {
     const orderAgeInSeconds = calculateTimePassed(order.createdAt);
     setSecondsElapsed(orderAgeInSeconds);
 
-    if (orderAgeInSeconds < 30) {
+    if (orderAgeInSeconds < 100) {
       const interval = setInterval(() => {
         setSecondsElapsed((prev) => {
           if (prev + 1 >= 30) {
@@ -33,6 +33,36 @@ export default function OrderItem({
       return () => clearInterval(interval);
     } else {
       setSecondsElapsed(30);
+    }
+  }, [order.createdAt, calculateTimePassed]);
+
+  // Track countdown timer if order is less than 15 minutes old
+  useEffect(() => {
+    const orderAgeInSeconds = calculateTimePassed(order.createdAt);
+    if (orderAgeInSeconds < 900) {
+      const remainingTime = 900 - orderAgeInSeconds;
+      setCountdown({
+        minutes: Math.floor(remainingTime / 60),
+        seconds: remainingTime % 60,
+      });
+
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev.minutes === 0 && prev.seconds === 0) {
+            clearInterval(timer);
+            cancelOrder(order._id);
+            return { minutes: 0, seconds: 0 };
+          }
+
+          const totalSeconds = prev.minutes * 60 + prev.seconds - 1;
+          return {
+            minutes: Math.floor(totalSeconds / 60),
+            seconds: totalSeconds % 60,
+          };
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
     }
   }, [order.createdAt, calculateTimePassed]);
 
@@ -121,9 +151,20 @@ export default function OrderItem({
           <p className="text-lg font-medium text-gray-800">
             KSH {order.amount.toLocaleString()}
           </p>
-          <p className="text-sm text-gray-500 font-yantramanav mt-1">
-            Payment Status: {order.payment ? "Paid" : "Pending"}
-          </p>
+
+          {countdown.minutes > 0 || countdown.seconds > 0 ? (
+            <div className="text-center text-sm text-gray-600 font-yantramanav">
+              Remaining:{" "}
+              <span className="font-muktaVaani">{countdown.minutes}</span>:
+              <span className="font-muktaVaani">
+                {countdown.seconds.toString().padStart(2, "0")}
+              </span>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500 font-yantramanav mt-1">
+              Status: {order.payment ? "Paid" : "Pending"}
+            </p>
+          )}
         </div>
       </div>
 
