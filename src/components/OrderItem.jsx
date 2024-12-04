@@ -70,9 +70,6 @@ export default function OrderItem({
     <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow space-y-4">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
-          <p className="text-sm text-gray-500 font-yantramanav font-semibold">
-            ID: <span className="font-muktaVaani">{order._id}</span>
-          </p>
           <p className="text-sm text-gray-500 font-yantramanav">
             Placed on {new Date(order.date).toLocaleDateString()}
           </p>
@@ -83,13 +80,15 @@ export default function OrderItem({
         <div
           className={`px-3 py-1 rounded-full text-sm font-medium font-yantramanav ${
             order.status === "Delivered"
-              ? "bg-green-100 text-green-800"
+              ? "bg-green-200 text-green-900"
               : order.status === "Shipped"
               ? "bg-blue-100 text-blue-800"
               : order.status === "Packing"
               ? "bg-orange-100 text-orange-600"
               : order.status === "Pending"
               ? "bg-orange-100 text-orange-800"
+              : order.status === "Confirmed"
+              ? "bg-teal-100 text-teal-800"
               : "bg-red-100 text-red-800"
           }`}
         >
@@ -176,7 +175,7 @@ export default function OrderItem({
                 id: "Feature Not Implemented",
               });
             }}
-            className="border bg-blue-100 px-4 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-200 text-gray-700 cursor-pointer"
+            className="border bg-blue-200 px-4 py-2 text-sm font-medium rounded-md transition-colors hover:bg-blue-300 text-gray-700 cursor-pointer"
           >
             Apply For Refund
           </button>
@@ -225,7 +224,7 @@ export default function OrderItem({
         <div className="flex justify-end">
           <button
             onClick={() => handleWriteReview(order)}
-            className="mt-4 bg-gray-900 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-gray-800 transition-colors"
+            className="mt-4 bg-gray-60 text-white px-4 py-2 text-sm font-medium rounded-md bg-gray-700 hover:bg-gray-950 transition-colors"
           >
             Write a Review
           </button>
