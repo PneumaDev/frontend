@@ -22,9 +22,9 @@ export default function OrderItem({
     if (orderAgeInSeconds < 100) {
       const interval = setInterval(() => {
         setSecondsElapsed((prev) => {
-          if (prev + 1 >= 30) {
+          if (prev + 1 >= 60) {
             clearInterval(interval);
-            return 30;
+            return 60;
           }
           return prev + 1;
         });
@@ -34,11 +34,11 @@ export default function OrderItem({
     } else {
       setSecondsElapsed(30);
     }
-  }, [order.createdAt, calculateTimePassed]);
+  }, [order.updatedAt, calculateTimePassed]);
 
   // Track countdown timer if order is less than 15 minutes old
   useEffect(() => {
-    const orderAgeInSeconds = calculateTimePassed(order.createdAt);
+    const orderAgeInSeconds = calculateTimePassed(order.updatedAt);
     if (orderAgeInSeconds < 900) {
       const remainingTime = 900 - orderAgeInSeconds;
       setCountdown({
@@ -50,7 +50,7 @@ export default function OrderItem({
         setCountdown((prev) => {
           if (prev.minutes === 0 && prev.seconds === 0) {
             clearInterval(timer);
-            cancelOrder(order._id);
+            // cancelOrder(order._id);
             return { minutes: 0, seconds: 0 };
           }
 
@@ -196,18 +196,34 @@ export default function OrderItem({
         {!order.payment ? (
           <button
             onClick={(e) => completePurchasesConfirmation(e, order)}
-            className="bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+            className="relative bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-700 active:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+            disabled={secondsElapsed < 30}
           >
             {secondsElapsed < 30 ? (
-              <div className="flex justify-center items-center gap-2">
-                <p>Checking: {30 - secondsElapsed}</p>
-                <RefreshCw
-                  className="me-1 inline-block animate-spin"
-                  size={16}
-                />
+              <div className="flex items-center gap-2">
+                <p className="text-xs font-medium">
+                  Checking: {30 - secondsElapsed}s
+                </p>
+                <RefreshCw className="animate-spin" size={16} />
               </div>
             ) : (
-              "Pay Now"
+              <span className="flex items-center gap-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 8v4m0 4h.01m6.938-2A7.938 7.938 0 1112 4.062a7.938 7.938 0 016.938 10z"
+                  />
+                </svg>
+                Pay Now
+              </span>
             )}
           </button>
         ) : (
