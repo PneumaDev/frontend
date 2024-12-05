@@ -14,12 +14,12 @@ export default function OrderItem({
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
-  // Track seconds elapsed since order was created
+  // Track seconds elapsed since order was updated
   useEffect(() => {
-    const orderAgeInSeconds = calculateTimePassed(order.createdAt);
+    const orderAgeInSeconds = calculateTimePassed(order.updatedAt);
     setSecondsElapsed(orderAgeInSeconds);
 
-    if (orderAgeInSeconds < 100) {
+    if (orderAgeInSeconds < 60) {
       const interval = setInterval(() => {
         setSecondsElapsed((prev) => {
           if (prev + 1 >= 60) {
@@ -32,7 +32,7 @@ export default function OrderItem({
 
       return () => clearInterval(interval);
     } else {
-      setSecondsElapsed(30);
+      setSecondsElapsed(60);
     }
   }, [order.updatedAt, calculateTimePassed]);
 
@@ -64,7 +64,7 @@ export default function OrderItem({
 
       return () => clearInterval(timer);
     }
-  }, [order.createdAt, calculateTimePassed]);
+  }, [order.updatedAt, calculateTimePassed]);
 
   return (
     <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow space-y-4">
@@ -197,12 +197,12 @@ export default function OrderItem({
           <button
             onClick={(e) => completePurchasesConfirmation(e, order)}
             className="relative bg-blue-600 text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-blue-700 active:bg-blue-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2"
-            disabled={secondsElapsed < 30}
+            disabled={secondsElapsed < 60}
           >
-            {secondsElapsed < 30 ? (
+            {secondsElapsed < 60 ? (
               <div className="flex items-center gap-2">
                 <p className="text-xs font-medium">
-                  Checking: {30 - secondsElapsed}s
+                  Checking: {60 - secondsElapsed}s
                 </p>
                 <RefreshCw className="animate-spin" size={16} />
               </div>
