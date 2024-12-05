@@ -41,7 +41,6 @@ export default function PlaceOrder() {
   } = useContext(ShopContext);
 
   const pollPayment = async (order_id, checkout_id) => {
-    console.log(order_id);
     setTimeout(async () => {
       const response = await axios.post(
         backendUrl + "/api/order/confirmpayment",
@@ -83,9 +82,9 @@ export default function PlaceOrder() {
             );
 
             if (itemInfo) {
-              itemInfo.size = item; // Assign size to itemInfo
-              itemInfo.quantity = itemSizes[item]; // Assign quantity
-              orderItems.push(itemInfo); // Add itemInfo to orderItems
+              itemInfo.size = item;
+              itemInfo.quantity = itemSizes[item];
+              orderItems.push(itemInfo);
             }
           }
         }
@@ -98,7 +97,6 @@ export default function PlaceOrder() {
       };
       switch (method) {
         case "mpesa":
-          console.log("clicked");
           const response = await axios.post(
             backendUrl + "/api/order/mpesa",
             orderData,
