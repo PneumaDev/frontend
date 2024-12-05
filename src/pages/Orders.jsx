@@ -217,8 +217,6 @@ export default function Orders() {
               title={"Order Tracking"}
               isOpen={openModal}
               onClose={() => setOpenModal(false)}
-              onSubmitHandler={handleTrackOrder}
-              buttonsVisible={false}
             >
               {sendingData ? (
                 <div className="h-48 flex justify-center items-center">
