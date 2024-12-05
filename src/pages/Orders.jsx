@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Spinner from "./../components/Spinner";
 import Modal from "../components/Modal";
-import { Copy, RefreshCw } from "lucide-react";
+import { Copy } from "lucide-react";
 import InfoMessage from "../components/InfoComponent";
 import OrderItem from "../components/OrderItem";
 
@@ -21,6 +21,8 @@ export default function Orders() {
   const [selectedItem, setSelectedItem] = useState({});
   const [currentItem, setCurrentItem] = useState(selectedItem);
   const [action, setAction] = useState(null);
+  const [delay, setDelay] = useState(10);
+  const [paymentProcessed, setPaymentProcessed] = useState(false);
 
   // <-------------------Handle Side Effects---------------->
   useEffect(() => {
@@ -72,6 +74,7 @@ export default function Orders() {
   };
 
   const completePurchases = async () => {
+    setSendingData(true);
     // Proceed to Complete Stalled Purchases
     if (selectedItem) {
       try {
@@ -88,8 +91,18 @@ export default function Orders() {
         );
 
         console.log(response.data);
+        setSendingData(false);
+        setPaymentProcessed(true);
+        await countdownToFunction(async () => {
+          setOpenModal(false);
+          setPaymentProcessed(false);
+          await fetchData();
+        }, 10);
       } catch (error) {
         console.error("Completing Payment:", error);
+      } finally {
+        setSendingData(false);
+        setDelay(10);
       }
     }
   };
@@ -145,6 +158,17 @@ export default function Orders() {
     const currentTime = new Date();
     return Math.floor((currentTime - updatedAt) / 1000);
   };
+
+  async function countdownToFunction(callback, delay) {
+    const countdown = setInterval(() => {
+      delay--;
+      setDelay(delay);
+      if (delay <= 0) {
+        clearInterval(countdown);
+        callback();
+      }
+    }, 1000);
+  }
 
   return (
     <div className="border-t pt-16 bg-white">
@@ -256,37 +280,59 @@ export default function Orders() {
         ) : action === "complete_payment" ? (
           <>
             <Modal
-              button1={"Pay Now"}
-              button2={"Close"}
+              button1={sendingData || paymentProcessed ? null : "Proceed"}
+              button2={sendingData || paymentProcessed ? null : "Cancel"}
               title={"Complete Payment!"}
               isOpen={openModal}
+              cancelButton={
+                sendingData ? false : paymentProcessed ? false : true
+              }
               onClose={() => setOpenModal(false)}
               onSubmitHandler={completePurchases}
             >
-              <>
-                <div className="space-y-6">
-                  <p className="text-base text-gray-500 font-muktaVaani">
-                    Hello,{" "}
-                    {selectedItem.address.firstName +
-                      " " +
-                      selectedItem.address.lastName}
-                    .
-                  </p>
-                  <p className="text-base text-gray-500 font-imprima">
-                    Please confirm Payment of{" "}
-                    <span className="font-semibold">
-                      Ksh. {selectedItem.amount}
-                    </span>{" "}
-                    to Eridanus Mall. You'll receive a prompt on your phone to
-                    the number{" "}
-                    <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium">
-                      {selectedItem.address.phone}
-                    </span>
-                    . Kindly enter your PIN and wait for confirmation after
-                    payment.
+              {sendingData ? (
+                <div className="h-48 flex justify-center items-center">
+                  <Spinner />
+                </div>
+              ) : paymentProcessed ? (
+                <div className="space-y-4">
+                  <InfoMessage
+                    title={"Payment Processed Successfully"}
+                    type="success"
+                    message={
+                      "Please check your phone for Mpesa Prompt and enter your pin."
+                    }
+                  />
+                  <p className="font-muktaVaani flex justify-center">
+                    Reloading in: {delay}
                   </p>
                 </div>
-              </>
+              ) : (
+                <>
+                  <div className="space-y-6">
+                    <p className="text-base text-gray-500 font-muktaVaani">
+                      Hello,{" "}
+                      {selectedItem.address.firstName +
+                        " " +
+                        selectedItem.address.lastName}
+                      .
+                    </p>
+                    <p className="text-base text-gray-500 font-imprima">
+                      Please confirm Payment of{" "}
+                      <span className="font-semibold">
+                        Ksh. {selectedItem.amount}
+                      </span>{" "}
+                      to Eridanus Mall. You'll receive a prompt on your phone to
+                      the number{" "}
+                      <span className="bg-slate-300 p-[1px] px-1 rounded-md font-medium">
+                        {selectedItem.address.phone}
+                      </span>
+                      . Kindly enter your PIN and wait for confirmation after
+                      payment.
+                    </p>
+                  </div>
+                </>
+              )}
             </Modal>
           </>
         ) : (
