@@ -2,12 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import toast from "react-hot-toast";
 import { AdvancedImage } from "@cloudinary/react";
-import {
-  lazyload,
-  responsive,
-  accessibility,
-  placeholder,
-} from "@cloudinary/react";
+import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import { ShopContext } from "../context/ShopContext";
 
