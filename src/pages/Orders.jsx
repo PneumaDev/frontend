@@ -90,7 +90,6 @@ export default function Orders() {
           { headers: { token } }
         );
 
-        console.log(response.data);
         setSendingData(false);
         setPaymentProcessed(true);
         await countdownToFunction(async () => {
