@@ -5,6 +5,7 @@ import { AdvancedImage } from "@cloudinary/react";
 import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
 
 export default function OrderItem({
   order,
@@ -18,7 +19,7 @@ export default function OrderItem({
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
-  const { cloudinary } = useContext(ShopContext);
+  const { cloudinary, backendUrl, token } = useContext(ShopContext);
 
   // Track seconds elapsed since order was updated
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function OrderItem({
       const interval = setInterval(() => {
         setSecondsElapsed((prev) => {
           if (prev + 1 >= 60) {
+            clearInterval(secondsPollInterval);
             clearInterval(interval);
             return 60;
           }
@@ -36,7 +38,14 @@ export default function OrderItem({
         });
       }, 1000);
 
-      return () => clearInterval(interval);
+      const secondsPollInterval = setInterval(() => {
+        pollPayment();
+      }, 15000);
+
+      return () => {
+        clearInterval(interval);
+        clearInterval(secondsPollInterval);
+      };
     } else {
       setSecondsElapsed(60);
     }
@@ -56,6 +65,7 @@ export default function OrderItem({
         setCountdown((prev) => {
           if (prev.minutes === 0 && prev.seconds === 0) {
             clearInterval(timer);
+            clearInterval(pollInterval);
             // cancelOrder(order._id);
             return { minutes: 0, seconds: 0 };
           }
@@ -68,7 +78,14 @@ export default function OrderItem({
         });
       }, 1000);
 
-      return () => clearInterval(timer);
+      const pollInterval = setInterval(() => {
+        pollPayment();
+      }, 300000);
+
+      return () => {
+        clearInterval(timer);
+        clearInterval(pollInterval);
+      };
     }
   }, [order.updatedAt, calculateTimePassed]);
 
@@ -90,6 +107,18 @@ export default function OrderItem({
         .resize(scale().width(150));
     });
   }, [order.items]);
+
+  const pollPayment = async () => {
+    const checkout_id = order.checkoutRequestId;
+    const res = await axios.post(
+      backendUrl + "/api/order/confirmpayment",
+      { checkout_id },
+      { headers: { token } }
+    );
+    if (res.data.status === 0) {
+    } else {
+    }
+  };
 
   return (
     <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-md transition-shadow space-y-4">
