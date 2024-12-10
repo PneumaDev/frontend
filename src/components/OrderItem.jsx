@@ -115,8 +115,9 @@ export default function OrderItem({
       { checkout_id },
       { headers: { token } }
     );
-    if (res.data.status === 0) {
+    if (res.data.status && res.data.status === 0) {
     } else {
+      console.log("Payment not successful");
     }
   };
 
