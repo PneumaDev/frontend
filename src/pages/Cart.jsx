@@ -13,13 +13,13 @@ export default function Cart() {
     cartItems,
     updateQuantity,
     navigate,
-    setDeliveryFee,
+    setDelivery,
   } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
     const fetchUserCartData = async () => {
-      setDeliveryFee(0);
+      setDelivery({ price: 0, method: "" });
       await getUserCart();
     };
 
