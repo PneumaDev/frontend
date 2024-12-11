@@ -4,7 +4,7 @@ import { shippingMethods } from "../assets/assets";
 import { ShopContext } from "../context/ShopContext";
 
 export default function ShippingMethodSelector() {
-  const { setDeliveryFee, shippingMethod } = useContext(ShopContext);
+  const { setDelivery, shippingMethod } = useContext(ShopContext);
 
   const [selectedMethod, setSelectedMethod] = useState({
     method: "Shop Pickup - Ronald Ngala Street",
@@ -22,7 +22,12 @@ export default function ShippingMethodSelector() {
   };
 
   useEffect(() => {
-    setDeliveryFee(selectedMethod.price === "FREE" ? 0 : selectedMethod.price);
+    // setDelivery(selectedMethod.price === "FREE" ? 0 : selectedMethod.price);
+
+    setDelivery({
+      price: selectedMethod.price === "FREE" ? 0 : selectedMethod.price,
+      method: selectedMethod.method,
+    });
   }, [selectedMethod]);
 
   return (
