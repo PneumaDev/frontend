@@ -36,7 +36,7 @@ export default function PlaceOrder() {
     cartItems,
     setCartItems,
     getCartAmount,
-    deliveryFee,
+    delivery,
     products,
   } = useContext(ShopContext);
 
@@ -91,9 +91,10 @@ export default function PlaceOrder() {
       }
 
       let orderData = {
+        shippingMethod: delivery.method,
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + deliveryFee,
+        amount: getCartAmount() + delivery.price,
       };
       switch (method) {
         case "mpesa":
@@ -333,7 +334,7 @@ export default function PlaceOrder() {
                     <p className="text-base text-gray-500 font-imprima">
                       Please confirm Payment of{" "}
                       <span className="font-semibold">
-                        Ksh. {getCartAmount() + deliveryFee}
+                        Ksh. {getCartAmount() + delivery.price}
                       </span>{" "}
                       to Eridanus Mall. You'll receive a prompt on your phone to
                       the number{" "}
