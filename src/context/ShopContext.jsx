@@ -12,7 +12,7 @@ const ShopContextProvider = (props) => {
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
-  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [delivery, setDelivery] = useState({ price: 0, method: "" });
   const [authToken, setAuthToken] = useState(null);
   const navigate = useNavigate();
 
@@ -184,7 +184,7 @@ const ShopContextProvider = (props) => {
   const value = {
     products,
     currency,
-    deliveryFee,
+    delivery,
     search,
     setSearch,
     showSearch,
@@ -199,7 +199,7 @@ const ShopContextProvider = (props) => {
     token,
     setToken,
     setCartItems,
-    setDeliveryFee,
+    setDelivery,
     getProductsData,
     getUserCart,
     setAuthToken,
