@@ -104,7 +104,7 @@ export default function Product() {
                 <AdvancedImage
                   key={index}
                   cldImg={cldThumb} // Render optimized thumbnail
-                  onClick={() => setImage(cldFullImg.toURL())} // Set full-size optimized URL on click
+                  onClick={() => setImage(cldFullImg?.toURL())} // Set full-size optimized URL on click
                   className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
                   alt={`Product ${index}`}
                 />
@@ -116,12 +116,7 @@ export default function Product() {
               src={image}
               alt="Product"
               className="w-full h-auto"
-              plugins={[
-                lazyload(),
-                responsive(),
-                accessibility(),
-                placeholder(),
-              ]}
+              plugins={[lazyload()]}
             />
           </div>
         </div>
