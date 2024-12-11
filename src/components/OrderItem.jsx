@@ -21,6 +21,8 @@ export default function OrderItem({
 
   const { cloudinary, backendUrl, token } = useContext(ShopContext);
 
+  let secondsPollInterval;
+
   // Track seconds elapsed since order was updated
   useEffect(() => {
     const orderAgeInSeconds = calculateTimePassed(order.updatedAt);
@@ -38,7 +40,7 @@ export default function OrderItem({
         });
       }, 1000);
 
-      const secondsPollInterval = setInterval(() => {
+      secondsPollInterval = setInterval(() => {
         pollPayment();
       }, 15000);
 
@@ -118,6 +120,7 @@ export default function OrderItem({
     if (res.data.status && res.data.status === 0) {
     } else {
       console.log("Payment not successful");
+      clearInterval(secondsPollInterval);
     }
   };
 
@@ -203,6 +206,9 @@ export default function OrderItem({
         <div className="space-y-1">
           <p className="font-medium text-gray-800 font-muktaVaani">
             Delivery Details:
+          </p>
+          <p className="text-sm text-gray-500 font-bold font-muktaVaani line-clamp-1">
+            {order.shippingMethod?.slice(0, 20) + "..."}
           </p>
           <p className="text-sm text-gray-500 font-yantramanav">
             {order.address.firstName} {order.address.lastName}
