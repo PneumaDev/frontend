@@ -7,12 +7,7 @@ import Spinner from "../components/Spinner";
 import Modal from "../components/Modal";
 import Login from "./Login";
 import { AdvancedImage } from "@cloudinary/react";
-import {
-  lazyload,
-  responsive,
-  accessibility,
-  placeholder,
-} from "@cloudinary/react";
+import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 
 export default function Product() {
@@ -32,7 +27,17 @@ export default function Product() {
   const fetchProductData = async () => {
     const product = products.find((product) => product._id === productId);
     if (product) {
-      setImage(product.image?.[0] || "");
+      const publicId = product.image?.[0]
+        .split("/")
+        .slice(-2)
+        .join("/")
+        .split(".")[0];
+      const cldFullImg = cloudinary
+        .image(publicId)
+        .format("auto")
+        .quality("auto")
+        .resize(scale().width(1000));
+      setImage(cldFullImg || "");
       setProductData(product);
     } else {
       // console.error("Product not found!");
@@ -103,8 +108,8 @@ export default function Product() {
               return (
                 <AdvancedImage
                   key={index}
-                  cldImg={cldThumb} // Render optimized thumbnail
-                  onClick={() => setImage(cldFullImg?.toURL())} // Set full-size optimized URL on click
+                  cldImg={cldThumb}
+                  onClick={() => setImage(cldFullImg)}
                   className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
                   alt={`Product ${index}`}
                 />
@@ -113,7 +118,7 @@ export default function Product() {
           </div>
           <div className="w-full sm:w-[80%]">
             <AdvancedImage
-              src={image}
+              cldImg={image}
               alt="Product"
               className="w-full h-auto"
               plugins={[lazyload()]}
