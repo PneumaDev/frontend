@@ -110,7 +110,6 @@ export default function Orders() {
     setSelectedItem(order);
     setAction("complete_payment");
     e.preventDefault();
-    console.log(order);
     setOpenModal(true);
   };
 
