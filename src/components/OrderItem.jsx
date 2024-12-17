@@ -256,10 +256,18 @@ export default function OrderItem({
           </button>
         ) : (
           <button
-            disabled={loading || order.payment || order.status !== "Pending"}
+            disabled={
+              loading ||
+              order.payment ||
+              order.status !== "Pending" ||
+              secondsElapsed < 60
+            }
             onClick={() => cancelOrder(order._id)}
             className={`border px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-              loading || order.status !== "Pending" || order.payment
+              loading ||
+              order.status !== "Pending" ||
+              order.payment ||
+              secondsElapsed < 60
                 ? "opacity-50 cursor-not-allowed bg-gray-100"
                 : "hover:bg-gray-200 bg-white text-gray-700 cursor-pointer"
             }`}
