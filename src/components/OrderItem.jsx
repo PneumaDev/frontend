@@ -161,12 +161,6 @@ export default function OrderItem({
           return null;
         }
 
-        const publicId = item.image[0]
-          .split("/")
-          .slice(-2)
-          .join("/")
-          .split(".")[0];
-
         return (
           <div
             key={idx}
