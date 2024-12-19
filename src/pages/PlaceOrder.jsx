@@ -249,7 +249,7 @@ export default function PlaceOrder() {
           <div className="flex flex-col lg:flex-row gap-5 lg:gap- w-2/3 sm:w-full justify-end">
             {[
               {
-                id: "cod",
+                id: "card",
                 label: "Card",
                 logo: assets.stripe_logo,
                 logoWidth: "w-8",
@@ -263,7 +263,13 @@ export default function PlaceOrder() {
             ].map(({ id, label, logo, logoWidth = "" }) => (
               <div
                 key={id}
-                onClick={() => setMethod(id)}
+                onClick={() => {
+                  if (id === "card") {
+                    return toast.error("Feature not implemented", {
+                      id: "Feature not implemented",
+                    });
+                  }
+                }}
                 className={`flex items-center  gap-4 border p-2 px-3 rounded-lg cursor-pointer shadow-sm transition-all
         ${
           method === id
