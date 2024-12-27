@@ -32,10 +32,10 @@ export default function App() {
         <Toaster
           toastOptions={{
             className:
-              "font-imprima bg-gray-100 shadow-md rounded-md border border-gray-300", // General toast styling
+              "font-imprima bg-gray-100 shadow-md rounded-md border border-gray-300",
             loading: {
               style: {
-                background: "#3B82F6", // A soft blue for loading toasts
+                background: "#3B82F6",
                 color: "#ffffff",
                 borderRadius: "8px",
                 padding: "12px",
@@ -48,7 +48,7 @@ export default function App() {
             },
             success: {
               style: {
-                background: "#10B981", // A green for success toasts
+                background: "#10B981",
                 color: "#ffffff",
                 borderRadius: "8px",
                 padding: "12px",
@@ -61,7 +61,7 @@ export default function App() {
             },
             error: {
               style: {
-                background: "#EF4444", // A red for error toasts
+                background: "#EF4444",
                 color: "#ffffff",
                 borderRadius: "8px",
                 padding: "12px",
