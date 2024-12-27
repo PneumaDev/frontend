@@ -19,6 +19,7 @@ export default function Product() {
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [productInfo, setProductInfo] = useState("Description");
 
   const location = useLocation();
 
@@ -184,28 +185,38 @@ export default function Product() {
       {/* Description and review section */}
       <div className="mt-20">
         <div className="flex">
-          <b className="border px-5 py-3 text-sm font-muktaVaani">
+          <b
+            className="border px-5 py-3 text-sm font-muktaVaani cursor-pointer"
+            onClick={() => setProductInfo("Description")}
+          >
             Description
           </b>
-          <p className="border px-5 py-3 text-sm font-muktaVaani">
+          <p
+            className="border px-5 py-3 text-sm font-muktaVaani cursor-pointer"
+            onClick={() => setProductInfo("Reviews")}
+          >
             Reviews (122)
           </p>
         </div>
-        <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
-          <p className="font-imprima">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod
-            lorem arcu, condimentum interdum ante tristique rhoncus. Nam nec
-            aliquam velit.
-          </p>
-          <p className="font-imprima">
-            Nulla eu accumsan sem. Donec vitae ornare enim. Curabitur porttitor
-            diam quis dui consequat consequat. Fusce convallis sed leo posuere
-            facilisis. Integer non laoreet ex, eget consectetur quam. Aenean
-            tempus maximus magna non molestie. Pellentesque semper vitae erat ac
-            dignissim. Vivamus vitae dui vitae dui lobortis ultrices dignissim
-            et sem.
-          </p>
-        </div>
+        {productInfo === "Reviews" ? (
+          <div className=""></div>
+        ) : (
+          <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
+            <p className="font-imprima">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+              euismod lorem arcu, condimentum interdum ante tristique rhoncus.
+              Nam nec aliquam velit.
+            </p>
+            <p className="font-imprima">
+              Nulla eu accumsan sem. Donec vitae ornare enim. Curabitur
+              porttitor diam quis dui consequat consequat. Fusce convallis sed
+              leo posuere facilisis. Integer non laoreet ex, eget consectetur
+              quam. Aenean tempus maximus magna non molestie. Pellentesque
+              semper vitae erat ac dignissim. Vivamus vitae dui vitae dui
+              lobortis ultrices dignissim et sem.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Related products */}
