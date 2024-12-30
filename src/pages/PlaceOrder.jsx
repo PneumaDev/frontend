@@ -22,7 +22,7 @@ export default function PlaceOrder() {
     lastName: "",
     email: "",
     street: "",
-    city: "",
+    constituency: "",
     county: "",
     zipcode: "",
     country: "",
@@ -55,6 +55,7 @@ export default function PlaceOrder() {
     e.preventDefault();
     setOpenModal(true);
   };
+
   const onChangeHandler = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -200,11 +201,11 @@ export default function PlaceOrder() {
         <div className="flex gap-3">
           <input
             onChange={onChangeHandler}
-            name="city"
-            value={formData.city}
+            name="constituency"
+            value={formData.constituency}
             required
             type="text"
-            placeholder="City"
+            placeholder="Constituency"
             className={`border border-gray-300 py-1.5 px-3.5 w-full ${
               method === "" ? "bg-green-400" : ""
             } font-imprima rounded-md`}
