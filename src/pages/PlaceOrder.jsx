@@ -40,11 +40,11 @@ export default function PlaceOrder() {
     products,
   } = useContext(ShopContext);
 
-  const pollPayment = async (order_id, checkout_id) => {
+  const pollPayment = async (order) => {
     setTimeout(async () => {
       const response = await axios.post(
         backendUrl + "/api/order/confirmpayment",
-        { order_id, checkout_id },
+        { order },
         { headers: { token } }
       );
       console.log(response.data);
@@ -106,14 +106,13 @@ export default function PlaceOrder() {
           );
 
           if (response.data.success) {
-            pollPayment(response.data.orderId, response.data.checkoutId);
+            pollPayment(response.data);
             setSendingData(false);
             setPaymentProcessed(true);
             countdownToFunction(() => {
               navigate("/orders");
             }, 15);
             setCartItems({});
-            // navigate("/orders");
           }
 
         default:
