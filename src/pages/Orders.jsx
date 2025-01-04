@@ -77,16 +77,13 @@ export default function Orders() {
     setSendingData(true);
     // Proceed to Complete Stalled Purchases
     if (selectedItem) {
+      console.log(selectedItem);
       try {
-        const orderId = selectedItem._id;
-        const checkout_id = selectedItem.checkoutRequestId;
-        const retryPurchase = true;
-        const amount = selectedItem.amount;
-        const phoneNumber = selectedItem.address.phone;
-
+        let order = selectedItem;
+        let retryPurchase = true;
         const response = await axios.post(
           backendUrl + "/api/order/confirmpayment",
-          { orderId, checkout_id, retryPurchase, amount, phoneNumber },
+          { order, retryPurchase },
           { headers: { token } }
         );
 
