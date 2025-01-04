@@ -111,10 +111,10 @@ export default function OrderItem({
   }, [order.items]);
 
   const pollPayment = async () => {
-    const checkout_id = order.checkoutRequestId;
+    console.log(order);
     const res = await axios.post(
       backendUrl + "/api/order/confirmpayment",
-      { checkout_id },
+      { order },
       { headers: { token } }
     );
     if (res.data.status && res.data.status === 0) {
@@ -217,7 +217,7 @@ export default function OrderItem({
             {order.address.street}
           </p>
           <p className="text-sm text-gray-500 font-yantramanav">
-            {order.address.city}, {order.address.county}
+            {order.address.constituency}, {order.address.county}
           </p>
         </div>
         <div className="text-right">
