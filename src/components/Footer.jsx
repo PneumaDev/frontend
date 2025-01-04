@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 
 export default function Footer() {
@@ -15,9 +16,15 @@ export default function Footer() {
         <div className="">
           <p className="text-xl font-medium mb-5 font-muktaVaani">COMPANY</p>
           <ul className="flex flex-col gap-1 text-gray-600">
-            <li className="font-yantramanav">Home</li>
-            <li className="font-yantramanav">About Us</li>
-            <li className="font-yantramanav">Delivery</li>
+            <Link className="font-yantramanav" to={"/"}>
+              Home
+            </Link>
+            <Link to={"/about"} className="font-yantramanav">
+              About Us
+            </Link>
+            <Link className="font-yantramanav" to={""}>
+              Delivery
+            </Link>
             <li className="font-yantramanav">Privacy Policy</li>
           </ul>
         </div>
@@ -44,7 +51,7 @@ export default function Footer() {
         <div className="container mx-auto px-4">
           <hr className="border-gray-300 mb-4" />
           <p className="text-sm text-center text-gray-600">
-            &copy; {new Date().getFullYear()} Eridanus.com - All Rights Reserved
+            &copy; {new Date().getFullYear()} eridanus.com - All Rights Reserved
           </p>
         </div>
       </footer>

@@ -1,7 +1,8 @@
 import React from "react";
 import Title from "../components/Title";
-import { assets } from "../assets/assets";
+import { accordionItems, assets } from "../assets/assets";
 import NewsletterBox from "../components/NewsletterBox";
+import Accordion from "../components/Accordion";
 
 export default function Contact() {
   return (
@@ -10,7 +11,7 @@ export default function Contact() {
         <Title text1={"CONTACT"} tex2={"US"} />
       </div>
 
-      <div className="my-10 flex flex-col justify-center md:flex-row gap-10 mb-28">
+      <div className="my-10 flex flex-col justify-center md:flex-row gap-10">
         <img
           src={assets.contact_img}
           alt=""
@@ -47,7 +48,16 @@ export default function Contact() {
         </div>
       </div>
 
-      <NewsletterBox />
+      <div className="w-full items-start ">
+        <h2 className="font-bold text-3xl font-yantramanav px-2 mb-2">FAQ</h2>
+        <div className="border pt-3 px-2 rounded-md">
+          <Accordion items={accordionItems} />
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <NewsletterBox />
+      </div>
     </div>
   );
 }

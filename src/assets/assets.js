@@ -93,3 +93,26 @@ export const shippingMethods = [
     { method: "Super Metro", price: 150, region: ["Outside Nairobi", "Nairobi"], region: ["Outside Nairobi"] }
 ];
 
+
+export const accordionItems = [
+    {
+        title: "How do I place an order?",
+        content: "Browse our catalog, add items to your cart, and proceed to checkout. You can pay via Mpesa or other available options.",
+    },
+    {
+        title: "What payment methods are supported?",
+        content: "We currently support Mpesa for seamless mobile payments, debit/credit cards, and bank transfers.",
+    },
+    {
+        title: "Do you deliver across Kenya?",
+        content: "Yes! We deliver to all major towns and cities in Kenya. Delivery fees depend on your location.",
+    },
+    {
+        title: "Can I return or exchange items?",
+        content: "Yes, you can return or exchange items within 7 days of delivery. The item MUST be in its original condition.",
+    },
+    {
+        title: "How long does delivery take?",
+        content: "This depends with the time of purchase and the shipping address but generally less than 24 hours."
+    }
+];
