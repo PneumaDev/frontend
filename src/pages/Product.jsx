@@ -9,6 +9,7 @@ import Login from "./Login";
 import { AdvancedImage } from "@cloudinary/react";
 import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
+import InfoMessage from "../components/InfoComponent";
 
 export default function Product() {
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ export default function Product() {
   const [size, setSize] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [productInfo, setProductInfo] = useState("Description");
+  const [active, setIsActive] = useState("bold bg-blue");
 
   const location = useLocation();
 
@@ -186,20 +188,30 @@ export default function Product() {
       <div className="mt-20">
         <div className="flex">
           <b
-            className="border px-5 py-3 text-sm font-muktaVaani cursor-pointer"
+            className={`border px-5 py-3 text-sm font-muktaVaani cursor-pointer ${
+              productInfo === "Description" ? "bg-gray-200 font-bold" : ""
+            }`}
             onClick={() => setProductInfo("Description")}
           >
             Description
           </b>
           <p
-            className="border px-5 py-3 text-sm font-muktaVaani cursor-pointer"
+            className={`border px-5 py-3 text-sm font-muktaVaani cursor-pointer ${
+              productInfo === "Reviews" ? "bg-gray-200 font-bold" : ""
+            }`}
             onClick={() => setProductInfo("Reviews")}
           >
-            Reviews (122)
+            Reviews
           </p>
         </div>
         {productInfo === "Reviews" ? (
-          <div className=""></div>
+          <div className="flex justify-center border w-full">
+            <InfoMessage
+              className="my-5"
+              title={"Nothing Here"}
+              message={"No reviews of this product have been made yet!"}
+            />
+          </div>
         ) : (
           <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
             <p className="font-imprima">
