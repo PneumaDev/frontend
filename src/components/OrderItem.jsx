@@ -22,13 +22,14 @@ export default function OrderItem({
   const { cloudinary, backendUrl, token } = useContext(ShopContext);
 
   let secondsPollInterval;
+  let pollInterval;
 
   // Track seconds elapsed since order was updated
   useEffect(() => {
     const orderAgeInSeconds = calculateTimePassed(order.updatedAt);
     setSecondsElapsed(orderAgeInSeconds);
 
-    if (orderAgeInSeconds < 60) {
+    if (orderAgeInSeconds < 60 && !order.payment) {
       const interval = setInterval(() => {
         setSecondsElapsed((prev) => {
           if (prev + 1 >= 60) {
@@ -80,9 +81,9 @@ export default function OrderItem({
         });
       }, 1000);
 
-      const pollInterval = setInterval(() => {
+      pollInterval = setInterval(() => {
         pollPayment();
-      }, 300000);
+      }, 60000);
 
       return () => {
         clearInterval(timer);
@@ -111,21 +112,20 @@ export default function OrderItem({
   }, [order.items]);
 
   const pollPayment = async () => {
-    console.log(order);
     const res = await axios.post(
       backendUrl + "/api/order/confirmpayment",
       { order },
       { headers: { token } }
     );
 
-    console.log(res);
+    console.log(res.data);
 
-    if (res.data.status && res.data.success) {
+    if (res.data.success) {
       console.log("Payment was successfull");
       window.location.reload();
-    } else {
-      // console.log("Payment not successful");
-      clearInterval(secondsPollInterval);
+    } else if (!res.data.success && res.data.status === "1037") {
+      console.log("Payment not successful");
+      clearInterval(pollInterval);
     }
   };
 
