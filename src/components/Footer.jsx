@@ -22,7 +22,7 @@ export default function Footer() {
             <Link to={"/about"} className="font-yantramanav">
               About Us
             </Link>
-            <Link className="font-yantramanav" to={""}>
+            <Link className="font-yantramanav" to="/contact#faq">
               Delivery
             </Link>
             <li className="font-yantramanav">Privacy Policy</li>
