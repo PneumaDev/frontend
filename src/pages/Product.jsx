@@ -21,7 +21,6 @@ export default function Product() {
   const [size, setSize] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [productInfo, setProductInfo] = useState("Description");
-  const [active, setIsActive] = useState("bold bg-blue");
 
   const location = useLocation();
 
@@ -113,7 +112,7 @@ export default function Product() {
                   key={index}
                   cldImg={cldThumb}
                   onClick={() => setImage(cldFullImg)}
-                  className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+                  className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer rounded-md"
                   alt={`Product ${index}`}
                 />
               );
@@ -205,7 +204,7 @@ export default function Product() {
           </p>
         </div>
         {productInfo === "Reviews" ? (
-          <div className="flex justify-center border w-full">
+          <div className="flex justify-center border w-full px-2">
             <InfoMessage
               className="my-5"
               title={"Nothing Here"}
