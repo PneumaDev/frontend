@@ -56,7 +56,7 @@ export default function OrderItem({
   // Track countdown timer if order is less than 15 minutes old
   useEffect(() => {
     const orderAgeInSeconds = calculateTimePassed(order.updatedAt);
-    if (orderAgeInSeconds < 900) {
+    if (orderAgeInSeconds < 900 && !order.payment) {
       const remainingTime = 900 - orderAgeInSeconds;
       setCountdown({
         minutes: Math.floor(remainingTime / 60),
@@ -117,9 +117,14 @@ export default function OrderItem({
       { order },
       { headers: { token } }
     );
-    if (res.data.status && res.data.status === 0) {
+
+    console.log(res);
+
+    if (res.data.status && res.data.success) {
+      console.log("Payment was successfull");
+      window.location.reload();
     } else {
-      console.log("Payment not successful");
+      // console.log("Payment not successful");
       clearInterval(secondsPollInterval);
     }
   };
