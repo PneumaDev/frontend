@@ -6,16 +6,18 @@ import Accordion from "../components/Accordion";
 
 export default function Contact() {
   return (
-    <div className="">
+    <div className="flex flex-col justify-center gap-y-12">
+      {/* Title Section */}
       <div className="text-center text-2xl pt-10 border-t">
         <Title text1={"CONTACT"} tex2={"US"} />
       </div>
 
-      <div className="my-10 flex flex-col justify-center md:flex-row gap-10">
+      {/* Contact Information Section */}
+      <div className=" flex flex-col justify-center md:flex-row gap-16">
         <img
           src={assets.contact_img}
-          alt=""
-          className="w-full md:max-w-[480px]"
+          alt="Contact"
+          className="w-full md:max-w-[480px] rounded-xl shadow-lg"
         />
         <div className="flex flex-col justify-center items-start gap-6">
           <p className="font-muktaVaani font-semibold text-xl text-gray-600">
@@ -42,19 +44,23 @@ export default function Contact() {
           <p className="text-gray-500 font-muktaVaani">
             Learn More About Our Teams And Job Openings.
           </p>
-          <button className="border font-yantramanav border-black px-8 py-4 text-sm hover:bg-black hover:text-white transition-all duration-500">
+          <button className="border font-yantramanav border-black px-4 py-3 rounded-lg text-sm hover:bg-black hover:text-white transition-all duration-500">
             Explore Jobs
           </button>
         </div>
       </div>
 
-      <div className="w-full items-start ">
-        <h2 className="font-bold text-3xl font-yantramanav px-2 mb-2">FAQ</h2>
-        <div className="border pt-3 px-2 rounded-md">
+      {/* FAQ Section */}
+      <div className="flex flex-col justify-center items-center">
+        <h2 className="font-bold text-2xl font-yantramanav px-2 mb-4 text-center">
+          Frequently Asked Questions
+        </h2>
+        <div className="border pt-3 px-4 rounded-md w-full md:w-1/2 mx-auto">
           <Accordion items={accordionItems} />
         </div>
       </div>
 
+      {/* Newsletter Section */}
       <div className="mt-8">
         <NewsletterBox />
       </div>
