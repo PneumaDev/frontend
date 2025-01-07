@@ -5,7 +5,7 @@ import { assets } from "../assets/assets";
 export default function Footer() {
   return (
     <div className="">
-      <div className="flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-40 text-sm">
+      <div className="flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-28 md:mt-40 text-sm">
         <div className="">
           <img src={assets.logo} className="mb-5 w-32" alt="" />
           <p className="w-full md:w-2/3 text-gray-600 font-imprima">
