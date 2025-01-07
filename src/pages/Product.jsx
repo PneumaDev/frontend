@@ -9,6 +9,7 @@ import Login from "./Login";
 import { AdvancedImage } from "@cloudinary/react";
 import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
+import InfoMessage from "../components/InfoComponent";
 
 export default function Product() {
   const [loading, setLoading] = useState(false);
@@ -111,7 +112,7 @@ export default function Product() {
                   key={index}
                   cldImg={cldThumb}
                   onClick={() => setImage(cldFullImg)}
-                  className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+                  className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer rounded-md"
                   alt={`Product ${index}`}
                 />
               );
@@ -148,14 +149,20 @@ export default function Product() {
             {productData.description}
           </p>
           <div className="flex flex-col gap-4 my-8">
-            <p className="font-yantramanav">Select Size</p>
+            <p className="font-yantramanav text-lg font-semibold mb-2">
+              Select Size
+            </p>
             <div className="flex gap-2">
               {productData.sizes?.map((item, index) => (
                 <button
                   onClick={() => setSize(item)}
-                  className={`border font-imprima py-2 px-4 bg-gray-100 ${
-                    item === size ? "border-orange-500" : ""
-                  }`}
+                  className={`font-imprima py-1 px-3 rounded-lg transition-all duration-300 ease-in-out 
+          ${
+            item === size
+              ? "bg-orange-500 text-white border-orange-500"
+              : "bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-orange-400"
+          } 
+          border focus:outline-none focus:ring-2 focus:ring-orange-300`}
                   key={index}
                 >
                   {item}
@@ -163,6 +170,7 @@ export default function Product() {
               ))}
             </div>
           </div>
+
           <button
             className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
             onClick={() => handleAddToCart(productData._id, size)}
@@ -186,20 +194,30 @@ export default function Product() {
       <div className="mt-20">
         <div className="flex">
           <b
-            className="border px-5 py-3 text-sm font-muktaVaani cursor-pointer"
+            className={`border px-5 py-3 text-sm font-muktaVaani cursor-pointer ${
+              productInfo === "Description" ? "bg-gray-200 font-bold" : ""
+            }`}
             onClick={() => setProductInfo("Description")}
           >
             Description
           </b>
           <p
-            className="border px-5 py-3 text-sm font-muktaVaani cursor-pointer"
+            className={`border px-5 py-3 text-sm font-muktaVaani cursor-pointer ${
+              productInfo === "Reviews" ? "bg-gray-200 font-bold" : ""
+            }`}
             onClick={() => setProductInfo("Reviews")}
           >
-            Reviews (122)
+            Reviews
           </p>
         </div>
         {productInfo === "Reviews" ? (
-          <div className=""></div>
+          <div className="flex justify-center border w-full px-2">
+            <InfoMessage
+              className="my-5"
+              title={"Nothing Here"}
+              message={"No reviews of this product have been made yet!"}
+            />
+          </div>
         ) : (
           <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
             <p className="font-imprima">

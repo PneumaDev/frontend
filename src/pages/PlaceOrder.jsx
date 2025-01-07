@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/assets";
@@ -15,7 +15,7 @@ export default function PlaceOrder() {
   const [openModal, setOpenModal] = useState(false);
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
-  const [delay, setDelay] = useState(15);
+  const [delay, setDelay] = useState(16);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -40,6 +40,23 @@ export default function PlaceOrder() {
     products,
   } = useContext(ShopContext);
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (paymentProcessed) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    // Add the event listener
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [paymentProcessed]);
+
   const pollPayment = async (order) => {
     setTimeout(async () => {
       const response = await axios.post(
@@ -48,7 +65,7 @@ export default function PlaceOrder() {
         { headers: { token } }
       );
       console.log(response.data);
-    }, 7500);
+    }, 5000);
   };
 
   const toggleModalOpen = (e) => {
@@ -111,7 +128,7 @@ export default function PlaceOrder() {
             setPaymentProcessed(true);
             countdownToFunction(() => {
               navigate("/orders");
-            }, 15);
+            }, 16);
             setCartItems({});
           }
 
@@ -329,7 +346,11 @@ export default function PlaceOrder() {
                       "Please check your phone for Mpesa Prompt and enter your pin."
                     }
                   />
-                  <p className="font-muktaVaani">Redirecting in: {delay}</p>
+                  <p className="font-muktaVaani">
+                    {" "}
+                    <span className="font-extrabold">DON'T RELOAD!</span>{" "}
+                    Redirecting in: {delay}.
+                  </p>
                 </div>
               ) : (
                 <>

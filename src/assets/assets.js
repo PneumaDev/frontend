@@ -19,7 +19,6 @@ import cross_icon from './cross_icon.png'
 import cash_on_delivery from "./cash-on-delivery.png"
 import hero_img_2 from "./hero_img_2.webp"
 import hero_img_3 from "./hero_img_3.webp"
-
 export const assets = {
     logo,
     hero_img,
@@ -96,23 +95,27 @@ export const shippingMethods = [
 
 export const accordionItems = [
     {
-        title: "How do I place an order?",
-        content: "Browse our catalog, add items to your cart, and proceed to checkout. You can pay via Mpesa or other available options.",
+        title: "How can I place an order?",
+        content: "Simply browse our catalog, add the desired items to your cart, and proceed to checkout. We offer multiple payment options, including Mpesa, debit/credit cards, and other available methods.",
     },
     {
-        title: "What payment methods are supported?",
-        content: "We currently support Mpesa for seamless mobile payments, debit/credit cards, and bank transfers.",
+        title: "What payment methods do you accept?",
+        content: "We accept a range of payment methods, including Mpesa for mobile payments, debit/credit cards, and bank transfers.",
     },
     {
-        title: "Do you deliver across Kenya?",
-        content: "Yes! We deliver to all major towns and cities in Kenya. Delivery fees depend on your location.",
+        title: "Do you offer delivery across Kenya?",
+        content: "Yes, we provide delivery services to all major towns and cities in Kenya. Delivery charges vary depending on your location.",
     },
     {
         title: "Can I return or exchange items?",
-        content: "Yes, you can return or exchange items within 7 days of delivery. The item MUST be in its original condition.",
+        content: "Yes, you may return or exchange items within 7 days of delivery, provided the item is in its original, unused condition.",
     },
     {
         title: "How long does delivery take?",
-        content: "This depends with the time of purchase and the shipping address but generally less than 24 hours."
+        content: "Delivery times vary based on the time of order and the shipping address, but in most cases, it will be completed within 24 hours.",
+    },
+    {
+        title: "What should I do if my payment is not reflected in my order?",
+        content: "If your payment is not reflected on the orders page, please select 'Already Paid' and verify the payment status. If the issue persists, kindly reach out to our customer support team for further assistance.",
     }
 ];
