@@ -87,6 +87,8 @@ export default function Orders() {
           { headers: { token } }
         );
 
+        console.log(response);
+
         setSendingData(false);
         setPaymentProcessed(true);
         await countdownToFunction(async () => {

@@ -43,7 +43,7 @@ export default function OrderItem({
 
       secondsPollInterval = setInterval(() => {
         pollPayment();
-      }, 15000);
+      }, 20000);
 
       return () => {
         clearInterval(interval);
@@ -126,6 +126,7 @@ export default function OrderItem({
     } else if (!res.data.success && res.data.status === "1037") {
       console.log("Payment not successful");
       clearInterval(pollInterval);
+      clearInterval(secondsPollInterval);
     }
   };
 

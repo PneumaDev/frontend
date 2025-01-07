@@ -149,14 +149,20 @@ export default function Product() {
             {productData.description}
           </p>
           <div className="flex flex-col gap-4 my-8">
-            <p className="font-yantramanav">Select Size</p>
+            <p className="font-yantramanav text-lg font-semibold mb-2">
+              Select Size
+            </p>
             <div className="flex gap-2">
               {productData.sizes?.map((item, index) => (
                 <button
                   onClick={() => setSize(item)}
-                  className={`border font-imprima py-2 px-4 bg-gray-100 ${
-                    item === size ? "border-orange-500" : ""
-                  }`}
+                  className={`font-imprima py-1 px-3 rounded-lg transition-all duration-300 ease-in-out 
+          ${
+            item === size
+              ? "bg-orange-500 text-white border-orange-500"
+              : "bg-gray-100 hover:bg-gray-200 border-gray-300 hover:border-orange-400"
+          } 
+          border focus:outline-none focus:ring-2 focus:ring-orange-300`}
                   key={index}
                 >
                   {item}
@@ -164,6 +170,7 @@ export default function Product() {
               ))}
             </div>
           </div>
+
           <button
             className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
             onClick={() => handleAddToCart(productData._id, size)}
