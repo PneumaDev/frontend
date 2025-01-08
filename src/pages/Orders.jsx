@@ -23,6 +23,7 @@ export default function Orders() {
   const [action, setAction] = useState(null);
   const [delay, setDelay] = useState(10);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
+  const [responseCode, setResponseCode] = useState(202);
 
   // <-------------------Handle Side Effects---------------->
   useEffect(() => {
@@ -74,34 +75,41 @@ export default function Orders() {
   };
 
   const completePurchases = async () => {
-    setSendingData(true);
-    // Proceed to Complete Stalled Purchases
-    if (selectedItem) {
-      console.log(selectedItem);
-      try {
-        let order = selectedItem;
-        let retryPurchase = true;
-        const response = await axios.post(
-          backendUrl + "/api/order/confirmpayment",
-          { order, retryPurchase },
-          { headers: { token } }
-        );
+    try {
+      if (!selectedItem) return;
 
-        console.log(response);
+      setSendingData(true);
+      console.log("Selected Item:", selectedItem);
 
-        setSendingData(false);
-        setPaymentProcessed(true);
-        await countdownToFunction(async () => {
-          setOpenModal(false);
-          setPaymentProcessed(false);
-          await fetchData();
-        }, 10);
-      } catch (error) {
-        console.error("Completing Payment:", error);
-      } finally {
-        setSendingData(false);
-        setDelay(10);
-      }
+      const order = selectedItem;
+
+      // Send payment confirmation request
+      const response = await axios.post(
+        `${backendUrl}/api/order/confirmpayment`,
+        { order, retryPurchase: true },
+        { headers: { token } }
+      );
+
+      console.log("Response Data:", response.data);
+
+      // Update state based on response
+      const isSuccess = response.data.status === 200;
+      setResponseCode(response.data.status);
+      setPaymentProcessed(true);
+
+      // Countdown to close modal and refresh data
+      const delay = isSuccess ? 3 : 10;
+      setDelay(delay);
+      await countdownToFunction(async () => {
+        setOpenModal(false);
+        setPaymentProcessed(false);
+        await fetchData();
+      }, delay);
+    } catch (error) {
+      console.error("Error Completing Payment:", error);
+      // Optionally handle error feedback for users
+    } finally {
+      setSendingData(false);
     }
   };
 
@@ -110,6 +118,16 @@ export default function Orders() {
     setAction("complete_payment");
     e.preventDefault();
     setOpenModal(true);
+  };
+
+  const handlePaymentConfirmed = async (order) => {
+    console.log("clicked");
+    setAction("payment_confirmed");
+    setOpenModal(true);
+    setDelay(3);
+    countdownToFunction(() => {
+      window.location.reload();
+    }, 3);
   };
 
   const cancelOrder = async (orderId) => {
@@ -186,6 +204,7 @@ export default function Orders() {
               order={order}
               loading={sendingData}
               cancelOrder={cancelOrder}
+              handlePaymentConfirmed={handlePaymentConfirmed}
               completePurchasesConfirmation={completePurchasesConfirmation}
               calculateTimePassed={calculateTimePassed}
               handleTrackOrder={handleTrackOrder}
@@ -289,7 +308,7 @@ export default function Orders() {
                 <div className="h-48 flex justify-center items-center">
                   <Spinner />
                 </div>
-              ) : paymentProcessed ? (
+              ) : paymentProcessed && responseCode === 202 ? (
                 <div className="space-y-4">
                   <InfoMessage
                     title={"Payment Processed Successfully"}
@@ -297,6 +316,17 @@ export default function Orders() {
                     message={
                       "Please check your phone for Mpesa Prompt and enter your pin."
                     }
+                  />
+                  <p className="font-muktaVaani flex justify-center">
+                    Reloading in: {delay}
+                  </p>
+                </div>
+              ) : paymentProcessed && responseCode === 200 ? (
+                <div className="space-y-4">
+                  <InfoMessage
+                    title={"Order payment confirmed!!"}
+                    type="success"
+                    message={"Payment for your order has been confirmed.😊"}
                   />
                   <p className="font-muktaVaani flex justify-center">
                     Reloading in: {delay}
@@ -328,6 +358,24 @@ export default function Orders() {
                   </div>
                 </>
               )}
+            </Modal>
+          </>
+        ) : action === "payment_confirmed" ? (
+          <>
+            <Modal
+              title={"Payment Confirmed 😊"}
+              isOpen={openModal}
+              cancelButton={false}
+            >
+              <div className="space-y-4">
+                <InfoMessage
+                  title={"Your payment has been confirmed!"}
+                  type="success"
+                />
+                <p className="font-muktaVaani flex justify-center">
+                  Reloading in: {delay}
+                </p>
+              </div>
             </Modal>
           </>
         ) : (
