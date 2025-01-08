@@ -15,7 +15,7 @@ export default function PlaceOrder() {
   const [openModal, setOpenModal] = useState(false);
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
-  const [delay, setDelay] = useState(16);
+  const [delay, setDelay] = useState(15);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -109,7 +109,7 @@ export default function PlaceOrder() {
       }
 
       let orderData = {
-        shippingMethod: delivery.method,
+        shippingMethod: delivery,
         address: formData,
         items: orderItems,
         amount: getCartAmount() + delivery.price,
@@ -128,7 +128,7 @@ export default function PlaceOrder() {
             setPaymentProcessed(true);
             countdownToFunction(() => {
               navigate("/orders");
-            }, 16);
+            }, 15);
             setCartItems({});
           }
 
