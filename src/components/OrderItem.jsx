@@ -15,6 +15,7 @@ export default function OrderItem({
   calculateTimePassed,
   handleTrackOrder,
   handleWriteReview,
+  handlePaymentConfirmed,
 }) {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
@@ -92,6 +93,23 @@ export default function OrderItem({
     }
   }, [order.updatedAt, calculateTimePassed]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (secondsElapsed < 60) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+
+    // Add the event listener
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [secondsElapsed]);
+
   // Memoize processed Cloudinary images
   const processedImages = useMemo(() => {
     return order.items.map((item) => {
@@ -122,7 +140,7 @@ export default function OrderItem({
 
     if (res.data.success) {
       console.log("Payment was successfull");
-      window.location.reload();
+      handlePaymentConfirmed();
     } else if (!res.data.success && res.data.status === "1037") {
       console.log("Payment not successful");
       clearInterval(pollInterval);
@@ -208,7 +226,7 @@ export default function OrderItem({
             Delivery Details:
           </p>
           <p className="text-sm text-gray-500 font-bold font-muktaVaani line-clamp-1">
-            {order.shippingMethod?.slice(0, 20) + "..."}
+            {order.shippingMethod.method?.slice(0, 20) + "..."}
           </p>
           <p className="text-sm text-gray-500 font-yantramanav">
             {order.address.firstName} {order.address.lastName}
