@@ -116,6 +116,6 @@ export const accordionItems = [
     },
     {
         title: "What should I do if my payment is not reflected in my order?",
-        content: "If your payment is not reflected on the orders page, please select 'Already Paid' and verify the payment status. If the issue persists, kindly reach out to our customer support team for further assistance.",
+        content: "If your payment is not reflected on the orders page, please select 'Pay Now' and proceed to initiate a new transaction. We wiil first verify the payment status before attempting a new one. If the issue persists, kindly reach out to our customer support team for further assistance.",
     }
 ];
