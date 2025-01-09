@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./components/Spinner";
 import PrivateRoute from "./components/PrivateRoute";
+import ProfilePage from "./pages/ProfilePage";
 
 const Home = lazy(() => import("./pages/Home"));
 const Collection = lazy(() => import("./pages/Collection"));
@@ -86,6 +87,7 @@ export default function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/placeorder" element={<PlaceOrder />} />
               <Route path="/orders" element={<Orders />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />
