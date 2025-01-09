@@ -24,8 +24,6 @@ export default function PlaceOrder() {
     street: "",
     constituency: "",
     county: "",
-    zipcode: "",
-    country: "",
     phone: "",
   });
 
