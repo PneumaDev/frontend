@@ -16,6 +16,7 @@ export default function PlaceOrder() {
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
   const [delay, setDelay] = useState(15);
+  const [addressIsDefault, setAddressIsDefault] = useState(true);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -250,6 +251,20 @@ export default function PlaceOrder() {
           />
         </div>
         <ShippingMethodSelector />
+        <div className="flex items-center gap-2 p-2 rounded-md">
+          <input
+            type="checkbox"
+            name="defaultAddress"
+            id="defaultAddress"
+            className="w-4 h-4 accent-blue-500 cursor-pointer"
+          />
+          <label
+            htmlFor="defaultAddress"
+            className="text-gray-700 text-sm font-medium"
+          >
+            Set as default address
+          </label>
+        </div>
       </div>
 
       {/* -----------Right Side------------- */}
