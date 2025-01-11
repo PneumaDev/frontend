@@ -15,6 +15,7 @@ const ShopContextProvider = (props) => {
   const [delivery, setDelivery] = useState({ price: 0, method: "" });
   const [authToken, setAuthToken] = useState(null);
   const navigate = useNavigate();
+  const [user, setUser] = useState({});
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -125,8 +126,11 @@ const ShopContextProvider = (props) => {
         }
       );
 
+      console.log(response.data);
+
       if (response.data.success) {
-        setCartItems(response.data.cartData);
+        setCartItems(response.data.userData.cartData);
+        setUser(response.data.userData);
       }
     } catch (error) {
       console.log(error);
@@ -204,6 +208,8 @@ const ShopContextProvider = (props) => {
     getUserCart,
     setAuthToken,
     authToken,
+    setUser,
+    user,
     cloudinary,
   };
 

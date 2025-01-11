@@ -6,7 +6,6 @@ import CartTotal from "../components/CartTotal";
 import InfoMessage from "../components/InfoComponent";
 import { AdvancedImage, AdvancedVideo } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
-import { lazyload } from "@cloudinary/react";
 
 export default function Cart() {
   const {
@@ -89,7 +88,7 @@ export default function Cart() {
                 >
                   <div className="flex items-start gap-6">
                     <AdvancedImage
-                      className="w-16 sm:w-20"
+                      className="w-16 sm:w-20 rounded-md"
                       cldImg={processedImage}
                       alt=""
                     />
