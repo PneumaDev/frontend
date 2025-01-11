@@ -1,64 +1,78 @@
-import React, { useState } from "react";
-import { User, MapPin, Edit, Plus, Mail, Phone } from "lucide-react";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  User,
+  MapPin,
+  Edit,
+  Plus,
+  Mail,
+  Phone,
+  CircleUser,
+} from "lucide-react";
+import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [user] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    avatar: "/api/placeholder/100/100",
-    addresses: [
-      {
-        id: 1,
-        type: "Home",
-        street: "123 Main Street",
-        city: "New York",
-        state: "NY",
-        zip: "10001",
-        isDefault: true,
-      },
-      {
-        id: 2,
-        type: "Office",
-        street: "456 Business Ave",
-        city: "New York",
-        state: "NY",
-        zip: "10002",
-        isDefault: false,
-      },
-    ],
-  });
+
+  const { user } = useContext(ShopContext);
+
+  const getUser = async () => {
+    // const response = await axios();
+  };
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6">
       {/* Profile Header */}
       <div className="mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        <img
-          src={user.avatar}
-          alt={user.name}
-          className="w-24 h-24 rounded-full object-cover border"
-        />
+        {user.avatar ? (
+          <img
+            src={user.avatar}
+            alt={user.name}
+            className="w-28 h-28 rounded-full object-cover border"
+          />
+        ) : (
+          <div className="w-28 h-28 flex items-center justify-center rounded-full bg-gray-200 border relative cursor-pointer overflow-hidden">
+            {/* Hidden file input */}
+            <input
+              type="file"
+              id="avatarUpload"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  const file = e.target.files[0];
+                  console.log("Selected file:", file); // Handle the file upload logic here
+                }
+              }}
+            />
+            {/* Placeholder Icon */}
+            <CircleUser size={48} className="text-gray-400" />
+          </div>
+        )}
         <div className="text-center sm:text-left">
-          <h1 className="text-2xl font-bold mb-2">{user.name}</h1>
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="flex items-center gap-2 text-gray-600">
+          <h1 className="text-2xl font-bold mb-3 font-muktaVaani">
+            {user.name}
+          </h1>
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <div className="flex items-center gap-2 text-gray-600 font-yantramanav">
               <Mail size={16} />
               <span>{user.email}</span>
             </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <Phone size={16} />
-              <span>{user.phone}</span>
-            </div>
+            {user.phone && (
+              <div className="flex items-center gap-2 text-gray-600 font-yantramanav">
+                <Phone size={16} />
+                <span>{user.phone}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b mb-6">
+      <div className="flex border-b mb-6 items-center justify-center">
         <button
           onClick={() => setActiveTab("overview")}
-          className={`flex items-center gap-2 px-4 py-2 border-b-2 ${
+          className={`flex items-center gap-2 px-4 py-2 border-b-2 font-yantramanav ${
             activeTab === "overview"
               ? "border-blue-500 text-blue-500"
               : "border-transparent"
@@ -67,9 +81,9 @@ const UserProfile = () => {
           <User size={16} />
           <span>Overview</span>
         </button>
-        <button
+        {/* <button
           onClick={() => setActiveTab("addresses")}
-          className={`flex items-center gap-2 px-4 py-2 border-b-2 ${
+          className={`flex items-center gap-2 px-4 py-2 border-b-2 font-yantramanav ${
             activeTab === "addresses"
               ? "border-blue-500 text-blue-500"
               : "border-transparent"
@@ -77,37 +91,43 @@ const UserProfile = () => {
         >
           <MapPin size={16} />
           <span>Addresses</span>
-        </button>
+        </button> */}
       </div>
 
       {/* Content Sections */}
       {activeTab === "overview" && (
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Personal Information</h2>
-            <button className="text-blue-500 flex items-center gap-1">
-              <Edit size={16} />
-              <span>Edit</span>
-            </button>
+            <h2 className="text-xl font-semibold font-muktaVaani">
+              Personal Information
+            </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm text-gray-500">Full Name</label>
-              <p className="mt-1 font-medium">{user.name}</p>
+              <label className="block text-sm text-gray-500 font-yantramanav">
+                Full Name
+              </label>
+              <p className="mt-1 font-medium font-imprima">{user.name}</p>
             </div>
             <div>
-              <label className="block text-sm text-gray-500">Email</label>
-              <p className="mt-1 font-medium">{user.email}</p>
+              <label className="block text-sm text-gray-500 font-yantramanav">
+                Email
+              </label>
+              <p className="mt-1 font-medium font-imprima">{user.email}</p>
             </div>
-            <div>
-              <label className="block text-sm text-gray-500">Phone</label>
-              <p className="mt-1 font-medium">{user.phone}</p>
-            </div>
+            {user.phone && (
+              <div>
+                <label className="block text-sm text-gray-500 font-yantramanav">
+                  Phone
+                </label>
+                <p className="mt-1 font-medium font-imprima">{user.phone}</p>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {activeTab === "addresses" && (
+      {/* {activeTab === "addresses" && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Saved Addresses</h2>
@@ -145,7 +165,7 @@ const UserProfile = () => {
             ))}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
