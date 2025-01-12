@@ -4,7 +4,7 @@ import Title from "../components/Title";
 import { assets } from "../assets/assets";
 import CartTotal from "../components/CartTotal";
 import InfoMessage from "../components/InfoComponent";
-import { AdvancedImage, AdvancedVideo } from "@cloudinary/react";
+import { AdvancedImage } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 
 export default function Cart() {
