@@ -107,6 +107,8 @@ export default function Product() {
                 .quality("auto")
                 .resize(scale().width(1000)); // Full-size optimized image
 
+              console.log(cldFullImg);
+
               return (
                 <AdvancedImage
                   key={index}
