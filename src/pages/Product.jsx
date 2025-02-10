@@ -143,9 +143,17 @@ export default function Product() {
             <img src={assets.star_dull_icon} alt="Star" className="w-3.5" />
             <p className="pl-2 font-imprima">(122)</p>
           </div>
-          <p className="mt-5 text-3xl font-medium font-yantramanav">
-            {currency}
-            {productData.price}
+          <p className="mt-5 text-2xl font-medium font-yantramanav">
+            Ksh.
+            <span className="text-4xl font-bold font-muktaVaani">
+              {productData.price -
+                (productData.discount ? productData.discount : 0)}
+            </span>
+            {productData.discount > 0 && (
+              <span className="text-1xl font-semibold font-muktaVaani line-through ml-2 px-2 rounded-md text-black bg-blue-300">
+                Ksh. {productData.price}
+              </span>
+            )}
           </p>
           <p className="mt-5 text-gray-500 md:w-4/5 font-imprima">
             {productData.description}
