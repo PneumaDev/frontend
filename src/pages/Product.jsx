@@ -10,13 +10,13 @@ import { AdvancedImage } from "@cloudinary/react";
 import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import InfoMessage from "../components/InfoComponent";
+import axios from "axios";
 
 export default function Product() {
   const [loading, setLoading] = useState(false);
   const { productId } = useParams();
-  const { products, currency, addToCart, token, cloudinary } =
-    useContext(ShopContext);
-  const [productData, setProductData] = useState(null);
+  const { addToCart, token, cloudinary, backendUrl } = useContext(ShopContext);
+  const [product, setProduct] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -26,10 +26,30 @@ export default function Product() {
 
   const ref = useRef(null);
 
-  const fetchProductData = async () => {
-    const product = products.find((product) => product._id === productId);
-    if (product) {
-      const publicId = product.image?.[0]
+  const fetchProduct = async () => {
+    try {
+      if (!product || product.length < 1) {
+        const token = localStorage.getItem("adminToken");
+
+        const response = await axios.post(
+          `${backendUrl}/api/product/single`,
+          { productId: productId },
+          { headers: { token: token } }
+        );
+
+        setProduct(response.data.product);
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProduct();
+    if (product?.image?.length > 0) {
+      const publicId = product.image[0]
         .split("/")
         .slice(-2)
         .join("/")
@@ -40,11 +60,9 @@ export default function Product() {
         .quality("auto")
         .resize(scale().width(1000));
       setImage(cldFullImg || "");
-      setProductData(product);
-    } else {
-      // console.error("Product not found!");
+      setLoading(false);
     }
-  };
+  }, [productId, product]);
 
   useEffect(() => {
     if (token) {
@@ -57,16 +75,6 @@ export default function Product() {
     setSize("");
   }, [location]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await fetchProductData();
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [productId, products]);
-
   const handleAddToCart = (id, size) => {
     if (!token) {
       return setOpenModal(true);
@@ -74,7 +82,7 @@ export default function Product() {
     addToCart(id, size);
   };
 
-  return loading || !productData ? (
+  return loading || !product ? (
     <Spinner />
   ) : (
     <div
@@ -85,7 +93,7 @@ export default function Product() {
         {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
           <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
-            {productData.image?.map((imgUrl, index) => {
+            {product.image?.map((imgUrl, index) => {
               // Extract the public ID from the full URL
               const publicId = imgUrl
                 .split("/")
@@ -98,16 +106,14 @@ export default function Product() {
                 .image(publicId)
                 .format("auto")
                 .quality("auto")
-                .resize(scale().width(150)); // Thumbnail optimized size
+                .resize(scale().width(150));
 
               // Create a Cloudinary image instance for the main display
               const cldFullImg = cloudinary
                 .image(publicId)
                 .format("auto")
                 .quality("auto")
-                .resize(scale().width(1000)); // Full-size optimized image
-
-              console.log(cldFullImg);
+                .resize(scale().width(1000));
 
               return (
                 <AdvancedImage
@@ -121,19 +127,21 @@ export default function Product() {
             })}
           </div>
           <div className="w-full sm:w-[80%]">
-            <AdvancedImage
-              cldImg={image}
-              alt="Product"
-              className="w-full h-auto"
-              plugins={[lazyload()]}
-            />
+            {image && (
+              <AdvancedImage
+                cldImg={image}
+                alt="Product"
+                className="w-full h-auto lg:h-[90%] rounded-lg"
+                plugins={[lazyload()]}
+              />
+            )}
           </div>
         </div>
 
         {/* Product info */}
         <div className="flex-1">
           <h1 className="font-medium text-2xl mt-2 font-muktaVaani">
-            {productData.name}
+            {product.name}
           </h1>
           <div className="flex items-center gap-1 mt-2">
             <img src={assets.star_icon} alt="Star" className="w-3.5" />
@@ -146,24 +154,23 @@ export default function Product() {
           <p className="mt-5 text-2xl font-medium font-yantramanav">
             Ksh.
             <span className="text-4xl font-bold font-muktaVaani">
-              {productData.price -
-                (productData.discount ? productData.discount : 0)}
+              {product.price - (product.discount ? product.discount : 0)}
             </span>
-            {productData.discount > 0 && (
+            {product.discount > 0 && (
               <span className="text-1xl font-semibold font-muktaVaani line-through ml-2 px-2 rounded-md text-black bg-blue-300">
-                Ksh. {productData.price}
+                Ksh. {product.price}
               </span>
             )}
           </p>
           <p className="mt-5 text-gray-500 md:w-4/5 font-imprima">
-            {productData.description}
+            {product.description}
           </p>
           <div className="flex flex-col gap-4 my-8">
             <p className="font-yantramanav text-lg font-semibold mb-2">
               Select Size
             </p>
             <div className="flex gap-2">
-              {productData.sizes?.map((item, index) => (
+              {product.sizes?.map((item, index) => (
                 <button
                   onClick={() => setSize(item)}
                   className={`font-imprima py-1 px-3 rounded-lg transition-all duration-300 ease-in-out 
@@ -183,7 +190,7 @@ export default function Product() {
 
           <button
             className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
-            onClick={() => handleAddToCart(productData._id, size)}
+            onClick={() => handleAddToCart(product._id, size)}
           >
             ADD TO CART
           </button>
@@ -249,8 +256,8 @@ export default function Product() {
 
       {/* Related products */}
       <RelatedProducts
-        category={productData.category}
-        subCategory={productData.subCategory}
+        category={product.category}
+        subCategory={product.subCategory}
       />
 
       {openModal && (
