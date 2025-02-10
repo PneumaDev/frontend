@@ -10,7 +10,11 @@ export default function BestSeller() {
 
   useEffect(() => {
     const bestProducts = products.filter((item) => item.bestSeller);
-    setBestSellerProducts(bestProducts.slice(0, 5));
+    if (bestProducts.length === 0) {
+      setBestSellerProducts(products.slice(0, 5));
+    } else setBestSellerProducts(bestProducts.slice(0, 5));
+    {
+    }
   }, [products]);
 
   return (
