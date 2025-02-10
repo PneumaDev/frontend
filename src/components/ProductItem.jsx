@@ -35,7 +35,9 @@ export default function ProductItem({ id, image, price, name }) {
             stroke="#FFFFFF"
           />
         </div>
-        <p className="pt-3 pb-1 text-sm font-muktaVaani">{name}</p>
+        <p className="pt-3 pb-1 text-sm font-muktaVaani text-gray-500">
+          {name}
+        </p>
         <p className="text-md font-yantramanav">
           {currency} <span className="font-bold">{price}</span>
         </p>
