@@ -126,8 +126,6 @@ const ShopContextProvider = (props) => {
         }
       );
 
-      console.log(response.data);
-
       if (response.data.success) {
         setCartItems(response.data.userData.cartData);
         setUser(response.data.userData);
@@ -139,6 +137,8 @@ const ShopContextProvider = (props) => {
       });
     }
   };
+
+  console.log(cartItems);
 
   // Get total amount of the products in the cart
   const getCartAmount = () => {
@@ -159,9 +159,22 @@ const ShopContextProvider = (props) => {
   };
 
   // Get Products from the DataBase
-  const getProductsData = async () => {
+  const getProductsData = async (filters) => {
     try {
-      const response = await axios.get(backendUrl + "/api/product/list");
+      let queryParams = new URLSearchParams(filters).toString();
+
+      let fields = "name,quantity,category,image,bestSeller,price";
+
+      // Add fields parameter to query
+      if (queryParams) {
+        queryParams += `&fields=${fields}`;
+      } else {
+        queryParams = `fields=${fields}`;
+      }
+
+      const response = await axios.get(
+        `${backendUrl}/api/product/list?${queryParams}`
+      );
       if (response.data.success) {
         setProducts(response.data.products);
       } else {
@@ -172,10 +185,6 @@ const ShopContextProvider = (props) => {
       toast.error(response.data.message);
     }
   };
-
-  useEffect(() => {
-    getProductsData();
-  }, []);
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -211,6 +220,7 @@ const ShopContextProvider = (props) => {
     setUser,
     user,
     cloudinary,
+    getProductsData,
   };
 
   return (
