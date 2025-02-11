@@ -28,24 +28,11 @@ export default function Collection() {
     }
   }, [products, getProductsData]);
 
-  // Apply filters whenever relevant dependencies change
-  useEffect(() => {
-    if (!loading) {
-      applyFilter();
-    }
-  }, [category, subCategory, search, showSearch, products, loading]);
-
-  // Sort products whenever sortType changes
-  useEffect(() => {
-    if (!loading) {
-      sortProduct();
-    }
-  }, [sortType, loading]);
-
-  // Function to apply filters
-  const applyFilter = () => {
+  // Function to filter and sort products
+  const filterAndSortProducts = () => {
     let productsCopy = products.slice();
 
+    // 🔍 Apply filters
     if (showSearch && search) {
       productsCopy = productsCopy.filter((item) =>
         item.name.toLowerCase().includes(search.toLowerCase())
@@ -64,42 +51,44 @@ export default function Collection() {
       );
     }
 
+    // 🔽 Apply sorting after filtering
+    switch (sortType) {
+      case "low-high":
+        productsCopy.sort((a, b) => a.price - b.price);
+        break;
+      case "high-low":
+        productsCopy.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break; // No sorting applied
+    }
+
     setFilterProducts(productsCopy);
   };
 
+  // 🔄 Run when filters, sorting, or product list changes
+  useEffect(() => {
+    if (!loading) {
+      filterAndSortProducts();
+    }
+  }, [category, subCategory, search, showSearch, products, sortType, loading]);
+
   // Function to toggle categories in filters
   const toggleCategory = (e) => {
-    if (category.includes(e.target.value)) {
-      setCategory((prev) => prev.filter((item) => item !== e.target.value));
-    } else {
-      setCategory((prev) => [...prev, e.target.value]);
-    }
+    setCategory((prev) =>
+      prev.includes(e.target.value)
+        ? prev.filter((item) => item !== e.target.value)
+        : [...prev, e.target.value]
+    );
   };
 
   // Function to toggle subcategories in filters
   const toggleSubCategory = (e) => {
-    if (subCategory.includes(e.target.value)) {
-      setSubCategory((prev) => prev.filter((item) => item !== e.target.value));
-    } else {
-      setSubCategory((prev) => [...prev, e.target.value]);
-    }
-  };
-
-  // Function to sort products
-  const sortProduct = () => {
-    let fpCopy = filterProducts.slice();
-
-    switch (sortType) {
-      case "low-high":
-        setFilterProducts(fpCopy.sort((a, b) => a.price - b.price));
-        break;
-      case "high-low":
-        setFilterProducts(fpCopy.sort((a, b) => b.price - a.price));
-        break;
-      default:
-        applyFilter();
-        break;
-    }
+    setSubCategory((prev) =>
+      prev.includes(e.target.value)
+        ? prev.filter((item) => item !== e.target.value)
+        : [...prev, e.target.value]
+    );
   };
 
   return (
