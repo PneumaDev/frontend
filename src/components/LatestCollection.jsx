@@ -8,6 +8,8 @@ export default function LatestCollection() {
 
   const [latestProducts, setLatestProducts] = useState([]);
 
+  // console.log(products);
+
   useEffect(() => {
     setLatestProducts(products.slice(0, 10));
   }, [products]);
