@@ -190,7 +190,7 @@ export default function Product() {
 
           <button
             className="bg-black font-muktaVaani text-white px-8 py-3 text-sm active:bg-gray-700"
-            onClick={() => handleAddToCart(product._id, size)}
+            onClick={() => handleAddToCart(product, size)}
           >
             ADD TO CART
           </button>

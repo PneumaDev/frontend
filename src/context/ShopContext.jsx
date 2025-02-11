@@ -11,9 +11,11 @@ const ShopContextProvider = (props) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
+  const [cartProducts, setCartProducts] = useState([]);
   const [token, setToken] = useState("");
   const [delivery, setDelivery] = useState({ price: 0, method: "" });
   const [authToken, setAuthToken] = useState(null);
+  const [totalAmount, setTotalAmount] = useState(0);
   const navigate = useNavigate();
   const [user, setUser] = useState({});
 
@@ -25,7 +27,7 @@ const ShopContextProvider = (props) => {
     cloud: { cloudName: "ds5lreojp" },
   });
 
-  const addToCart = async (itemId, size) => {
+  const addToCart = async (item, size) => {
     toast.dismiss();
     if (!size) {
       toast.error("Select Product Size", {
@@ -35,6 +37,7 @@ const ShopContextProvider = (props) => {
     }
 
     let cartData = structuredClone(cartItems);
+    const itemId = item._id;
 
     if (cartData[itemId]) {
       if (cartData[itemId][size]) {
@@ -127,7 +130,7 @@ const ShopContextProvider = (props) => {
       );
 
       if (response.data.success) {
-        setCartItems(response.data.userData.cartData);
+        setCartItems(response.data.cartData);
         setUser(response.data.userData);
       }
     } catch (error) {
@@ -138,51 +141,66 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  console.log(cartItems);
+  const fetchCartAmount = async () => {
+    const amount = await getCartAmount();
+    setTotalAmount(amount);
+  };
 
-  // Get total amount of the products in the cart
-  const getCartAmount = () => {
+  // Function to calculate total amount
+  const getCartAmount = async () => {
     let totalAmount = 0;
 
-    for (const items in cartItems) {
-      let itemInfo = products.find((product) => product._id === items);
-      for (const item in cartItems[items]) {
-        try {
-          if (cartItems[items][item] > 0) {
-            totalAmount += itemInfo.price * cartItems[items][item];
-          }
-        } catch (error) {}
+    if (!cartItems || Object.keys(cartItems).length === 0) {
+      return totalAmount;
+    }
+
+    const productIDs = Object.keys(cartItems);
+    const filters = { ids: productIDs.join(",") };
+
+    // // Fetch product data
+    const cartProducts = await getProductsData(filters, true);
+    if (!cartProducts) return totalAmount;
+
+    for (const productId in cartItems) {
+      let itemInfo = cartProducts.find((product) => product._id === productId);
+      if (!itemInfo) continue;
+
+      for (const item in cartItems[productId]) {
+        if (cartItems[productId][item] > 0) {
+          totalAmount += itemInfo.price * cartItems[productId][item];
+        }
       }
     }
 
     return totalAmount;
   };
 
-  // Get Products from the DataBase
-  const getProductsData = async (filters) => {
+  // Function to fetch products from the database
+  const getProductsData = async (filters, cartItems) => {
     try {
       let queryParams = new URLSearchParams(filters).toString();
-
       let fields = "name,quantity,category,image,bestSeller,price";
 
-      // Add fields parameter to query
-      if (queryParams) {
-        queryParams += `&fields=${fields}`;
-      } else {
-        queryParams = `fields=${fields}`;
-      }
+      queryParams += `&fields=${fields}`;
 
-      const response = await axios.get(
+      const response = await axios.post(
         `${backendUrl}/api/product/list?${queryParams}`
       );
+
       if (response.data.success) {
-        setProducts(response.data.products);
+        if (!cartItems) {
+          setProducts(response.data.products);
+          // setProducts([...products, ...response.data.products]);
+        }
+        return response.data.products;
       } else {
         toast.error(response.data.message);
+        return null;
       }
     } catch (error) {
       console.log(error.message);
-      toast.error(response.data.message);
+      toast.error(error.message);
+      return null;
     }
   };
 
@@ -213,7 +231,7 @@ const ShopContextProvider = (props) => {
     setToken,
     setCartItems,
     setDelivery,
-    getProductsData,
+    totalAmount,
     getUserCart,
     setAuthToken,
     authToken,
@@ -221,6 +239,9 @@ const ShopContextProvider = (props) => {
     user,
     cloudinary,
     getProductsData,
+    fetchCartAmount,
+    cartProducts,
+    setCartProducts,
   };
 
   return (
