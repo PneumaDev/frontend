@@ -1,9 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "./Title";
 
 export default function CartTotal() {
-  const { currency, getCartAmount, delivery } = useContext(ShopContext);
+  const { currency, totalAmount, delivery, cartItems, fetchCartAmount } =
+    useContext(ShopContext);
+
+  useEffect(() => {
+    if (Object.keys(cartItems).length > 0) {
+      fetchCartAmount();
+    }
+  }, [cartItems]);
 
   return (
     <div className="w-full">
@@ -14,9 +21,7 @@ export default function CartTotal() {
       <div className="flex flex-col gap-2 mt-2 text-sm">
         <div className="flex justify-between">
           <p className="font-muktaVaani">Subtotal</p>
-          <p className="font-yantramanav">
-            {currency} {getCartAmount()}.00
-          </p>
+          <p className="font-yantramanav">Ksh. {totalAmount}.00</p>
         </div>
         <hr />
         <div className="flex justify-between">
@@ -29,8 +34,7 @@ export default function CartTotal() {
         <div className="flex justify-between">
           <b className="font-muktaVaani">Total</b>
           <b className="font-yantramanav">
-            {currency}{" "}
-            {getCartAmount() === 0 ? 0 : getCartAmount() + delivery.price}.00
+            {currency} {totalAmount + delivery.price}.00
           </b>
         </div>
       </div>
