@@ -8,6 +8,7 @@ import { lazyload } from "@cloudinary/react";
 
 export default function ProductItem({ id, image, price, name }) {
   const { currency, cloudinary } = useContext(ShopContext);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const publicId = image[0].split("/").slice(-2).join("/").split(".")[0];
 
@@ -27,8 +28,12 @@ export default function ProductItem({ id, image, price, name }) {
             plugins={[lazyload()]}
             cldImg={cldImg}
             alt={name}
-            className="hover:scale-110 transition ease-in-out rounded-md hover:rounded-md"
+            className={`hover:scale-110 transition ease-in-out rounded-md hover:rounded-md ${
+              isImageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoad={() => setIsImageLoaded(true)} // Set image as loaded
           />
+
           <BadgeCheck
             className="absolute z-10 top-2 right-2 cursor-pointer"
             fill="#4dff88"
