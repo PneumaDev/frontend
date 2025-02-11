@@ -34,9 +34,9 @@ export default function PlaceOrder() {
     token,
     cartItems,
     setCartItems,
-    getCartAmount,
     delivery,
-    products,
+    totalAmount,
+    cartProducts,
   } = useContext(ShopContext);
 
   useEffect(() => {
@@ -55,6 +55,8 @@ export default function PlaceOrder() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [paymentProcessed]);
+
+  console.log(cartItems);
 
   const pollPayment = async (order) => {
     setTimeout(async () => {
@@ -84,34 +86,11 @@ export default function PlaceOrder() {
     setSendingData(true);
     e.preventDefault();
     try {
-      let orderItems = [];
-
-      // Loop through each item in cartItems
-      for (const items in cartItems) {
-        const itemSizes = cartItems[items];
-
-        // Loop through each size in the specific item's sizes
-        for (const item in itemSizes) {
-          if (itemSizes[item] > 0) {
-            // Find product info based on product ID
-            const itemInfo = structuredClone(
-              products.find((product) => product._id === items)
-            );
-
-            if (itemInfo) {
-              itemInfo.size = item;
-              itemInfo.quantity = itemSizes[item];
-              orderItems.push(itemInfo);
-            }
-          }
-        }
-      }
-
       let orderData = {
         shippingMethod: delivery,
         address: formData,
-        items: orderItems,
-        amount: getCartAmount() + delivery.price,
+        items: cartProducts,
+        amount: totalAmount + delivery.price,
       };
       switch (method) {
         case "mpesa":
@@ -374,7 +353,7 @@ export default function PlaceOrder() {
                     <p className="text-base text-gray-500 font-imprima">
                       Please confirm Payment of{" "}
                       <span className="font-semibold">
-                        Ksh. {getCartAmount() + delivery.price}
+                        Ksh. {totalAmount + delivery.price}
                       </span>{" "}
                       to Eridanus Mall. You'll receive a prompt on your phone to
                       the number{" "}
