@@ -4,26 +4,32 @@ import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
 import Spinner from "../components/Spinner";
+import SearchInput from "../components/SearchInput";
+import InfoMessage from "../components/InfoComponent";
 
 export default function Collection() {
-  const { products, search, showSearch, getProductsData } =
-    useContext(ShopContext);
+  const {
+    products,
+    search,
+    showSearch,
+    getProductsData,
+    queryParams,
+    loading,
+  } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState("relevant");
-  const [loading, setLoading] = useState(false);
 
   // Fetch products on initial load if the products list is empty
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true);
       await getProductsData();
-      setLoading(false);
     };
+    const term = queryParams.get("search");
 
-    if (products.length === 0) {
+    if (products.length === 0 && term == "") {
       fetchProducts();
     }
   }, [products, getProductsData]);
@@ -33,12 +39,6 @@ export default function Collection() {
     let productsCopy = products.slice();
 
     // 🔍 Apply filters
-    if (showSearch && search) {
-      productsCopy = productsCopy.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-
     if (category.length > 0) {
       productsCopy = productsCopy.filter((item) =>
         category.includes(item.category)
@@ -92,7 +92,7 @@ export default function Collection() {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
+    <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-5 lg:pt-10 border-t">
       {/* Filter Options */}
       <div className="min-w-60">
         <p
@@ -206,8 +206,19 @@ export default function Collection() {
         </div>
 
         {/* Map products */}
+
+        <div className="">
+          <SearchInput />
+        </div>
         {loading ? (
           <Spinner />
+        ) : !loading && products.length === 0 ? (
+          <div className="flex justify-center">
+            <InfoMessage
+              message={"There are no products matching the selection."}
+              title={"No Products"}
+            />
+          </div>
         ) : (
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
