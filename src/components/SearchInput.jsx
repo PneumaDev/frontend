@@ -11,7 +11,9 @@ export default function SearchInput() {
   const ref = useRef(null);
 
   useEffect(() => {
-    ref.current.focus();
+    if (searchTerm === "") {
+      ref.current.focus();
+    }
   }, []);
 
   useEffect(() => {
