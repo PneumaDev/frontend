@@ -82,6 +82,8 @@ export default function Product() {
     addToCart(id, size);
   };
 
+  console.log(product);
+
   return loading || !product ? (
     <Spinner />
   ) : (
@@ -92,7 +94,7 @@ export default function Product() {
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
         {/* Product images */}
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
+          <div className="flex scroller sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[17%] w-full">
             {product.image?.map((imgUrl, index) => {
               // Extract the public ID from the full URL
               const publicId = imgUrl
