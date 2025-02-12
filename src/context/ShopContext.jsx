@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Cloudinary } from "@cloudinary/url-gen";
 
@@ -8,6 +8,7 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
@@ -20,6 +21,9 @@ const ShopContextProvider = (props) => {
   const [user, setUser] = useState({});
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
 
   const currency = "Ksh.";
 
@@ -130,8 +134,8 @@ const ShopContextProvider = (props) => {
       );
 
       if (response.data.success) {
-        setCartItems(response.data.cartData);
-        setUser(response.data.userData);
+        setCartItems(response.data.user.cartData);
+        setUser(response.data.user);
       }
     } catch (error) {
       console.log(error);
@@ -177,10 +181,10 @@ const ShopContextProvider = (props) => {
 
   // Function to fetch products from the database
   const getProductsData = async (filters, cartItems) => {
+    setLoading(true);
     try {
       let queryParams = new URLSearchParams(filters).toString();
-      let fields = "name,quantity,category,image,bestSeller,price";
-
+      let fields = "name,image,bestSeller,price";
       queryParams += `&fields=${fields}`;
 
       const response = await axios.post(
@@ -190,17 +194,21 @@ const ShopContextProvider = (props) => {
       if (response.data.success) {
         if (!cartItems) {
           setProducts(response.data.products);
-          // setProducts([...products, ...response.data.products]);
         }
         return response.data.products;
       } else {
-        toast.error(response.data.message);
-        return null;
+        throw new Error(response.data.message || "Failed to fetch products");
       }
     } catch (error) {
-      console.log(error.message);
-      toast.error(error.message);
-      return null;
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong";
+      toast.error(errorMessage, { id: "error" });
+      setLoading(false);
+      throw new Error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -242,6 +250,9 @@ const ShopContextProvider = (props) => {
     fetchCartAmount,
     cartProducts,
     setCartProducts,
+    location,
+    queryParams,
+    loading,
   };
 
   return (
