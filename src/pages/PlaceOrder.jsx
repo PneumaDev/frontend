@@ -37,7 +37,10 @@ export default function PlaceOrder() {
     delivery,
     totalAmount,
     cartProducts,
+    user,
   } = useContext(ShopContext);
+
+  console.log(user);
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -55,8 +58,6 @@ export default function PlaceOrder() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [paymentProcessed]);
-
-  console.log(cartItems);
 
   const pollPayment = async (order) => {
     setTimeout(async () => {
@@ -81,15 +82,32 @@ export default function PlaceOrder() {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
+  console.log(cartItems);
+
   // <------------Handle Order Purchases------------>
   const onSubmitHandler = async (e) => {
     setSendingData(true);
     e.preventDefault();
     try {
+      const updatedItems = cartProducts.map((item) => {
+        if (cartItems[item._id]) {
+          // Extract sizes and quantities
+          const sizes = Object.entries(cartItems[item._id]).map(
+            ([size, quantity]) => ({
+              size,
+              quantity,
+            })
+          );
+
+          return { ...item, sizes };
+        }
+        return { ...item, sizes: [{ size: "Default", quantity: 1 }] }; // Default case
+      });
+
       let orderData = {
         shippingMethod: delivery,
         address: formData,
-        items: cartProducts,
+        items: updatedItems,
         amount: totalAmount + delivery.price,
       };
       switch (method) {
@@ -341,7 +359,7 @@ export default function PlaceOrder() {
                   <p className="font-muktaVaani">
                     {" "}
                     <span className="font-extrabold">DON'T RELOAD!</span>{" "}
-                    Redirecting in: {delay}.
+                    Redirecting in: {delay}
                   </p>
                 </div>
               ) : (
