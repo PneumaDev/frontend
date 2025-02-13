@@ -6,83 +6,22 @@ import CartTotal from "../components/CartTotal";
 import InfoMessage from "../components/InfoComponent";
 import { AdvancedImage } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
-import axios from "axios";
-import toast from "react-hot-toast";
+import Spinner from "../components/Spinner";
 
 export default function Cart() {
   const {
-    getUserCart,
-    backendUrl,
     currency,
+    cartData,
+    setCartData,
     cartItems,
     updateQuantity,
     navigate,
-    setCartProducts,
-    setDelivery,
     cartProducts,
     cloudinary,
   } = useContext(ShopContext);
-  const [cartData, setCartData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUserCartData = async () => {
-      setDelivery({ price: 0, method: "" });
-      await getUserCart();
-    };
-
-    fetchUserCartData();
-  }, []);
-
-  const getProductsData = async (filters) => {
-    try {
-      // Convert filters to URL parameters
-      let queryParams = new URLSearchParams(filters).toString();
-
-      const response = await axios.post(
-        `${backendUrl}/api/product/list?${queryParams}`,
-        {
-          fields: ["name", "price", "image", "description"],
-        }
-      );
-
-      if (response.data.success) {
-        setCartProducts(response.data.products);
-
-        // Process cart data
-        const tempData = [];
-        for (const items in cartItems) {
-          for (const item in cartItems[items]) {
-            if (cartItems[items][item] > 0) {
-              tempData.push({
-                _id: items,
-                size: item,
-                quantity: cartItems[items][item],
-              });
-            }
-          }
-        }
-
-        setCartData(tempData);
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      console.log(error.message);
-      toast.error("Failed to fetch product data.");
-    }
-  };
-
-  useEffect(() => {
-    if (cartItems && Object.keys(cartItems).length > 0) {
-      const productIDs = Object.keys(cartItems);
-
-      const filters = {
-        ids: productIDs.join(","),
-      };
-
-      getProductsData(filters);
-    }
-  }, [cartItems]);
+  // console.log(cartProducts);
 
   useEffect(() => {
     if (cartProducts.length > 0) {
@@ -100,6 +39,7 @@ export default function Cart() {
       }
 
       setCartData(tempData);
+      setLoading(false);
     }
   }, [cartItems, cartProducts]);
 
@@ -109,13 +49,17 @@ export default function Cart() {
         <Title text1={"YOUR"} tex2={"CART"} />
       </div>
 
-      {cartData.length === 0 ? (
+      {cartData.length === 0 && !loading ? (
         <div className="flex justify-center items-center">
           <InfoMessage
             title={"Nothing Here!"}
             message={"Please add some items to the cart"}
           />
         </div>
+      ) : loading ? (
+        <>
+          <Spinner />
+        </>
       ) : (
         <>
           <div className="">
