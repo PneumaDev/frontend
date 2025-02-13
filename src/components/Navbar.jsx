@@ -18,7 +18,6 @@ export default function Navbar() {
     token,
     setCartItems,
     navigate,
-    getUserCart,
   } = useContext(ShopContext);
 
   const logout = () => {
@@ -31,12 +30,6 @@ export default function Navbar() {
       setCartItems({});
     }, 0);
   };
-
-  useEffect(() => {
-    if (token) {
-      getUserCart(token);
-    }
-  }, [token]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -74,13 +67,6 @@ export default function Navbar() {
 
       {/* Action Icons */}
       <div className="flex items-center gap-6">
-        <img
-          onClick={() => setShowSearch(true)}
-          src={assets.search_icon}
-          alt="Search"
-          className="w-5 cursor-pointer hover:opacity-70 transition-opacity"
-        />
-
         {/* Profile Dropdown */}
         <div className="relative" ref={profileRef}>
           <img
