@@ -20,7 +20,7 @@ export default function OrderItem({
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
-  const { cloudinary, backendUrl, token } = useContext(ShopContext);
+  const { cloudinary, backendUrl, token, navigate } = useContext(ShopContext);
 
   let secondsPollInterval;
   let pollInterval;
@@ -178,47 +178,65 @@ export default function OrderItem({
         </div>
       </div>
 
-      {order.items.map((item, idx) => {
-        // Guard clause for items without images
-        if (!item.image || item.image.length === 0) {
-          console.warn(`No image found for item: ${item.name}`);
-          return null;
-        }
+      {order.items.flatMap((item, itemIndex) =>
+        item.sizes.map((size, idx) => {
+          // Guard clause for items without images
+          if (!item.image || item.image.length === 0) {
+            console.warn(`No image found for item: ${item.name}`);
+            return null;
+          }
 
-        return (
-          <div
-            key={idx}
-            className="flex items-center space-x-4 py-4 border-b last:border-b-0"
-          >
-            {/* Product Image */}
-            <AdvancedImage
-              cldImg={processedImages[idx]}
-              className="w-20 h-28 object-cover aspect-auto rounded-md"
-              plugins={[lazyload()]}
-              alt={`Product ${item.name}`}
-            />
-            {/* Product Details */}
-            <div className="flex-1 space-y-2">
-              {/* Product Name */}
-              <p className="font-medium text-gray-700 line-clamp-1 font-muktaVaani">
-                {item.name}
-              </p>
-              {/* Quantity, Size, and Price */}
-              <div className="flex items-center text-sm text-gray-500 font-yantramanav">
-                <p>Qty: {item.quantity}</p>
-                <span className="mx-2">•</span>
-                <p>Size: {item.size}</p>
-                <span className="mx-2">•</span>
-                <p>KSH {item.price.toLocaleString()}</p>
+          return (
+            <div
+              key={`${item.name}-${size.size}-${idx}`}
+              className="flex items-center space-x-4 py-4 border-b last:border-b-0"
+            >
+              {/* Product Image */}
+              <AdvancedImage
+                cldImg={processedImages[itemIndex]} // Now using the correct image for each item
+                className="w-20 h-28 object-cover aspect-auto rounded-md"
+                plugins={[lazyload()]}
+                alt={`Product ${item.name} - ${size.size}`}
+              />
+              {/* Product Details */}
+              <div className="flex-1 space-y-3">
+                {/* Product Name */}
+                <div
+                  className="font-medium text-gray-700 line-clamp-1 font-muktaVaani w-fit border-gray-400 border-b cursor-pointer"
+                  onClick={() => navigate(`product/${item._id}`)}
+                >
+                  {item.name}
+                </div>
+                {/* Quantity, Size, and Price */}
+                <div className="flex items-center gap-x-2 text-sm text-gray-500 font-yantramanav">
+                  <p className="font-bold">
+                    Qty:{" "}
+                    <span className="font-normal font-muktaVaani">
+                      {size.quantity}
+                    </span>
+                  </p>
+                  <p className="font-bold">
+                    Size:{" "}
+                    <span className="font-normal font-muktaVaani">
+                      {size.size}
+                    </span>
+                  </p>
+                  <p className="font-bold">
+                    Price:{" "}
+                    <span className="font-normal font-muktaVaani">
+                      {item.price}
+                    </span>
+                  </p>
+                </div>
+                {/* Product Description */}
+                <p className="text-sm text-gray-500 font-imprima line-clamp-2">
+                  {item.description}
+                </p>
               </div>
-              {/* Product Description */}
-              <p className="text-sm text-gray-500 font-imprima line-clamp-2">
-                {item.description}
-              </p>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
 
       <div className="flex justify-between items-start pt-4">
         <div className="space-y-1">
