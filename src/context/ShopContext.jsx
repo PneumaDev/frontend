@@ -8,6 +8,7 @@ export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
   const [products, setProducts] = useState([]);
+  const [cartData, setCartData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -162,8 +163,11 @@ const ShopContextProvider = (props) => {
     const filters = { ids: productIDs.join(",") };
 
     // // Fetch product data
-    const cartProducts = await getProductsData(filters, true);
+    const fields = "name,image,price,description";
+    const cartProducts = await getProductsData(filters, fields, true);
     if (!cartProducts) return totalAmount;
+
+    // setCartProducts(cartProducts);
 
     for (const productId in cartItems) {
       let itemInfo = cartProducts.find((product) => product._id === productId);
@@ -180,11 +184,16 @@ const ShopContextProvider = (props) => {
   };
 
   // Function to fetch products from the database
-  const getProductsData = async (filters, cartItems) => {
+  const getProductsData = async (filters, field, cartItems) => {
     setLoading(true);
     try {
       let queryParams = new URLSearchParams(filters).toString();
-      let fields = "name,image,bestSeller,price";
+      let fields;
+      if (!field) {
+        fields = "name,image,bestSeller,price";
+      } else {
+        fields = field;
+      }
       queryParams += `&fields=${fields}`;
 
       const response = await axios.post(
@@ -192,7 +201,9 @@ const ShopContextProvider = (props) => {
       );
 
       if (response.data.success) {
-        if (!cartItems) {
+        if (cartItems) {
+          setCartProducts(response.data.products);
+        } else {
           setProducts(response.data.products);
         }
         return response.data.products;
@@ -218,7 +229,7 @@ const ShopContextProvider = (props) => {
       setToken(savedToken);
       getUserCart(savedToken);
     }
-  }, [token]);
+  }, []);
 
   const value = {
     products,
@@ -253,6 +264,8 @@ const ShopContextProvider = (props) => {
     location,
     queryParams,
     loading,
+    cartData,
+    setCartData,
   };
 
   return (
