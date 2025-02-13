@@ -7,11 +7,6 @@ import BestSeller from "../components/BestSeller";
 import { ShopContext } from "../context/ShopContext";
 
 export default function Home() {
-  const { getProductsData } = useContext(ShopContext);
-  useEffect(() => {
-    getProductsData();
-  }, []);
-
   return (
     <div>
       <Hero />
