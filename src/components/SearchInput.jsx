@@ -23,7 +23,7 @@ export default function SearchInput() {
       setSearchTerm(term);
     }
 
-    if (products.length === 0 && term === "") {
+    if (products.length === 0) {
       handleSearchTerm(term, false);
     }
   }, [location.search]);
