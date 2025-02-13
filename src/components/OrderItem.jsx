@@ -202,7 +202,7 @@ export default function OrderItem({
               <div className="flex-1 space-y-3">
                 {/* Product Name */}
                 <div
-                  className="font-medium text-gray-700 line-clamp-1 font-muktaVaani w-fit border-gray-400 border-b cursor-pointer"
+                  className="font-medium text-gray-700 line-clamp-1 font-muktaVaani w-fit underline underline-offset-4 border-gray-400  cursor-pointer"
                   onClick={() => navigate(`product/${item._id}`)}
                 >
                   {item.name}
