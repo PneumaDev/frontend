@@ -9,7 +9,7 @@ export const ShopContext = createContext();
 const ShopContextProvider = (props) => {
   const [products, setProducts] = useState([]);
   const [cartData, setCartData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
@@ -184,8 +184,12 @@ const ShopContextProvider = (props) => {
   };
 
   // Function to fetch products from the database
-  const getProductsData = async (filters, field, cartItems) => {
+  console.log(products);
+
+  const getProductsData = async (filters, field, cartItems, pagination) => {
     setLoading(true);
+
+    console.log(filters, field, cartItems, pagination);
     try {
       let queryParams = new URLSearchParams(filters).toString();
       let fields;
@@ -203,6 +207,12 @@ const ShopContextProvider = (props) => {
       if (response.data.success) {
         if (cartItems) {
           setCartProducts(response.data.products);
+        } else if (pagination) {
+          console.log("Called");
+          setProducts((prevProducts) => [
+            ...prevProducts,
+            ...response.data.products,
+          ]);
         } else {
           setProducts(response.data.products);
         }
