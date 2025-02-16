@@ -194,7 +194,7 @@ const ShopContextProvider = (props) => {
       let queryParams = new URLSearchParams(filters).toString();
       let fields;
       if (!field) {
-        fields = "name,image,bestSeller,price";
+        fields = "name,image,bestSeller,price,category,subCategory";
       } else {
         fields = field;
       }
