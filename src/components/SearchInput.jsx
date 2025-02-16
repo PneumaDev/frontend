@@ -69,7 +69,7 @@ export default function SearchInput() {
       </div>
 
       {/* Horizontally Scrollable Filter Buttons */}
-      <div className="hide-scrollbar max-w-full overflow-x-scroll scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 snap-x snap-mandatory px-2 rounded-lg shadow-sm">
+      <div className="hide-scrollbar scroller max-w-full overflow-x-scroll scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 snap-x snap-mandatory px-2 rounded-lg shadow-sm">
         <div className="flex gap-3 py-2 px-4 flex-nowrap">
           {[
             "All",
