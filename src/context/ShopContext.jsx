@@ -184,8 +184,6 @@ const ShopContextProvider = (props) => {
   };
 
   // Function to fetch products from the database
-  console.log(products);
-
   const getProductsData = async (filters, field, cartItems, pagination) => {
     setLoading(true);
 
