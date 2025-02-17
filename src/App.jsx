@@ -22,9 +22,9 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 export default function App() {
   const location = useLocation();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [location]);
 
   return (
     <div className="sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">

@@ -15,6 +15,7 @@ export default function Collection() {
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [sortType, setSortType] = useState("relevant");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (products.length === 0 && queryParams.get("search") === "") {
@@ -39,6 +40,26 @@ export default function Collection() {
 
     setFilterProducts(sortedProducts);
   }, [sortType, products]);
+
+  const loadMoreProducts = () => {
+    if (products.length < 12) return;
+
+    const nextPage = currentPage + 1;
+
+    console.log("Loading page:", nextPage);
+
+    getProductsData(
+      {
+        page: nextPage,
+        name: queryParams.get("search") || "",
+      },
+      undefined,
+      undefined,
+      true
+    );
+
+    setCurrentPage(nextPage);
+  };
 
   return (
     <div className="relative flex flex-col sm:flex-row gap-1 sm:gap-10 pt-5 lg:pt-10 border-t">
@@ -112,28 +133,14 @@ export default function Collection() {
                 />
               ))}
             </div>
-            {products.length % 12 === 0 && (
+
+            {products.length % 20 === 0 && (
               <div className="flex justify-center">
                 <button
                   className="bg-blue-500 text-white font-semibold rounded-md px-6 py-3 
              hover:bg-blue-600 hover:shadow-lg hover:scale-105 
              active:scale-100 transition-all duration-200 ease-in-out"
-                  onClick={() => {
-                    // Get current page number (default to 1 if not present)
-                    const currentPage = Math.floor(products.length / 12);
-
-                    if (products.length < 12) return;
-                    // Fetch new products
-                    getProductsData(
-                      {
-                        page: currentPage + 1,
-                        name: queryParams.get("search") || "",
-                      },
-                      undefined,
-                      undefined,
-                      true
-                    );
-                  }}
+                  onClick={() => loadMoreProducts()}
                 >
                   Load More
                 </button>

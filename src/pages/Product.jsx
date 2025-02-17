@@ -15,7 +15,8 @@ import axios from "axios";
 export default function Product() {
   const [loading, setLoading] = useState(false);
   const { productId } = useParams();
-  const { addToCart, token, cloudinary, backendUrl } = useContext(ShopContext);
+  const { addToCart, token, cloudinary, backendUrl, products } =
+    useContext(ShopContext);
   const [product, setProduct] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -28,41 +29,45 @@ export default function Product() {
 
   const fetchProduct = async () => {
     try {
-      if (!product || product.length < 1) {
-        const token = localStorage.getItem("adminToken");
+      setLoading(true); // Start loading before fetching
+      const token = localStorage.getItem("adminToken");
 
-        const response = await axios.post(
-          `${backendUrl}/api/product/single`,
-          { productId: productId },
-          { headers: { token: token } }
-        );
+      const response = await axios.post(
+        `${backendUrl}/api/product/single`,
+        { productId: productId },
+        { headers: { token: token } }
+      );
 
-        setProduct(response.data.product);
-      }
+      setProduct(response.data.product);
     } catch (error) {
       console.error("Error fetching product:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
+    console.log("called");
     fetchProduct();
+  }, [productId]);
+
+  useEffect(() => {
     if (product?.image?.length > 0) {
       const publicId = product.image[0]
         .split("/")
         .slice(-2)
         .join("/")
         .split(".")[0];
+
       const cldFullImg = cloudinary
         .image(publicId)
         .format("auto")
         .quality("auto")
         .resize(scale().width(1000));
+
       setImage(cldFullImg || "");
-      setLoading(false);
     }
-  }, [productId, product]);
+
+    setLoading(false);
+  }, [product]); // Only run when product updates
 
   useEffect(() => {
     if (token) {
@@ -71,9 +76,9 @@ export default function Product() {
   }, [token]);
 
   useEffect(() => {
-    if (ref.current) ref.current.scrollIntoView({ behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "instant" });
     setSize("");
-  }, [location]);
+  }, [productId]);
 
   const handleAddToCart = (id, size) => {
     if (!token) {
