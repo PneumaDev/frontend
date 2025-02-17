@@ -64,11 +64,9 @@ export default function Orders() {
       if (response.data.success) {
         setOrderData(response.data.orders.reverse());
       }
-      setLoading(false);
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
-      setLoading(false);
+      toast.error(error.message, { id: "error" });
     } finally {
       setLoading(false);
     }
