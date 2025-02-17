@@ -40,6 +40,8 @@ export default function Cart() {
 
       setCartData(tempData);
       setLoading(false);
+    } else {
+      setLoading(false);
     }
   }, [cartItems, cartProducts]);
 
