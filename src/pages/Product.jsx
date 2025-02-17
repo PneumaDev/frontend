@@ -30,25 +30,15 @@ export default function Product() {
   const fetchProduct = async () => {
     try {
       setLoading(true); // Start loading before fetching
+      const token = localStorage.getItem("adminToken");
 
-      // If product is not available, fetch it from backend
-      if (!product || (Array.isArray(product) && product.length < 1)) {
-        const token = localStorage.getItem("adminToken");
+      const response = await axios.post(
+        `${backendUrl}/api/product/single`,
+        { productId: productId },
+        { headers: { token: token } }
+      );
 
-        const response = await axios.post(
-          `${backendUrl}/api/product/single`,
-          { productId: productId },
-          { headers: { token: token } }
-        );
-
-        setProduct(response.data.product);
-      } else {
-        // Find the product from the existing list
-        const item = products.find((p) => p._id === productId);
-        if (item) {
-          setProduct(item);
-        }
-      }
+      setProduct(response.data.product);
     } catch (error) {
       console.error("Error fetching product:", error);
     }
