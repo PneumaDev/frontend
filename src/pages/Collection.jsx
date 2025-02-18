@@ -76,7 +76,7 @@ export default function Collection() {
       <FilterSidebar
         showFilter={showFilter}
         setShowFilter={setShowFilter}
-        products={products}
+        products={filterProducts}
         setFilterProducts={setFilterProducts}
       />
 
