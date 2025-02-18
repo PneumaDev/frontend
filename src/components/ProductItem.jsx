@@ -17,7 +17,7 @@ export default function ProductItem({ id, image, price, name }) {
     .image(publicId)
     .format("auto")
     .quality("auto")
-    .resize(scale().width(400));
+    .resize(scale().width(200));
 
   return (
     <div className="relative text-gray-700 shadow-sm hover:shadow-lg p-4 rounded-md">
