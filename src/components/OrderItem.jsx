@@ -18,6 +18,7 @@ export default function OrderItem({
   handlePaymentConfirmed,
 }) {
   const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const [paymentconfirmed, setPaymentConfirmed] = useState(false);
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
   const { cloudinary, backendUrl, token, navigate } = useContext(ShopContext);
@@ -95,7 +96,7 @@ export default function OrderItem({
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
-      if (secondsElapsed < 60) {
+      if (secondsElapsed < 60 && !paymentconfirmed) {
         event.preventDefault();
         event.returnValue = "";
       }
@@ -108,7 +109,7 @@ export default function OrderItem({
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [secondsElapsed]);
+  }, [secondsElapsed, paymentconfirmed]);
 
   // Memoize processed Cloudinary images
   const processedImages = useMemo(() => {
@@ -139,6 +140,7 @@ export default function OrderItem({
     console.log(res.data);
 
     if (res.data.success) {
+      setPaymentConfirmed(true);
       console.log("Payment was successfull");
       handlePaymentConfirmed();
     } else if (!res.data.success && res.data.status === "1037") {
