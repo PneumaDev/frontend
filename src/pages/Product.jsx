@@ -87,8 +87,6 @@ export default function Product() {
     addToCart(id, size);
   };
 
-  console.log(product);
-
   return loading || !product ? (
     <Spinner />
   ) : (
@@ -169,7 +167,7 @@ export default function Product() {
               </span>
             )}
           </p>
-          <p className="mt-5 text-gray-500 md:w-4/5 font-imprima">
+          <p className="mt-5 text-gray-500 md:w-4/5 font-imprima line-clamp-2">
             {product.description}
           </p>
           <div className="flex flex-col gap-4 my-8">
