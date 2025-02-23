@@ -4,11 +4,11 @@ import { ShopContext } from "../context/ShopContext";
 
 export default function SearchInput() {
   const [searchTerm, setSearchTerm] = useState("");
-
-  const { getProductsData, navigate, location, queryParams, products } =
+  const { getProductsData, navigate, location, queryParams } =
     useContext(ShopContext);
 
   const ref = useRef(null);
+  const lastSearchedTerm = useRef(""); // 🔹 Store last searched term
 
   useEffect(() => {
     const term = queryParams.get("search") || "";
@@ -23,7 +23,7 @@ export default function SearchInput() {
       setSearchTerm(term);
     }
 
-    if (products.length === 0) {
+    if (lastSearchedTerm.current !== term) {
       handleSearchTerm(term, false);
     }
   }, [location.search]);
@@ -31,21 +31,30 @@ export default function SearchInput() {
   const handleSearchTerm = async (item, shouldNavigate = true) => {
     const searchItem = item === "All" ? "" : item || searchTerm;
 
+    // 🔹 Check if the search term is different from the last one
+    if (lastSearchedTerm.current === searchItem) {
+      if (shouldNavigate) updateURL(searchItem);
+      return; // ✅ Prevent unnecessary fetch
+    }
+
     try {
       await getProductsData({ name: searchItem });
-
-      if (shouldNavigate) {
-        const params = new URLSearchParams(location.search);
-        if (searchItem) {
-          params.set("search", searchItem);
-        } else {
-          params.delete("search");
-        }
-        navigate(`/collection?${params.toString()}`, { replace: true });
-      }
+      lastSearchedTerm.current = searchItem; // 🔹 Update the last searched term
     } catch (error) {
       console.error("Error fetching products:", error);
     }
+
+    if (shouldNavigate) updateURL(searchItem);
+  };
+
+  const updateURL = (searchItem) => {
+    const params = new URLSearchParams(location.search);
+    if (searchItem !== "") {
+      params.set("search", searchItem);
+    } else {
+      params.set("search", "");
+    }
+    navigate(`/collection?${params.toString()}`, { replace: true });
   };
 
   return (
