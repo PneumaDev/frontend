@@ -23,7 +23,7 @@ export default function Collection() {
     if (products.length === 0 && !queryParams.get("search")) {
       getProductsData();
     }
-  }, [products.length, queryParams, getProductsData]);
+  }, []);
 
   // Apply filters and sorting
   useEffect(() => {
@@ -184,7 +184,7 @@ export default function Collection() {
         <SearchInput />
 
         {/* Product List */}
-        {loading && products.length === 0 ? (
+        {loading ? (
           <Spinner />
         ) : !loading && filteredProducts.length === 0 ? (
           <div className="flex justify-center">
