@@ -22,6 +22,7 @@ export default function Product() {
   const [size, setSize] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [productInfo, setProductInfo] = useState("Description");
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   const location = useLocation();
 
@@ -39,6 +40,7 @@ export default function Product() {
       );
 
       setProduct(response.data.product);
+      setRelatedProducts(response.data.relatedProducts);
     } catch (error) {
       console.error("Error fetching product:", error);
     }
@@ -260,10 +262,7 @@ export default function Product() {
       </div>
 
       {/* Related products */}
-      <RelatedProducts
-        category={product.category}
-        subCategory={product.subCategory}
-      />
+      <RelatedProducts products={relatedProducts} />
 
       {openModal && (
         <Modal
