@@ -187,7 +187,6 @@ const ShopContextProvider = (props) => {
   const getProductsData = async (filters, field, cartItems, pagination) => {
     setLoading(true);
 
-    console.log(filters, field, cartItems, pagination);
     try {
       let queryParams = new URLSearchParams(filters).toString();
       let fields;
