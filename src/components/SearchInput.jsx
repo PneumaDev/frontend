@@ -4,11 +4,11 @@ import { ShopContext } from "../context/ShopContext";
 
 export default function SearchInput() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { getProductsData, navigate, location, queryParams } =
+  const { getProductsData, navigate, location, queryParams, loading } =
     useContext(ShopContext);
 
   const ref = useRef(null);
-  const lastSearchedTerm = useRef(""); // 🔹 Store last searched term
+  const lastSearchedTerm = useRef("");
 
   useEffect(() => {
     const term = queryParams.get("search") || "";
@@ -31,15 +31,14 @@ export default function SearchInput() {
   const handleSearchTerm = async (item, shouldNavigate = true) => {
     const searchItem = item === "All" ? "" : item || searchTerm;
 
-    // 🔹 Check if the search term is different from the last one
     if (lastSearchedTerm.current === searchItem) {
       if (shouldNavigate) updateURL(searchItem);
-      return; // ✅ Prevent unnecessary fetch
+      return; //
     }
 
     try {
       await getProductsData({ name: searchItem });
-      lastSearchedTerm.current = searchItem; // 🔹 Update the last searched term
+      lastSearchedTerm.current = searchItem;
     } catch (error) {
       console.error("Error fetching products:", error);
     }
