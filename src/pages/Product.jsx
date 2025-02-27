@@ -216,49 +216,21 @@ export default function Product() {
 
       {/* Description and review section */}
       <div className="mt-20">
-        <div className="flex">
-          <b
-            className={`border px-5 py-3 text-sm font-muktaVaani cursor-pointer ${
-              productInfo === "Description" ? "bg-gray-200 font-bold" : ""
-            }`}
-            onClick={() => setProductInfo("Description")}
-          >
-            Description
-          </b>
-          <p
-            className={`border px-5 py-3 text-sm font-muktaVaani cursor-pointer ${
-              productInfo === "Reviews" ? "bg-gray-200 font-bold" : ""
-            }`}
-            onClick={() => setProductInfo("Reviews")}
-          >
-            Reviews
-          </p>
+        <p
+          className="border px-5 py-3 text-sm font-muktaVaani w-fit rounded-t-md cursor-pointer
+        bg-gray-200 font-semiboldbold"
+          onClick={() => setProductInfo("Reviews")}
+        >
+          Reviews
+        </p>
+
+        <div className="flex justify-center border w-full px-2 shadow-sm">
+          <InfoMessage
+            className="my-5"
+            title={"Nothing Here"}
+            message={"No reviews of this product have been made yet!"}
+          />
         </div>
-        {productInfo === "Reviews" ? (
-          <div className="flex justify-center border w-full px-2">
-            <InfoMessage
-              className="my-5"
-              title={"Nothing Here"}
-              message={"No reviews of this product have been made yet!"}
-            />
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
-            <p className="font-imprima">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              euismod lorem arcu, condimentum interdum ante tristique rhoncus.
-              Nam nec aliquam velit.
-            </p>
-            <p className="font-imprima">
-              Nulla eu accumsan sem. Donec vitae ornare enim. Curabitur
-              porttitor diam quis dui consequat consequat. Fusce convallis sed
-              leo posuere facilisis. Integer non laoreet ex, eget consectetur
-              quam. Aenean tempus maximus magna non molestie. Pellentesque
-              semper vitae erat ac dignissim. Vivamus vitae dui vitae dui
-              lobortis ultrices dignissim et sem.
-            </p>
-          </div>
-        )}
       </div>
 
       {/* Related products */}
