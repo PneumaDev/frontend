@@ -117,10 +117,13 @@ export default function Collection() {
         <div className="border border-gray-300 p-4">
           <p className="mb-3 text-sm font-medium font-muktaVaani">CATEGORIES</p>
           {["Men", "Women", "Kids"].map((item) => (
-            <label key={item} className="flex items-center gap-2 font-imprima">
+            <label
+              key={item}
+              className="flex items-center gap-2 font-imprima w-fit "
+            >
               <input
                 type="checkbox"
-                className="w-4 h-4"
+                className="w-4 h-4  cursor-pointer"
                 value={item}
                 onChange={() => toggleCategory(item)}
               />
@@ -136,7 +139,7 @@ export default function Collection() {
             <label key={item} className="flex items-center gap-2 font-imprima">
               <input
                 type="checkbox"
-                className="w-4 h-4"
+                className="w-4 h-4 cursor-pointer"
                 value={item}
                 onChange={() => toggleSubCategory(item)}
               />
@@ -147,12 +150,10 @@ export default function Collection() {
       </div>
 
       {/* Toggle Button (Mobile) */}
-      <button
-        onClick={() => setShowFilter(!showFilter)}
-        className="sm:hidden flex items-center gap-2 text-lg font-yantramanav my-2"
-      >
+      <button className="sm:hidden flex items-center gap-2 text-lg font-yantramanav my-2">
         FILTERS
         <img
+          onClick={() => setShowFilter(!showFilter)}
           src={assets.dropdown_icon}
           alt=""
           className={`h-3 ${showFilter ? "rotate-90" : ""}`}
@@ -184,7 +185,7 @@ export default function Collection() {
         <SearchInput />
 
         {/* Product List */}
-        {loading ? (
+        {loading && filteredProducts.length === 0 ? (
           <Spinner />
         ) : !loading && filteredProducts.length === 0 ? (
           <div className="flex justify-center">
