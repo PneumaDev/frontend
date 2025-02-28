@@ -183,6 +183,8 @@ export default function Orders() {
     }, 1000);
   }
 
+  console.log(currentItem);
+
   return (
     <div className="border-t pt-16 bg-white">
       <div className="text-2xl">
@@ -376,9 +378,21 @@ export default function Orders() {
               </div>
             </Modal>
           </>
-        ) : (
-          <></>
-        )}
+        ) : action === "writeReview" ? (
+          <>
+            <>
+              <Modal
+                title={"Leave a review"}
+                onClose={() => setOpenModal(false)}
+                isOpen={openModal}
+                button1={"Submit"}
+                button2={"Close"}
+              >
+                <div className="">{currentItem.items[0].name}</div>
+              </Modal>
+            </>
+          </>
+        ) : null}
       </div>
     </div>
   );
