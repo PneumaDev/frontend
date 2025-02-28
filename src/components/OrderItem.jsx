@@ -292,6 +292,7 @@ export default function OrderItem({
             onClick={() => {
               toast.error("Feature Not Implemented", {
                 id: "Feature Not Implemented",
+                duration: 1000,
               });
             }}
             className="border bg-blue-200 px-4 py-2 text-sm font-medium rounded-md transition-colors hover:bg-blue-300 text-gray-700 cursor-pointer"
@@ -363,7 +364,7 @@ export default function OrderItem({
         )}
       </div>
 
-      {order.status === "Delivered" && order.payment && (
+      {order.status === "Delivered" && order.payment && !order.reviewed && (
         <div className="flex justify-end">
           <button
             onClick={() => handleWriteReview(order)}
