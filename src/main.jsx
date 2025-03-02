@@ -5,8 +5,10 @@ import { BrowserRouter } from "react-router-dom";
 import ShopContextProvider from "./context/ShopContext.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+const clientId = import.meta.env.VITE_FIREBASE_CLIENT_ID;
+
 createRoot(document.getElementById("root")).render(
-  <GoogleOAuthProvider clientId="281489940696-5p77k6en8t4ptnv43dv0qes26g0k02ek.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId={clientId}>
     <BrowserRouter>
       <ShopContextProvider>
         <App />
