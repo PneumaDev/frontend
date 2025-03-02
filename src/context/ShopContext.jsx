@@ -48,14 +48,14 @@ const ShopContextProvider = (props) => {
   }, []);
 
   useEffect(() => {
-    if (permission == "granted" || permission == "default") {
+    if (permission == "granted") {
       getAdminFCMToken();
       onMessage(messaging, (payload) => {
         console.log(payload);
         toast.success("New notification recieved!");
       });
     }
-  }, [token, permission]);
+  }, [permission]);
 
   const requestPermission = async () => {
     const result = await Notification.requestPermission();
