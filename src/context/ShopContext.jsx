@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Cloudinary } from "@cloudinary/url-gen";
+import { getAdminFCMToken, messaging } from "./../utils/firebase";
+import { onMessage } from "firebase/messaging";
 
 export const ShopContext = createContext();
 
@@ -20,6 +22,11 @@ const ShopContextProvider = (props) => {
   const [totalAmount, setTotalAmount] = useState(0);
   const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const [permission, setPermission] = useState(Notification.permission);
+
+  useEffect(() => {
+    setPermission(Notification.permission);
+  }, []);
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -31,6 +38,29 @@ const ShopContextProvider = (props) => {
   const cloudinary = new Cloudinary({
     cloud: { cloudName: "ds5lreojp" },
   });
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem("token");
+    if (!token && savedToken) {
+      setToken(savedToken);
+      getUserCart(savedToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (permission == "granted" || permission == "default") {
+      getAdminFCMToken();
+      onMessage(messaging, (payload) => {
+        console.log(payload);
+        toast.success("New notification recieved!");
+      });
+    }
+  }, [token, permission]);
+
+  const requestPermission = async () => {
+    const result = await Notification.requestPermission();
+    setPermission(result);
+  };
 
   const addToCart = async (item, size) => {
     toast.dismiss();
@@ -230,14 +260,6 @@ const ShopContextProvider = (props) => {
     }
   };
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    if (!token && savedToken) {
-      setToken(savedToken);
-      getUserCart(savedToken);
-    }
-  }, []);
-
   const value = {
     products,
     currency,
@@ -273,6 +295,8 @@ const ShopContextProvider = (props) => {
     loading,
     cartData,
     setCartData,
+    permission,
+    requestPermission,
   };
 
   return (
