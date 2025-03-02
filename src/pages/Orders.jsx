@@ -8,20 +8,23 @@ import Modal from "../components/Modal";
 import { Copy } from "lucide-react";
 import InfoMessage from "../components/InfoComponent";
 import OrderItem from "../components/OrderItem";
+import Notifications from "../components/Notifications";
+import { useCookies } from "react-cookie";
 
 export default function Orders() {
   // <------Import Context Variables----->
-  const { backendUrl, token } = useContext(ShopContext);
+  const { backendUrl, token, permission } = useContext(ShopContext);
 
   // <------------State Variables------------>
   const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [sendingData, setSendingData] = useState(false);
+  const [sendingData, setSendingData] = useState(true);
   const [selectedItem, setSelectedItem] = useState({});
   const [currentItem, setCurrentItem] = useState(selectedItem);
   const [action, setAction] = useState(null);
   const [delay, setDelay] = useState(10);
+  const [cookies] = useCookies(["notificationRequest"]);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
   const [responseCode, setResponseCode] = useState(202);
 
@@ -35,6 +38,17 @@ export default function Orders() {
       setSelectedItem(orderData.find((item) => item._id === currentItem._id));
     }
   }, [orderData]);
+
+  useEffect(() => {
+    console.log(cookies);
+    if (!cookies.notificationRequest) {
+      setAction("requestNotificationsPermission");
+      setOpenModal(true);
+    }
+    if (permission === "granted") {
+      setOpenModal(false);
+    }
+  }, [permission]);
 
   // <-------------------Custom Functions--------------------->
   const handleTrackOrder = async (e, item) => {
@@ -392,6 +406,14 @@ export default function Orders() {
               </Modal>
             </>
           </>
+        ) : action == "requestNotificationsPermission" ? (
+          <Modal
+            title={"Stay Stylish & Save More! 🛍️✨"}
+            isOpen={openModal}
+            onClose={() => setOpenModal(false)}
+          >
+            <Notifications closeModal={() => setOpenModal(false)} />
+          </Modal>
         ) : null}
       </div>
     </div>
