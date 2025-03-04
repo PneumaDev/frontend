@@ -3,13 +3,13 @@ importScripts("https://www.gstatic.com/firebasejs/11.4.0/firebase-messaging-comp
 
 // Initialize Firebase
 firebase.initializeApp({
-    apiKey: "AIzaSyAjMAH2a3x3Loj7Ly5enZmLKV9xS9FL9tc",
-    authDomain: "eridanus-mall.firebaseapp.com",
-    projectId: "eridanus-mall",
-    storageBucket: "eridanus-mall.firebasestorage.app",
-    messagingSenderId: "293463936902",
-    appId: "1:293463936902:web:6e1f1bb123e5739e242607",
-    measurementId: "G-XZVPZLL5G1"
+    apiKey: "AIzaSyAuB5cYzUAiK9F1PlKYojOYRchwRHDmehk",
+    authDomain: "pneuma-devops.firebaseapp.com",
+    projectId: "pneuma-devops",
+    storageBucket: "pneuma-devops.firebasestorage.app",
+    messagingSenderId: "293065554854",
+    appId: "1:293065554854:web:8e8574d632eed3b5ccad67",
+    measurementId: "G-BJQ9GYBEYT"
 });
 
 const messaging = firebase.messaging();
