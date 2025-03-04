@@ -23,6 +23,12 @@ export default function ProductItem({ id, image, price, name }) {
     <div className="relative text-gray-700 shadow-sm hover:shadow-lg p-4 rounded-md">
       <Link to={`/product/${id}`} className="cursor-pointer">
         <div className="overflow-hidden relative">
+          {!isImageLoaded && (
+            <div className="flex">
+              <div className="w-[300px] h-[200px] md:h-[300px] bg-gray-300 animate-pulse rounded-md"></div>
+            </div>
+          )}
+
           {/* Use AdvancedImage to display the optimized image */}
           <AdvancedImage
             plugins={[lazyload()]}
@@ -31,7 +37,7 @@ export default function ProductItem({ id, image, price, name }) {
             className={`hover:scale-110 transition ease-in-out rounded-md hover:rounded-md ${
               isImageLoaded ? "opacity-100" : "opacity-0"
             }`}
-            onLoad={() => setIsImageLoaded(true)} // Set image as loaded
+            onLoad={() => setIsImageLoaded(true)}
           />
 
           <BadgeCheck
