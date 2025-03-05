@@ -197,8 +197,6 @@ export default function Orders() {
     }, 1000);
   }
 
-  console.log(currentItem);
-
   return (
     <div className="border-t pt-16 bg-white">
       <div className="text-2xl">
