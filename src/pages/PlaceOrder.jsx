@@ -9,6 +9,7 @@ import Spinner from "./../components/Spinner";
 import Modal from "../components/Modal";
 import InfoMessage from "../components/InfoComponent";
 import toast from "react-hot-toast";
+import { useCookies } from "react-cookie";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
@@ -16,7 +17,7 @@ export default function PlaceOrder() {
   const [sendingData, setSendingData] = useState(false);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
   const [delay, setDelay] = useState(15);
-  const [addressIsDefault, setAddressIsDefault] = useState(true);
+  const [cookies, setCookie] = useCookies(["userAddress"]);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -26,7 +27,15 @@ export default function PlaceOrder() {
     constituency: "",
     county: "",
     phone: "",
+    defaultAddress: false,
   });
+
+  useEffect(() => {
+    const userAddress = cookies.userAddress;
+    if (userAddress) {
+      setFormData(userAddress);
+    }
+  }, []);
 
   const {
     navigate,
@@ -39,8 +48,6 @@ export default function PlaceOrder() {
     cartProducts,
     user,
   } = useContext(ShopContext);
-
-  console.log(user);
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
@@ -76,13 +83,18 @@ export default function PlaceOrder() {
   };
 
   const onChangeHandler = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
+    const { name, type, checked, value } = e.target;
 
-    setFormData((data) => ({ ...data, [name]: value }));
+    setFormData((prevData) => {
+      const updatedData = {
+        ...prevData,
+        [name]: type === "checkbox" ? checked : value,
+      };
+
+      setCookie("userAddress", JSON.stringify(updatedData));
+      return updatedData;
+    });
   };
-
-  console.log(cartItems);
 
   // <------------Handle Order Purchases------------>
   const onSubmitHandler = async (e) => {
@@ -101,7 +113,7 @@ export default function PlaceOrder() {
 
           return { ...item, sizes };
         }
-        return { ...item, sizes: [{ size: "Default", quantity: 1 }] }; // Default case
+        return { ...item, sizes: [{ size: "Default", quantity: 1 }] };
       });
 
       let orderData = {
@@ -250,11 +262,14 @@ export default function PlaceOrder() {
         <ShippingMethodSelector />
         <div className="flex items-center gap-2 p-2 rounded-md">
           <input
+            onChange={onChangeHandler}
+            checked={formData.defaultAddress} // Ensure this matches your state key
             type="checkbox"
             name="defaultAddress"
             id="defaultAddress"
             className="w-4 h-4 accent-blue-500 cursor-pointer"
           />
+
           <label
             htmlFor="defaultAddress"
             className="text-gray-700 text-sm font-medium"
