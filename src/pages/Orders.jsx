@@ -19,7 +19,7 @@ export default function Orders() {
   const [orderData, setOrderData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [sendingData, setSendingData] = useState(true);
+  const [sendingData, setSendingData] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const [currentItem, setCurrentItem] = useState(selectedItem);
   const [action, setAction] = useState(null);
@@ -40,7 +40,6 @@ export default function Orders() {
   }, [orderData]);
 
   useEffect(() => {
-    console.log(cookies);
     if (!cookies.notificationRequest) {
       setAction("requestNotificationsPermission");
       setOpenModal(true);
@@ -133,7 +132,6 @@ export default function Orders() {
   };
 
   const handlePaymentConfirmed = async (order) => {
-    console.log("clicked");
     setAction("payment_confirmed");
     setOpenModal(true);
     setDelay(3);
