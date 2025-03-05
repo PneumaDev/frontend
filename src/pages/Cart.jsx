@@ -6,7 +6,8 @@ import CartTotal from "../components/CartTotal";
 import InfoMessage from "../components/InfoComponent";
 import { AdvancedImage } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
-import Spinner from "../components/Spinner";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function Cart() {
   const {
@@ -18,10 +19,8 @@ export default function Cart() {
     navigate,
     cartProducts,
     cloudinary,
+    loading,
   } = useContext(ShopContext);
-  const [loading, setLoading] = useState(true);
-
-  // console.log(cartProducts);
 
   useEffect(() => {
     if (cartProducts.length > 0) {
@@ -39,11 +38,9 @@ export default function Cart() {
       }
 
       setCartData(tempData);
-      setLoading(false);
-    } else {
-      setLoading(false);
     }
   }, [cartItems, cartProducts]);
+  console.log(cartItems);
 
   return (
     <div className="border-t pt-14">
@@ -60,7 +57,11 @@ export default function Cart() {
         </div>
       ) : loading ? (
         <>
-          <Spinner />
+          <SkeletonTheme baseColor="#e5e7eb" highlightColor="#d1d5db">
+            <p>
+              <Skeleton count={3} height={"30px"} />
+            </p>
+          </SkeletonTheme>
         </>
       ) : (
         <>
