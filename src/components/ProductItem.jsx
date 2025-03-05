@@ -25,7 +25,7 @@ export default function ProductItem({ id, image, price, name }) {
         <div className="overflow-hidden relative">
           {!isImageLoaded && (
             <div className="flex">
-              <div className="w-[300px] h-[200px] md:h-[300px] bg-gray-300 animate-pulse rounded-md"></div>
+              <div className="w-[300px] h-[200px] md:h-[300px] bg-gray-200 animate-pulse rounded-md"></div>
             </div>
           )}
 
