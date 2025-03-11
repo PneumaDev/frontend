@@ -40,10 +40,9 @@ export default function Cart() {
       setCartData(tempData);
     }
   }, [cartItems, cartProducts]);
-  console.log(cartItems);
 
   return (
-    <div className="border-t pt-14">
+    <div className="border-t pt-8">
       <div className="text-2xl mb-3">
         <Title text1={"YOUR"} tex2={"CART"} />
       </div>

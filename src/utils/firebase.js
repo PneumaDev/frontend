@@ -21,11 +21,10 @@ export const messaging = getMessaging(app);
 export const getAdminFCMToken = async () => {
     try {
         const token = await getToken(messaging, {
-            vapidKey: "BHVS83vBFmd4I-cIS1lEjnszgssqrZyqEejCHtBJJJ8bKyn-vWou5K2QM4RYm-x8MpTtihTNu-kIqv0aZkz5gWs",
+            vapidKey: import.meta.env.VITE_VAPID_API_KEY,
         });
 
         if (token) {
-            console.log("FCM Token:", token);
             return token;
         } else {
             console.log("No FCM token available.");

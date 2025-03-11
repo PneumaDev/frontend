@@ -75,7 +75,7 @@ function Login() {
   }, []);
 
   useEffect(() => {
-    if (authToken && isGoogleAuthenticated) {
+    if (isGoogleAuthenticated) {
       const googleSignIn = async () => {
         const response = await axios.post(backendUrl + "/api/user/login", {
           email,
@@ -128,7 +128,7 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center mx-4">
       <form
         onSubmit={handleOnsubmitHandler}
         action=""
@@ -202,8 +202,8 @@ function Login() {
           theme="filled_blue"
           onSuccess={async (credentialResponse) => {
             await handleJwtDecode(credentialResponse.credential);
-            localStorage.setItem("authToken", credentialResponse.credential);
-            setAuthToken(credentialResponse.credential);
+            // localStorage.setItem("authToken", credentialResponse.credential);
+            // setAuthToken(credentialResponse.credential);
           }}
           onError={() => {}}
           useOneTap
