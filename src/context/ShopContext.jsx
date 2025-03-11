@@ -48,14 +48,32 @@ const ShopContextProvider = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log(user.fcmToken);
     if (permission == "granted") {
-      getAdminFCMToken();
-      onMessage(messaging, (payload) => {
-        console.log(payload);
-        toast.success("New notification recieved!");
-      });
+      setFcmTokem();
     }
-  }, [permission]);
+  }, [permission, user]);
+
+  const setFcmTokem = async () => {
+    const fcmToken = await getAdminFCMToken();
+    if (fcmToken && Object.keys(user).length > 0) {
+      if (user.fcmToken.includes(fcmToken)) {
+        return console.log("Token is already included");
+      }
+
+      const response = await axios.post(
+        backendUrl + "/api/user/update",
+        { fcmToken: [...user.fcmToken, fcmToken].slice(-3) },
+        { headers: { token } }
+      );
+
+      console.log(response);
+    }
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+      toast.success("New notification recieved!");
+    });
+  };
 
   const requestPermission = async () => {
     const result = await Notification.requestPermission();
@@ -173,6 +191,8 @@ const ShopContextProvider = (props) => {
       toast.error(error.message, {
         id: "error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -253,7 +273,6 @@ const ShopContextProvider = (props) => {
         error.message ||
         "Something went wrong";
       toast.error(errorMessage, { id: "error" });
-      setLoading(false);
       throw new Error(errorMessage);
     } finally {
       setLoading(false);
