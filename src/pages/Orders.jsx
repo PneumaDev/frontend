@@ -8,12 +8,12 @@ import Modal from "../components/Modal";
 import { Copy } from "lucide-react";
 import InfoMessage from "../components/InfoComponent";
 import OrderItem from "../components/OrderItem";
-import Notifications from "../components/Notifications";
 import { useCookies } from "react-cookie";
 
 export default function Orders() {
   // <------Import Context Variables----->
-  const { backendUrl, token, permission } = useContext(ShopContext);
+  const { backendUrl, token, permission, requestPermission } =
+    useContext(ShopContext);
 
   // <------------State Variables------------>
   const [orderData, setOrderData] = useState([]);
@@ -24,7 +24,7 @@ export default function Orders() {
   const [currentItem, setCurrentItem] = useState(selectedItem);
   const [action, setAction] = useState(null);
   const [delay, setDelay] = useState(10);
-  const [cookies] = useCookies(["notificationRequest"]);
+  const [cookies, setCookie] = useCookies(["notificationRequest"]);
   const [paymentProcessed, setPaymentProcessed] = useState(false);
   const [responseCode, setResponseCode] = useState(202);
 
@@ -40,12 +40,67 @@ export default function Orders() {
   }, [orderData]);
 
   useEffect(() => {
-    if (!cookies.notificationRequest) {
-      setAction("requestNotificationsPermission");
-      setOpenModal(true);
+    console.log(permission);
+    if (cookies.notificationRequest) {
+      return;
     }
-    if (permission === "granted") {
-      setOpenModal(false);
+    if (permission === "default") {
+      setTimeout(
+        () =>
+          toast.custom(
+            (t) => (
+              <div
+                className={`bg-green-300 transition-all duration-300 transform ${
+                  t.visible
+                    ? "opacity-100 translate-y-0 animate-enter"
+                    : "opacity-0 -translate-y-2 animate-leave"
+                } rounded-md shadow-md flex flex-col mt-5 md:mt-10`}
+              >
+                <h1 className="text-sm text-center border-b border-black p-2 font-muktaVaani">
+                  Subscribe to notifications!
+                </h1>
+                <div className="mb-2">
+                  <p className="text-sm md:text-md text-black p-2 font-muktaVaani">
+                    Get order updates, tips, discounts and more.
+                  </p>
+                  <div className="flex justify-end space-x-4 mr-2">
+                    <button
+                      onClick={() => {
+                        toast.dismiss(t.id);
+                        setCookie("notificationRequest", "denied", {
+                          path: "/",
+                          expires: new Date(
+                            Date.now() + 7 * 24 * 60 * 60 * 1000
+                          ),
+                        });
+                      }}
+                      className="font-yantramanav text-xs md:text-sm bg-gray-300 px-2 p-1 shadow-sm rounded-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        requestPermission();
+                        toast.dismiss(t.id);
+                        setCookie("notificationRequest", "granted", {
+                          path: "/",
+                          expires: new Date(
+                            Date.now() + 3 * 24 * 60 * 60 * 1000
+                          ),
+                        });
+                      }}
+                      className="font-yantramanav text-xs md:text-sm bg-orange-400 px-2 p-1 shadow-sm rounded-sm"
+                    >
+                      Allow
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ),
+            { duration: 5000, id: "notification" }
+          ),
+        3500
+      );
     }
   }, [permission]);
 
@@ -196,7 +251,7 @@ export default function Orders() {
   }
 
   return (
-    <div className="border-t pt-16 bg-white">
+    <div className="border-t pt-8 bg-white">
       <div className="text-2xl">
         <Title text1="MY" tex2="ORDERS" />
       </div>
@@ -402,14 +457,6 @@ export default function Orders() {
               </Modal>
             </>
           </>
-        ) : action == "requestNotificationsPermission" ? (
-          <Modal
-            title={"Stay Stylish & Save More! 🛍️✨"}
-            isOpen={openModal}
-            onClose={() => setOpenModal(false)}
-          >
-            <Notifications closeModal={() => setOpenModal(false)} />
-          </Modal>
         ) : null}
       </div>
     </div>

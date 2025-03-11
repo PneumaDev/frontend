@@ -93,7 +93,7 @@ export default function Product() {
     <Spinner />
   ) : (
     <div
-      className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100"
+      className="border-t-2 pt-8 transition-opacity ease-in duration-500 opacity-100"
       ref={ref}
     >
       <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
