@@ -11,14 +11,8 @@ export default function Navbar() {
     useState(false);
   const profileRef = useRef(null);
 
-  const {
-    setShowSearch,
-    getCartCount,
-    setToken,
-    token,
-    setCartItems,
-    navigate,
-  } = useContext(ShopContext);
+  const { getCartCount, setToken, token, setCartItems, navigate } =
+    useContext(ShopContext);
 
   const logout = () => {
     navigate("/login");
