@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useLocation } from "react-router-dom";
 
 function Login() {
   const [currentState, setCurrentState] = React.useState("Login");
@@ -88,7 +88,7 @@ function Login() {
 
         if (response.data.success === true) {
           setToken(response.data.token);
-          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("mallToken", response.data.token);
           if (!location.pathname.includes("product")) {
             navigate("/");
           }

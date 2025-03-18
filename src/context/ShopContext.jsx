@@ -40,7 +40,7 @@ const ShopContextProvider = (props) => {
   });
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
+    const savedToken = localStorage.getItem("mallToken");
     if (!token && savedToken) {
       setToken(savedToken);
       getUserCart(savedToken);
