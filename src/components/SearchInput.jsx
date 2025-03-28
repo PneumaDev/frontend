@@ -12,7 +12,7 @@ export default function SearchInput() {
 
   useEffect(() => {
     const term = queryParams.get("search") || "";
-    if (term === "") {
+    if (term === "" && window.innerWidth >= 1024) {
       ref.current.focus();
     }
   }, []);

@@ -82,6 +82,8 @@ export default function PlaceOrder() {
     setOpenModal(true);
   };
 
+  console.log(user);
+
   const onChangeHandler = (e) => {
     const { name, type, checked, value } = e.target;
 
@@ -126,7 +128,7 @@ export default function PlaceOrder() {
         case "mpesa":
           const response = await axios.post(
             backendUrl + "/api/order/mpesa",
-            orderData,
+            { orderData },
             { headers: { token } }
           );
 

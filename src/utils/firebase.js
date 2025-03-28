@@ -24,6 +24,7 @@ export const getAdminFCMToken = async () => {
             vapidKey: import.meta.env.VITE_VAPID_API_KEY,
         });
 
+
         if (token) {
             return token;
         } else {

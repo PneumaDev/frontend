@@ -21,7 +21,8 @@ export default function OrderItem({
   const [paymentconfirmed, setPaymentConfirmed] = useState(false);
   const [countdown, setCountdown] = useState({ minutes: 0, seconds: 0 });
 
-  const { cloudinary, backendUrl, token, navigate } = useContext(ShopContext);
+  const { cloudinary, backendUrl, token, navigate, user } =
+    useContext(ShopContext);
 
   let secondsPollInterval;
   let pollInterval;
@@ -133,7 +134,7 @@ export default function OrderItem({
   const pollPayment = async () => {
     const res = await axios.post(
       backendUrl + "/api/order/confirmpayment",
-      { order },
+      { order, fcmTokens: user.fcmToken },
       { headers: { token } }
     );
 
