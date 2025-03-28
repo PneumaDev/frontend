@@ -12,7 +12,7 @@ import { useCookies } from "react-cookie";
 
 export default function Orders() {
   // <------Import Context Variables----->
-  const { backendUrl, token, permission, requestPermission } =
+  const { backendUrl, token, permission, requestPermission, user } =
     useContext(ShopContext);
 
   // <------------State Variables------------>
@@ -30,7 +30,7 @@ export default function Orders() {
 
   // <-------------------Handle Side Effects---------------->
   useEffect(() => {
-    fetchData();
+    loadOrderData();
   }, [token]);
 
   useEffect(() => {
@@ -105,6 +105,7 @@ export default function Orders() {
   }, [permission]);
 
   // <-------------------Custom Functions--------------------->
+  // Function to track user order
   const handleTrackOrder = async (e, item) => {
     //Function to track orders
     setAction("track_order");
@@ -117,7 +118,9 @@ export default function Orders() {
     setSendingData(false);
   };
 
+  // Function to load users orders
   const loadOrderData = async () => {
+    setLoading(true);
     // Load Order Data
     try {
       if (!token) {
@@ -140,6 +143,7 @@ export default function Orders() {
     }
   };
 
+  // Function to complete stalled orders
   const completePurchases = async () => {
     try {
       if (!selectedItem) return;
@@ -152,7 +156,7 @@ export default function Orders() {
       // Send payment confirmation request
       const response = await axios.post(
         `${backendUrl}/api/order/confirmpayment`,
-        { order, retryPurchase: true },
+        { order, retryPurchase: true, fcmTokens: user.fcmToken },
         { headers: { token } }
       );
 
@@ -169,7 +173,7 @@ export default function Orders() {
       await countdownToFunction(async () => {
         setOpenModal(false);
         setPaymentProcessed(false);
-        await fetchData();
+        await loadOrderData();
       }, delay);
     } catch (error) {
       console.error("Error Completing Payment:", error);
@@ -179,6 +183,7 @@ export default function Orders() {
     }
   };
 
+  // Function to open complete purchases modal.
   const completePurchasesConfirmation = async (e, order) => {
     setSelectedItem(order);
     setAction("complete_payment");
@@ -186,6 +191,7 @@ export default function Orders() {
     setOpenModal(true);
   };
 
+  // Function to check if order payment was successful
   const handlePaymentConfirmed = async (order) => {
     setAction("payment_confirmed");
     setOpenModal(true);
@@ -195,6 +201,7 @@ export default function Orders() {
     }, 3);
   };
 
+  // Function to cancel order
   const cancelOrder = async (orderId) => {
     // Cancel/Delete Item
     setLoading(true);
@@ -227,18 +234,14 @@ export default function Orders() {
     }
   };
 
-  const fetchData = async () => {
-    setLoading(true);
-    await loadOrderData();
-    setLoading(false);
-  };
-
+  // Function to calculate time passed.
   const calculateTimePassed = (orderTime) => {
     const updatedAt = new Date(orderTime);
     const currentTime = new Date();
     return Math.floor((currentTime - updatedAt) / 1000);
   };
 
+  // Count down function
   async function countdownToFunction(callback, delay) {
     const countdown = setInterval(() => {
       delay--;
