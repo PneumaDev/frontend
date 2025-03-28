@@ -48,14 +48,14 @@ const ShopContextProvider = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(user.fcmToken);
-    if (permission == "granted") {
+    if (permission == "granted" || permission == "default") {
       setFcmTokem();
     }
   }, [permission, user]);
 
   const setFcmTokem = async () => {
     const fcmToken = await getAdminFCMToken();
+    console.log(fcmToken);
     if (fcmToken && Object.keys(user).length > 0) {
       if (user.fcmToken.includes(fcmToken)) {
         return console.log("Token is already included");
@@ -71,7 +71,7 @@ const ShopContextProvider = (props) => {
     }
     onMessage(messaging, (payload) => {
       console.log(payload);
-      toast.success("New notification recieved!");
+      // toast.success("New notification recieved!");
     });
   };
 
