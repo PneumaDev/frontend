@@ -8,6 +8,7 @@ import { AdvancedImage } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import ScrollToTop from "../components/ScrollToTop";
 
 export default function Cart() {
   const {
@@ -46,6 +47,8 @@ export default function Cart() {
       <div className="text-2xl mb-3">
         <Title text1={"YOUR"} tex2={"CART"} />
       </div>
+
+      <ScrollToTop />
 
       {cartData.length === 0 && !loading ? (
         <div className="flex justify-center items-center">
