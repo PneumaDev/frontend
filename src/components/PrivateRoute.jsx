@@ -6,7 +6,9 @@ export default function PrivateRoute() {
   const { token } = useContext(ShopContext);
 
   // Render logic
-  return token || localStorage.getItem("token") ? (
+  return token ||
+    localStorage.getItem("token") ||
+    localStorage.getItem("authToken") ? (
     <Outlet />
   ) : (
     <Navigate to="/login" />
