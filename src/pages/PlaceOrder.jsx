@@ -10,6 +10,7 @@ import Modal from "../components/Modal";
 import InfoMessage from "../components/InfoComponent";
 import toast from "react-hot-toast";
 import { useCookies } from "react-cookie";
+import ScrollToTop from "../components/ScrollToTop";
 
 export default function PlaceOrder() {
   const [method, setMethod] = useState("mpesa");
@@ -82,8 +83,6 @@ export default function PlaceOrder() {
     setOpenModal(true);
   };
 
-  console.log(user);
-
   const onChangeHandler = (e) => {
     const { name, type, checked, value } = e.target;
 
@@ -126,9 +125,10 @@ export default function PlaceOrder() {
       };
       switch (method) {
         case "mpesa":
+          console.log(orderData.items);
           const response = await axios.post(
             backendUrl + "/api/order/mpesa",
-            { orderData },
+            orderData,
             { headers: { token } }
           );
 
@@ -169,6 +169,7 @@ export default function PlaceOrder() {
       className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh]"
       onSubmit={toggleModalOpen}
     >
+      <ScrollToTop />
       {/* ---------Left Side---------- */}
       <div
         className={`flex flex-col gap-4 w-full ${

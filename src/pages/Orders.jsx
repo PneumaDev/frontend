@@ -9,6 +9,7 @@ import { Copy } from "lucide-react";
 import InfoMessage from "../components/InfoComponent";
 import OrderItem from "../components/OrderItem";
 import { useCookies } from "react-cookie";
+import ScrollToTop from "../components/ScrollToTop";
 
 export default function Orders() {
   // <------Import Context Variables----->
@@ -217,10 +218,10 @@ export default function Orders() {
         if (response.data.status) {
           toast.error(response.data.message);
           return setTimeout(async () => {
-            await fetchData();
+            await loadOrderData();
           }, 1500);
         }
-        await fetchData();
+        await loadOrderData();
       } else {
         console.warn("Unexpected response:", response.data.message);
       }
@@ -255,6 +256,7 @@ export default function Orders() {
 
   return (
     <div className="border-t pt-8 bg-white">
+      <ScrollToTop />
       <div className="text-2xl">
         <Title text1="MY" tex2="ORDERS" />
       </div>
