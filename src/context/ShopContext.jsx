@@ -71,7 +71,7 @@ const ShopContextProvider = (props) => {
     }
     onMessage(messaging, (payload) => {
       console.log(payload);
-      // toast.success("New notification recieved!");
+      toast.success(payload.notification.title);
     });
   };
 
