@@ -14,18 +14,39 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// Handle background messages
+// Handle background messages and prevent duplicates
 messaging.onBackgroundMessage((payload) => {
-    console.log(
-        '[firebase-messaging-sw.js] Received background message ',
-        payload
-    );
-    // Customize notification here
+    console.log('[firebase-messaging-sw.js] Received background message ', payload);
+
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
-        icon: payload.notification.image
+        icon: payload.notification.image || '/default-icon.png', // Fallback icon
+        badge: `${self.location.origin}/badge-icon.png`, // Badge icon (optional)
+        vibrate: [200, 100, 200], // Vibration pattern
+        tag: payload.notification.tag || "general-notification", // Ensures updates to existing notifications
+        data: { url: payload.webpush?.fcmOptions?.link || '/' } // Store the link to open on click
     };
 
+
     self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Handle notification clicks
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close(); // Close the notification
+
+    const url = event.notification.data?.url || '/';
+    event.waitUntil(
+        clients.matchAll({ type: 'window' }).then(windowClients => {
+            // Check if a window with the URL is already open
+            for (let client of windowClients) {
+                if (client.url === url && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            // Open a new window if not already open
+            return clients.openWindow(url);
+        })
+    );
 });
