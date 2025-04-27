@@ -18,19 +18,22 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage((payload) => {
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.image || '/default-icon.png', // Fallback icon
-        badge: `${self.location.origin}/badge-icon.png`, // Badge icon (optional)
-        vibrate: [200, 100, 200], // Vibration pattern
-        tag: payload.notification.tag || "general-notification", // Ensures updates to existing notifications
-        data: { url: payload.webpush?.fcmOptions?.link || '/' } // Store the link to open on click
-    };
+    // // If there's no notification key, manually show
+    // if (!payload.notification) {
+    //     const notificationTitle = "Background Message Title";
+    //     const notificationOptions = {
+    //         body: "Background Message body.",
+    //         icon: '/default-icon.png',
+    //         badge: '/badge-icon.png',
+    //         vibrate: [200, 100, 200],
+    //         tag: "general-notification",
+    //         data: { url: payload.webpush?.fcmOptions?.link || '/' }
+    //     };
 
-
-    self.registration.showNotification(notificationTitle, notificationOptions);
+    //     self.registration.showNotification(notificationTitle, notificationOptions);
+    // }
 });
+
 
 // Handle notification clicks
 self.addEventListener('notificationclick', function (event) {
