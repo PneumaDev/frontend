@@ -36,7 +36,7 @@ const ShopContextProvider = (props) => {
   const currency = "Ksh.";
 
   const cloudinary = new Cloudinary({
-    cloud: { cloudName: import.meta.env.VITE_CLOUDINARY_NAME },
+    cloud: { cloudName: "ds5lreojp" },
   });
 
   useEffect(() => {
@@ -140,6 +140,7 @@ const ShopContextProvider = (props) => {
         } catch (error) {}
       }
     }
+    console.log(totalCount);
     return totalCount;
   };
 
@@ -278,6 +279,7 @@ const ShopContextProvider = (props) => {
       setLoading(false);
     }
   };
+  console.log(cartItems);
 
   const value = {
     products,
