@@ -51,7 +51,6 @@ const ShopContextProvider = (props) => {
 
   const setFcmTokem = async () => {
     const fcmToken = await getAdminFCMToken();
-    console.log(fcmToken);
     if (fcmToken && Object.keys(user).length > 0) {
       if (user.fcmToken.includes(fcmToken)) {
         return console.log("Token is already included");
@@ -59,7 +58,7 @@ const ShopContextProvider = (props) => {
 
       const response = await axios.post(
         backendUrl + "/api/user/update",
-        { fcmToken: [...user.fcmToken, fcmToken].slice(-3) },
+        { fcmToken: [...user.fcmToken, fcmToken].slice(-2) },
         { headers: { token } }
       );
 
