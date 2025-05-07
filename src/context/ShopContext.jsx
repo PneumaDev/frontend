@@ -24,10 +24,6 @@ const ShopContextProvider = (props) => {
   const [user, setUser] = useState({});
   const [permission, setPermission] = useState(Notification.permission);
 
-  useEffect(() => {
-    setPermission(Notification.permission);
-  }, []);
-
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const location = useLocation();
