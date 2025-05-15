@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AdvancedImage } from "@cloudinary/react";
+import { AdvancedImage, placeholder } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import { lazyload } from "@cloudinary/react";
 
@@ -30,17 +30,16 @@ export default function ProductItem({ id, image, price, name }) {
           )}
 
           {/* Use AdvancedImage to display the optimized image */}
-          {isImageLoaded && (
-            <AdvancedImage
-              plugins={[lazyload()]}
-              cldImg={cldImg}
-              alt={name}
-              className={`hover:scale-110 transition ease-in-out rounded-md hover:rounded-md ${
-                isImageLoaded ? "opacity-100" : "opacity-0"
-              }`}
-              onLoad={() => setIsImageLoaded(true)}
-            />
-          )}
+
+          <AdvancedImage
+            plugins={[lazyload(), placeholder({ mode: "blur" })]}
+            cldImg={cldImg}
+            alt={name}
+            className={`hover:scale-110 transition ease-in-out rounded-md hover:rounded-md ${
+              isImageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoad={() => setIsImageLoaded(true)}
+          />
 
           <BadgeCheck
             className="absolute z-10 top-2 right-2 cursor-pointer"
