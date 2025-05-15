@@ -32,7 +32,12 @@ export default function ProductItem({ id, image, price, name }) {
           {/* Use AdvancedImage to display the optimized image */}
 
           <AdvancedImage
-            plugins={[lazyload()]}
+            plugins={[
+              lazyload({
+                rootMargin: "10px 20px 10px 30px",
+                threshold: 0.25,
+              }),
+            ]}
             cldImg={cldImg}
             alt={name}
             className={`hover:scale-110 transition ease-in-out rounded-md hover:rounded-md ${
