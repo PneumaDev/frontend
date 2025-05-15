@@ -4,7 +4,13 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import {
+  getAuth,
+  signInWithCredential,
+  GoogleAuthProvider,
+} from "firebase/auth";
 import toast from "react-hot-toast";
+import { app } from "../utils/firebase";
 
 function Login() {
   const [currentState, setCurrentState] = React.useState("Login");
@@ -16,6 +22,7 @@ function Login() {
   const [isGoogleAuthenticated, setIsGoogleAuthenticated] = useState(false);
 
   const location = useLocation();
+  const auth = getAuth(app);
 
   const handleJwtDecode = async (jwt) => {
     const token = jwtDecode(jwt);
@@ -201,11 +208,29 @@ function Login() {
         <GoogleLogin
           theme="filled_blue"
           onSuccess={async (credentialResponse) => {
-            await handleJwtDecode(credentialResponse.credential);
-            // localStorage.setItem("authToken", credentialResponse.credential);
-            // setAuthToken(credentialResponse.credential);
+            try {
+              // Extract the ID token (JWT)
+              const idToken = credentialResponse.credential;
+
+              // Convert it to a Firebase credential
+              const firebaseCredential = GoogleAuthProvider.credential(idToken);
+
+              // Sign in with Firebase using that credential
+              const response = await signInWithCredential(
+                auth,
+                firebaseCredential
+              );
+
+              console.log("Firebase user:", response.user);
+
+              await handleJwtDecode(idToken);
+            } catch (err) {
+              console.error("Sign-in failed:", err);
+            }
           }}
-          onError={() => {}}
+          onError={() => {
+            console.error("Google login failed");
+          }}
           useOneTap
         />
       </div>
