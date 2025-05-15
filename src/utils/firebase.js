@@ -14,7 +14,8 @@ export const firebaseConfig = {
 
 export default firebaseConfig;
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
+
 export const messaging = getMessaging(app);
 
 // Request Notification Permission and Get Token
@@ -23,7 +24,6 @@ export const getAdminFCMToken = async () => {
         const token = await getToken(messaging, {
             vapidKey: import.meta.env.VITE_VAPID_API_KEY,
         });
-
 
         if (token) {
             return token;
