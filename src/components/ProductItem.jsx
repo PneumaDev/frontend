@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { BadgeCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AdvancedImage, placeholder } from "@cloudinary/react";
+import { AdvancedImage } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import { lazyload } from "@cloudinary/react";
 
@@ -32,7 +32,7 @@ export default function ProductItem({ id, image, price, name }) {
           {/* Use AdvancedImage to display the optimized image */}
 
           <AdvancedImage
-            plugins={[lazyload(), placeholder({ mode: "blur" })]}
+            plugins={[lazyload()]}
             cldImg={cldImg}
             alt={name}
             className={`hover:scale-110 transition ease-in-out rounded-md hover:rounded-md ${
