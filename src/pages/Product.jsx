@@ -6,7 +6,7 @@ import RelatedProducts from "../components/RelatedProducts";
 import Spinner from "../components/Spinner";
 import Modal from "../components/Modal";
 import Login from "./Login";
-import { AdvancedImage } from "@cloudinary/react";
+import { AdvancedImage, accessibility } from "@cloudinary/react";
 import { lazyload } from "@cloudinary/react";
 import { scale } from "@cloudinary/url-gen/actions/resize";
 import InfoMessage from "../components/InfoComponent";
