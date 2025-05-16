@@ -51,24 +51,40 @@ const ShopContextProvider = (props) => {
 
   const setFcmTokem = async () => {
     const fcmToken = await getAdminFCMToken();
+
     if (fcmToken && Object.keys(user).length > 0) {
-      if (user.fcmToken.includes(fcmToken)) {
+      const currentTokens = Array.isArray(user.fcmToken) ? user.fcmToken : [];
+
+      if (currentTokens.includes(fcmToken)) {
         return console.log("Token is already included");
       }
 
-      const response = await axios.post(
-        backendUrl + "/api/user/update",
-        { fcmToken: [...user.fcmToken, fcmToken].slice(-2) },
-        { headers: { token } }
+      // Add new token, remove duplicates, and keep only the latest 2
+      const updatedTokens = [...new Set([...currentTokens, fcmToken])].slice(
+        -2
       );
 
-      console.log(response);
+      try {
+        const response = await axios.post(
+          backendUrl + "/api/user/self-update",
+          { fcmToken: updatedTokens },
+          { headers: { token } }
+        );
+
+        console.log("FCM token updated:", response.data);
+      } catch (error) {
+        console.error("Failed to update FCM token:", error);
+      }
     }
+
+    // Setup listener for incoming messages while app is open
     onMessage(messaging, (payload) => {
-      console.log(payload);
+      console.log("Incoming message:", payload);
       toast.success(payload.notification.title);
     });
   };
+
+  console.log(user);
 
   const requestPermission = async () => {
     const result = await Notification.requestPermission();
@@ -135,7 +151,6 @@ const ShopContextProvider = (props) => {
         } catch (error) {}
       }
     }
-    console.log(totalCount);
     return totalCount;
   };
 
@@ -274,7 +289,6 @@ const ShopContextProvider = (props) => {
       setLoading(false);
     }
   };
-  console.log(cartItems);
 
   const value = {
     products,
